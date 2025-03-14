@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -18,9 +20,14 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
+        'active',
+        'created_at',
+        'updated_at',
+        'created_by',
+        'updated_by',
     ];
 
     /**
@@ -41,8 +48,37 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the user profile associated with the user.
+     */
+    public function profile(): HasOne
+    {
+        return $this->hasOne(UserProfile::class, 'user_id', 'id');
+    }
+
+    public function role(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id')
+            ->withTimestamps()
+            ->withPivot('id', 'active', 'created_by', 'updated_by')
+            ->limit(1); // Ensures only one role per user
+    }
+    
+    public function levels(): BelongsToMany
+    {
+        return $this->belongsToMany(Level::class, 'level_user', 'user_id', 'level_id')
+            ->withTimestamps()
+            ->withPivot('id', 'active', 'created_by', 'updated_by');
+    }
+
+    public function schedules(): BelongsToMany
+    {
+        return $this->belongsToMany(Schedule::class, 'schedule_user', 'user_id', 'schedule_id')
+            ->withTimestamps()
+            ->withPivot('id', 'active', 'created_by', 'updated_by');
     }
 }
