@@ -17,7 +17,7 @@ class ScheduleFactory extends Factory
     public function definition(): array
     {
         return [
-            'sched_name' => fake()->word(),
+            'schedule_name' => fake()->word(),
             'day_of_week' => fake()->numberBetween(0, 6),
             'check_in_time' => fake()->time('H:i:s', 'check_out_time'),
             'check_out_time' => fake()->time(),

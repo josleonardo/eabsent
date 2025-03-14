@@ -22,7 +22,7 @@ class ScheduleSeeder extends Seeder
 
         foreach ($schedules as $schedule) {
             Schedule::factory()->create([
-                'sched_name' => 'default',
+                'schedule_name' => 'default',
                 'day_of_week' => $schedule['day_of_week'],
                 'check_in_time' => '06:45:00',
                 'check_out_time' => '15:00:00',
