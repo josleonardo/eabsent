@@ -17,7 +17,6 @@ Route::middleware('auth')->group(function () {
         return view('home', ['pageName' => 'Home']);
     })->name('home.index');
 
-    // Route::resource('users', UserController::class);
-    Route::get('/admins/user', [UserController::class, 'index'])->name('user.index');
-    Route::get('/admins/menu', [MenuController::class, 'index'])->name('menu.index');
+    Route::resource('admin/user', UserController::class);
+    Route::resource('admin/menu', MenuController::class);
 });
