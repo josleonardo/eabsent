@@ -3,7 +3,7 @@
 
     <div class="p-5 bg-white dark:bg-gray-800">
         <h1 class="text-lg font-semibold text-left rtl:text-right text-gray-900 dark:text-white">
-            Table Menu
+            Table {{ $pageName }}
         </h1>
         <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
             Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in touch, grow your business, and more.
@@ -19,19 +19,10 @@
                         ID
                     </th>
                     <th scope="col" class="p-4">
-                        Menu Name
+                        Username
                     </th>
                     <th scope="col" class="p-4">
-                        Menu URL
-                    </th>
-                    <th scope="col" class="p-4">
-                        Type
-                    </th>
-                    <th scope="col" class="p-4">
-                        Main Menu ID
-                    </th>
-                    <th scope="col" class="p-4">
-                        Icon
+                        Email
                     </th>
                     <th scope="col" class="p-4">
                         Active
@@ -55,44 +46,35 @@
             </thead>
 
             <tbody>
-                @foreach ($menus as $menu)
+                @foreach ($users as $user)
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="p-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $menu->id }}
+                            {{ $user->id }}
                         </th>
                         <td class="p-4">
-                            {{ $menu->menu_name }}
+                            {{ $user->username }}
                         </td>
                         <td class="p-4">
-                            {{ $menu->menu_url }}
+                            {{ $user->email }}
                         </td>
                         <td class="p-4">
-                            {{ $menu->type }}
-                        </td>
-                        <td class="p-4 text-center">
-                            {{ $menu->main_menu_id }}
-                        </td>
-                        <td class="p-4">
-                            {{ $menu->icon }}
-                        </td>
-                        <td class="p-4">
-                            @if ($menu->active == 1)
+                            @if ($user->active == 1)
                                 Active
                             @else
                                 Inactive
                             @endif
                         </td>
                         <td class="p-4">
-                            {{ $menu->created_at }}
+                            {{ $user->created_at }}
                         </td>
                         <td class="p-4 text-center">
-                            {{ $menu->created_by }}
+                            {{ $user->created_by }}
                         </td>
                         <td class="p-4">
-                            {{ $menu->updated_at }}
+                            {{ $user->updated_at }}
                         </td>
                         <td class="p-4 text-center">
-                            {{ $menu->updated_by }}
+                            {{ $user->updated_by }}
                         </td>
                         <td class="p-4 text-right">
                             <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
