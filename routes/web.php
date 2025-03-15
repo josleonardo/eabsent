@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LevelController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ScheduleController;
@@ -23,4 +24,5 @@ Route::middleware('auth')->group(function () {
     Route::resource('admin/menu', MenuController::class);
     Route::resource('admin/role', RoleController::class);
     Route::resource('admin/schedule', ScheduleController::class);
+    Route::resource('admin/level', LevelController::class);
 });
