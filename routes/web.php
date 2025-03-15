@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,4 +20,5 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('admin/user', UserController::class);
     Route::resource('admin/menu', MenuController::class);
+    Route::resource('admin/role', RoleController::class);
 });

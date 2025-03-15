@@ -17,7 +17,6 @@ class Role extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'role_code',
         'role_name',
         'active',
         'created_at',
