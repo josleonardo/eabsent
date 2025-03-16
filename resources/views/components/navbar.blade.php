@@ -20,7 +20,7 @@
             <div class="md:block">
                 <div class="ml-4 flex items-center md:ml-6">
                     <!-- Notification bell -->
-                    <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
+                    <button type="button" class="relative rounded-full p-1 text-gray-400 hover:text-gray-800 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden dark:bg-gray-800 dark:hover:text-white">
                         <span class="absolute -inset-1.5"></span>
                         <span class="sr-only">View notifications</span>
                         <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
