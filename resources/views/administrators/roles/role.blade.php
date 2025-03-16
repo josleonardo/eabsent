@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
-    <div class="p-5 bg-white dark:bg-gray-800">
+    <div class="p-5 bg-gray-50 dark:bg-gray-800">
         <h1 class="text-lg font-semibold text-left rtl:text-right text-gray-900 dark:text-white">
             Table {{ $pageName }}
         </h1>
@@ -13,7 +13,7 @@
     <div class="relative overflow-x-auto shadow-md">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 
-            <thead class="text-gray-700 uppercase whitespace-nowrap bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="p-4">
                         ID
@@ -44,7 +44,7 @@
 
             <tbody>
                 @foreach ($roles as $role)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <tr class="{{ $role->active == 0 ? 'bg-red-300 dark:bg-red-800 hover:bg-red-400 dark:hover:bg-red-700' : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'}} border-b border-gray-200 dark:border-gray-700">
                         <th scope="row" class="p-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ $role->id }}
                         </th>
