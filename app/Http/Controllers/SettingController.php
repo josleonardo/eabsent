@@ -12,7 +12,8 @@ class SettingController extends Controller
      */
     public function index()
     {
-        //
+        $settings = Setting::all();
+        return view('administrators.settings.setting', ['pageName' => 'Setting'], compact('settings'));
     }
 
     /**

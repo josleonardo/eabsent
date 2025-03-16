@@ -5,6 +5,7 @@ use App\Http\Controllers\LevelController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,4 +26,5 @@ Route::middleware('auth')->group(function () {
     Route::resource('admin/role', RoleController::class);
     Route::resource('admin/schedule', ScheduleController::class);
     Route::resource('admin/level', LevelController::class);
+    Route::resource('admin/setting', SettingController::class);
 });
