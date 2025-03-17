@@ -67,6 +67,15 @@ class User extends Authenticatable
             ->withPivot('id', 'active', 'created_by', 'updated_by')
             ->limit(1); // Ensures only one role per user
     }
+
+    public function roleActive(array $allowedRoles)
+    {
+        return $this->role()
+            ->wherePivot('active', 1) // role_user table
+            ->whereIn('role_id', $allowedRoles)
+            ->where('roles.active', 1) // roles table
+            ->first();
+    }
     
     public function levels(): BelongsToMany
     {
