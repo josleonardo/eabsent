@@ -25,22 +25,20 @@ class ViewServiceProvider extends ServiceProvider
     {
         View::composer('components.sidebar', function ($view) {
             $user = Auth::user();
-            if (!$user) {
+            $allowedRoles = [1, 2, 3];
+            $userRoleActive = $user->roleActive($allowedRoles);
+
+            // If user not exist or user or role_user or role not active
+            if (!$user || !$user->active || !$userRoleActive) {
                 $view->with('menuItems', collect());
                 return;
             }
 
-            $userRole = $user->role()->wherePivot('active', 1)->first();
-            if (!$userRole) {
-                $view->with('menuItems', collect());
-                return;
-            }
-
-            $menuItems = Menu::whereHas('roles', function ($query) use ($userRole) {
+            $menuItems = Menu::whereHas('roles', function ($query) use ($userRoleActive) {
                 $query->where([
                     ['type', 'web'],
                     ['main_menu_id', 0],
-                    ['role_id', $userRole->id],
+                    ['role_id', $userRoleActive->id],
                     ['role_menu.active', 1],
                     ['menus.active', 1],
                 ]);

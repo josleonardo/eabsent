@@ -30,13 +30,22 @@ class AuthController extends Controller
         }
 
         if (Auth::attempt($credentials, $remember)) {
-            $request->session()->regenerate();
+            $user = Auth::user();
+            $allowedRoles = [1, 2, 3];
 
+            if (!$user || !$user->active || !$user->roleActive($allowedRoles)) {
+                Auth::logout();
+                throw ValidationException::withMessages([
+                    'credentials' => 'Invalid credentials'
+                ]);
+            }
+
+            $request->session()->regenerate();
             return redirect()->route('home.index');
         }
 
         throw ValidationException::withMessages([
-            'credentials' => 'Incorrect credentials'
+            'credentials' => 'Invalid credentials'
         ]);
     }
 
