@@ -21,10 +21,15 @@ Route::middleware('auth')->group(function () {
         return view('home', ['pageName' => 'Home']);
     })->name('home.index');
 
-    Route::resource('admin/user', UserController::class);
-    Route::resource('admin/menu', MenuController::class);
-    Route::resource('admin/role', RoleController::class);
-    Route::resource('admin/schedule', ScheduleController::class);
-    Route::resource('admin/level', LevelController::class);
-    Route::resource('admin/setting', SettingController::class);
+    Route::middleware('role_check:1,2')->group(function () {
+        Route::resource('admin/user', UserController::class);
+        Route::resource('admin/schedule', ScheduleController::class);
+    });
+
+    Route::middleware('role_check:1')->group(function () {
+        Route::resource('admin/menu', MenuController::class);
+        Route::resource('admin/role', RoleController::class);
+        Route::resource('admin/level', LevelController::class);
+        Route::resource('admin/setting', SettingController::class);
+    });
 });
