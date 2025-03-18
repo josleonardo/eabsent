@@ -1,14 +1,10 @@
 <x-layout>
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
-    <div class="p-5 bg-white dark:bg-gray-800">
-        <h1 class="text-lg font-semibold text-left rtl:text-right text-gray-900 dark:text-white">
-            Table {{ $pageName }}
-        </h1>
-        <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-            Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in touch, grow your business, and more.
-        </p>
-    </div>
+    <x-page-caption>
+        Manage login accounts, passwords, personal details, and authentication settings for all users. 
+        You can create, edit, and deactivate user accounts and informations as needed.
+    </x-page-caption>
 
     <div class="relative overflow-x-auto shadow-md">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
