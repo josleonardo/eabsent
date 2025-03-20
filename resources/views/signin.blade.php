@@ -29,20 +29,20 @@
                 @csrf
 
                 <div>
-                    <label for="email" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Email address</label>
-                    <div class="mt-2">
-                        <input type="email" name="email" id="email" autocomplete="email" required
-                            value="{{ old('email') }}"
-                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    </div>
+                    <label for="email" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
+                        Email address
+                    </label>
+                    <input type="email" name="email" id="email" autocomplete="email" required
+                        value="{{ old('email') }}"
+                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 </div>
 
                 <div>
-                    <label for="password" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Password</label>
-                    <div class="mt-2">
-                        <input type="password" name="password" id="password" autocomplete="current-password" required
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    </div>
+                    <label for="password" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
+                        Password
+                    </label>
+                    <input type="password" name="password" id="password" autocomplete="current-password" required
+                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 </div>
                 
                 <div class="flex justify-between">
@@ -57,11 +57,9 @@
                     </a>
                 </div>
                 
-                <div>
-                    <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        Sign in
-                    </button>
-                </div>
+                <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    Sign in
+                </button>
             </form>
         </div>
     </div>
