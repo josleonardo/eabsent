@@ -8,90 +8,61 @@
 
     <div class="relative overflow-x-auto shadow-md">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-
             <thead class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                    <th scope="col" class="p-4">
-                        ID
-                    </th>
-                    <th scope="col" class="p-4">
-                        Menu Name
-                    </th>
-                    <th scope="col" class="p-4">
-                        Menu URL
-                    </th>
-                    <th scope="col" class="p-4">
-                        Type
-                    </th>
-                    <th scope="col" class="p-4">
-                        Main Menu ID
-                    </th>
-                    <th scope="col" class="p-4">
-                        Icon
-                    </th>
-                    <th scope="col" class="p-4">
-                        Active
-                    </th>
-                    <th scope="col" class="p-4">
-                        Created At
-                    </th>
-                    <th scope="col" class="p-4">
-                        Created By
-                    </th>
-                    <th scope="col" class="p-4">
-                        Updated At
-                    </th>
-                    <th scope="col" class="p-4">
-                        Updated By
-                    </th>
+                    <th scope="col" class="p-4">#</th>
+                    <th scope="col" class="p-4">Menu Name</th>
+                    <th scope="col" class="p-4">Menu URL</th>
+                    <th scope="col" class="p-4">Type</th>
+                    <th scope="col" class="p-4">Main Menu ID</th>
+                    <th scope="col" class="p-4">Icon</th>
+                    <th scope="col" class="p-4">Active</th>
+                    <th scope="col" class="p-4">Created At</th>
+                    <th scope="col" class="p-4">Created By</th>
+                    <th scope="col" class="p-4">Updated At</th>
+                    <th scope="col" class="p-4">Updated By</th>
                     <th scope="col" class="p-4">
                         <span class="sr-only">Edit</span>
+                    </th>
+                    <th scope="col" class="p-4">
+                        <span class="sr-only">Detail</span>
                     </th>
                 </tr>
             </thead>
 
             <tbody>
-                @foreach ($menus as $menu)
-                    <tr class="{{ $menu->active == 0 ? 'bg-red-300 dark:bg-red-800 hover:bg-red-400 dark:hover:bg-red-700' : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'}} border-b border-gray-200 dark:border-gray-700">
-                        <th scope="row" class="p-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $menu->id }}
+                @if ($menus->count() == 0)
+                    <tr>
+                        <td colspan="13">No menus to display.</td>
+                    </tr>
+                @endif
+
+                @foreach ($menus as $key => $menu)
+                    <tr class="{{ $menu->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700'}} border-b border-gray-200 dark:border-gray-700">
+                        <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {{ $menus->firstItem() + $key }}
                         </th>
-                        <td class="p-4">
-                            {{ $menu->menu_name }}
-                        </td>
-                        <td class="p-4">
-                            {{ $menu->menu_url }}
-                        </td>
-                        <td class="p-4">
-                            {{ $menu->type }}
-                        </td>
-                        <td class="p-4 text-center">
-                            {{ $menu->main_menu_id }}
-                        </td>
-                        <td class="p-4">
-                            {{ $menu->icon }}
-                        </td>
-                        <td class="p-4">
+                        <td class="px-4 py-3">{{ $menu->menu_name }}</td>
+                        <td class="px-4 py-3">{{ $menu->menu_url }}</td>
+                        <td class="px-4 py-3">{{ $menu->type }}</td>
+                        <td class="px-4 py-3 text-center">{{ $menu->main_menu_id }}</td>
+                        <td class="px-4 py-3">{{ $menu->icon }}</td>
+                        <td class="px-4 py-3">
                             @if ($menu->active == 1)
                                 Active
                             @else
                                 Inactive
                             @endif
                         </td>
-                        <td class="p-4">
-                            {{ $menu->created_at }}
-                        </td>
-                        <td class="p-4 text-center">
-                            {{ $menu->created_by }}
-                        </td>
-                        <td class="p-4">
-                            {{ $menu->updated_at }}
-                        </td>
-                        <td class="p-4 text-center">
-                            {{ $menu->updated_by }}
-                        </td>
-                        <td class="p-4 text-right">
+                        <td class="px-4 py-3">{{ $menu->created_at }}</td>
+                        <td class="px-4 py-3 text-center">{{ $menu->created_by }}</td>
+                        <td class="px-4 py-3">{{ $menu->updated_at }}</td>
+                        <td class="px-4 py-3 text-center">{{ $menu->updated_by }}</td>
+                        <td class="px-4 py-3 text-right">
                             <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <a href="#" class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">Detail</a>
                         </td>
                     </tr>
                 @endforeach
@@ -99,4 +70,5 @@
         </table>
     </div>
 
+    <div class="my-4">{{ $menus->onEachSide(2)->links() }}</div>
 </x-layout>

@@ -8,66 +8,49 @@
 
     <div class="relative overflow-x-auto shadow-md">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-
             <thead class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                    <th scope="col" class="p-4">
-                        ID
-                    </th>
-                    <th scope="col" class="p-4">
-                        Role Name
-                    </th>
-                    <th scope="col" class="p-4">
-                        Active
-                    </th>
-                    <th scope="col" class="p-4">
-                        Created At
-                    </th>
-                    <th scope="col" class="p-4">
-                        Created By
-                    </th>
-                    <th scope="col" class="p-4">
-                        Updated At
-                    </th>
-                    <th scope="col" class="p-4">
-                        Updated By
-                    </th>
+                    <th scope="col" class="p-4">#</th>
+                    <th scope="col" class="p-4">Role Name</th>
+                    <th scope="col" class="p-4">Active</th>
+                    <th scope="col" class="p-4">Created At</th>
+                    <th scope="col" class="p-4">Created By</th>
+                    <th scope="col" class="p-4">Updated At</th>
+                    <th scope="col" class="p-4">Updated By</th>
                     <th scope="col" class="p-4">
                         <span class="sr-only">Edit</span>
+                    </th>
+                    <th scope="col" class="p-4">
+                        <span class="sr-only">Detail</span>
                     </th>
                 </tr>
             </thead>
 
             <tbody>
-                @foreach ($roles as $role)
-                    <tr class="{{ $role->active == 0 ? 'bg-red-300 dark:bg-red-800 hover:bg-red-400 dark:hover:bg-red-700' : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'}} border-b border-gray-200 dark:border-gray-700">
-                        <th scope="row" class="p-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $role->id }}
+                @foreach ($roles as $key => $role)
+                    <tr class="{{ $role->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700'}} border-b border-gray-200 dark:border-gray-700">
+                        <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {{ $roles->firstItem() + $key }}
                         </th>
-                        <td class="p-4">
-                            {{ $role->role_name }}
-                        </td>
-                        <td class="p-4">
+                        <td class="px-4 py-3">{{ $role->role_name }}</td>
+                        <td class="px-4 py-3">
                             @if ($role->active == 1)
                                 Active
                             @else
                                 Inactive
                             @endif
                         </td>
-                        <td class="p-4">
-                            {{ $role->created_at }}
+                        <td class="px-4 py-3">{{ $role->created_at }}</td>
+                        <td class="px-4 py-3 text-center">{{ $role->created_by }}</td>
+                        <td class="px-4 py-3">{{ $role->updated_at }}</td>
+                        <td class="px-4 py-3 text-center">{{ $role->updated_by }}</td>
+                        <td class="px-4 py-3 text-right">
+                            <a href="#"
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                         </td>
-                        <td class="p-4 text-center">
-                            {{ $role->created_by }}
-                        </td>
-                        <td class="p-4">
-                            {{ $role->updated_at }}
-                        </td>
-                        <td class="p-4 text-center">
-                            {{ $role->updated_by }}
-                        </td>
-                        <td class="p-4 text-right">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                        <td class="px-4 py-3">
+                            <a href="#"
+                                class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">Detail</a>
                         </td>
                     </tr>
                 @endforeach
@@ -75,4 +58,5 @@
         </table>
     </div>
 
+    <div class="my-4">{{ $roles->onEachSide(2)->links() }}</div>
 </x-layout>
