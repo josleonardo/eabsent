@@ -7,7 +7,7 @@
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                 </svg>
             </div>
-            <input id="search" type="search" name="search" placeholder="Search {{ $singleName }}. . ."
+            <input id="search" type="search" name="search" placeholder="Search {{ $singleName }} . . ."
                 class="block w-full pl-10 p-2.5 bg-gray-50 text-sm text-gray-900 rounded-l-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-800 dark:placeholder-gray-400 dark:text-white">
         </div>
         <button type="submit"
@@ -25,7 +25,7 @@
 
         <div class="flex items-center gap-2">
             {{-- Add button --}}
-            <a href="{{ route('user.create') }}"
+            <a href="{{ route($singleName . '.create') }}"
                 class="block p-2.5 rounded-md bg-green-600 font-semibold text-sm text-white shadow-xs hover:bg-green-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
                 Add {{ $singleName }}
             </a>
