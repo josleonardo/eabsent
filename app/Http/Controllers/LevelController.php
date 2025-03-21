@@ -13,7 +13,7 @@ class LevelController extends Controller
     public function index()
     {
         $levels = Level::paginate(10);
-        return view('administrators.levels.level', ['pageName' => 'Levels'], compact('levels'));
+        return view('administrators.levels.level', ['pageName' => 'Levels', 'singleName' => 'level'], compact('levels'));
     }
 
     /**

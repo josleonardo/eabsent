@@ -13,7 +13,7 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::paginate(10);
-        return view('administrators.roles.role', ['pageName'=> 'Roles'], compact('roles'));
+        return view('administrators.roles.role', ['pageName'=> 'Roles', 'singleName' => 'role'], compact('roles'));
     }
 
     /**

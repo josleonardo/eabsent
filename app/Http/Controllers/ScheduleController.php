@@ -13,7 +13,7 @@ class ScheduleController extends Controller
     public function index()
     {
         $schedules = Schedule::paginate(10);
-        return view('administrators.schedules.schedule', ['pageName' => 'Schedules'], compact('schedules'));
+        return view('administrators.schedules.schedule', ['pageName' => 'Schedules', 'singleName' => 'schedule'], compact('schedules'));
     }
 
     /**

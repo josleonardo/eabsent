@@ -13,7 +13,7 @@ class SettingController extends Controller
     public function index()
     {
         $settings = Setting::paginate(10);
-        return view('administrators.settings.setting', ['pageName' => 'Settings'], compact('settings'));
+        return view('administrators.settings.setting', ['pageName' => 'Settings', 'singleName' => 'setting'], compact('settings'));
     }
 
     /**
