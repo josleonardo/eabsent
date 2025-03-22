@@ -21,7 +21,7 @@ class LevelController extends Controller
      */
     public function create()
     {
-        //
+        return view('administrators.levels.create', ['pageName' => 'Add level']);
     }
 
     /**

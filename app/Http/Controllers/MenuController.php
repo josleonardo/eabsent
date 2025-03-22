@@ -21,7 +21,7 @@ class MenuController extends Controller
      */
     public function create()
     {
-        //
+        return view('administrators.menus.create', ['pageName' => 'Add menu']);
     }
 
     /**

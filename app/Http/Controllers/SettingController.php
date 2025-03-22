@@ -21,7 +21,7 @@ class SettingController extends Controller
      */
     public function create()
     {
-        //
+        return view('administrators.settings.create', ['pageName' => 'Add setting']);
     }
 
     /**

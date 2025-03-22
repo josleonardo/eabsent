@@ -21,7 +21,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('administrators.users.create', ['pageName' => 'Add user']);
     }
 
     /**

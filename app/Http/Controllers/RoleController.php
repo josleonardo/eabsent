@@ -21,7 +21,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        //
+        return view('administrators.roles.create', ['pageName' => 'Add role']);
     }
 
     /**
