@@ -6,18 +6,28 @@
         You can create, edit, and deactivate user accounts and informations as needed.
     </x-page-caption>
 
+    {{-- Toast notification --}}
+    @if (session('success'))
+        <x-toast type="success" :message="session('success')" />
+    @endif
+    @if (session('failed'))
+        <x-toast type="failed" :message="session('failed')" />
+    @endif
+
+    {{-- Toolbar contain search bar, filter, action buttons --}}
     <x-toolbar>
         <x-slot:pageName>{{ $pageName }}</x-slot>
         <x-slot:singleName>{{ $singleName }}</x-slot>
     </x-toolbar>
 
+    {{-- Table --}}
     <div class="relative overflow-x-auto shadow-md">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="p-4">#</th>
-                    <th scope="col" class="p-4">Username</th>
                     <th scope="col" class="p-4">Email</th>
+                    <th scope="col" class="p-4">Username</th>
                     <th scope="col" class="p-4">Active</th>
                     <th scope="col" class="p-4">Created At</th>
                     <th scope="col" class="p-4">Created By</th>
@@ -45,8 +55,8 @@
                         <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ $users->firstItem() + $key }}
                         </th>
-                        <td class="px-4 py-3">{{ $user->username }}</td>
                         <td class="px-4 py-3">{{ $user->email }}</td>
+                        <td class="px-4 py-3">{{ $user->username }}</td>
                         <td class="px-4 py-3">
                             @if ($user->active == 1)
                                 Active
@@ -76,5 +86,6 @@
         Displaying {{ $users->count() }} of {{ $users->total() }} {{ $pageName }}.
     </p> --}}
 
+    {{-- Pagination --}}
     <div class="my-4">{{ $users->onEachSide(2)->links() }}</div>
 </x-layout>

@@ -11,10 +11,10 @@
                 </svg>
             </div>
             <input id="search" type="search" name="search" placeholder="Search {{ $singleName }} . . ."
-                class="block w-full pl-10 p-2.5 bg-gray-50 text-sm text-gray-900 rounded-l-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-800 dark:placeholder-gray-400 dark:text-white">
+                class="block w-full pl-10 p-2.5 bg-gray-50 text-sm text-gray-900 rounded-l-md focus-visible:outline-2 focus-visible:outline-indigo-600 dark:bg-gray-800 dark:placeholder-gray-400 dark:text-white">
         </div>
         <button type="submit"
-            class="p-2.5 bg-gray-200 text-sm font-medium text-gray-500 rounded-r-md hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+            class="p-2.5 bg-gray-200 text-sm font-medium text-gray-500 rounded-r-md hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-indigo-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
             Search
         </button>
     </form>
