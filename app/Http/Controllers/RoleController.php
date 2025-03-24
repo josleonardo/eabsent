@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
@@ -29,7 +30,21 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $currentUserId = Auth::id();
+
+        $validatedData = $request->validate([
+            'role_name' => 'required|string|max:255|unique:roles',
+            'active' => 'required|boolean',
+        ]);
+
+        Role::create([
+            'role_name' => $validatedData['role_name'],
+            'active' => $validatedData['active'],
+            'created_by' => $currentUserId,
+            'updated_by' => $currentUserId,
+        ]);
+
+        return redirect()->route('role.index')->with('success', 'Role added successfully.');
     }
 
     /**
