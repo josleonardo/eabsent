@@ -1,79 +1,107 @@
 <x-layout>
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
-    <section class="p-3 border border-gray-200 sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+    <section class="p-3 space-y-6 border border-gray-200 sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+        {{-- Back button --}}
         <a href="{{ route('menu.index') }}"
-            class="inline-flex items-center mb-4 p-2.5 rounded-md bg-blue-600 font-semibold text-sm text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
-            <svg class="w-3.5 h-3.5 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor" viewBox="0 0 20 16">
-                <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
+            class="inline-flex items-center p-2.5 rounded-md bg-blue-600 font-semibold text-sm text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+            <svg class="size-5 text-white me-2" aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                 <path
-                    d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
+                    d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
             </svg>
             Back
         </a>
 
-        <form action="#" method="POST" class="max-w-7xl">
+        {{-- Create form --}}
+        <form action="{{ route('menu.store') }}" method="POST" class="space-y-6 max-w-7xl">
+            @csrf
+
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 <div class="w-full">
-                    <label for="menuName" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
+                    <label for="menu_name" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
                         Menu Name
                     </label>
-                    <input type="text" name="menuName" id="menuName" placeholder="Home Menu" required value="{{ old('menuName') }}"
+                    <input type="text" name="menu_name" id="menu_name" placeholder="Menu Name" required
+                        value="{{ old('menu_name') }}"
                         class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    @error('menu_name')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
+                    @enderror
                 </div>
+
                 <div class="w-full">
-                    <label for="menuUrl" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
+                    <label for="menu_url" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
                         Menu URL
                     </label>
-                    <input type="text" name="menuUrl" id="menuUrl" placeholder="home-menu-url" required
-                        value="{{ old('menuUrl') }}"
+                    <input type="text" name="menu_url" id="menu_url" placeholder="menu-name-url" required
+                        value="{{ old('menu_url') }}"
                         class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    @error('menu_url')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
+                    @enderror
                 </div>
+
                 <div>
                     <label for="type" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
                         Type
                     </label>
                     <select name="type" id="type" required
                         class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        <option selected="">Select type</option>
-                        <option value="TV">Android</option>
-                        <option value="PC">Web</option>
+                        <option value="0">Web</option>
+                        <option value="1">Android</option>
                     </select>
+                    @error('type')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
+                    @enderror
                 </div>
+
                 <div class="w-full">
-                    <label for="mainMenuId" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
+                    <label for="main_menu_id" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
                         Main Menu ID
                     </label>
-                    <input type="number" name="mainMenuId" id="mainMenuId" placeholder="1"
+                    <input type="number" name="main_menu_id" id="main_menu_id" placeholder="1" required
                         class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    @error('main_menu_id')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
+                    @enderror
                 </div>
+
                 <div class="w-full">
                     <label for="order" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
                         Order
                     </label>
                     <input type="number" name="order" id="order" placeholder="1"
                         class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    @error('order')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
+                    @enderror
                 </div>
+
                 <div class="w-full">
                     <label for="icon" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
                         Icon
                     </label>
                     <input type="text" name="icon" id="icon" placeholder="home-rounded"
                         class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    @error('icon')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
-            <label class="mt-4 inline-flex items-center cursor-pointer">
-                <input type="checkbox" value="" class="sr-only peer" checked>
-                <div
-                    class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
-                </div>
-                <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Active</span>
-            </label>
+            {{-- Active/inactive button --}}
+            <x-btn-active />
 
+            {{-- Add data button --}}
             <button type="submit"
-                class="flex w-40 justify-center mt-6 rounded-md bg-indigo-600 p-2.5 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                class="flex w-40 items-center justify-center rounded-md bg-indigo-600 p-2.5 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                <svg class="size-5 text-white me-2" aria-hidden="true" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                    <path
+                        d="M64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
+                </svg>
                 {{ $pageName }}
             </button>
         </form>

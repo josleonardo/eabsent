@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MenuController extends Controller
 {
@@ -29,7 +30,31 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $currentUserId = Auth::id();
+
+        $validatedData = $request->validate([
+            'menu_name' => 'required|string|max:255|unique:menus',
+            'menu_url' => 'required|string|max:255|unique:menus',
+            'type' => 'required|integer|max:5',
+            'main_menu_id' => 'required|integer',
+            'order' => 'nullable|integer',
+            'icon' => 'nullable|string|max:255',
+            'active' => 'required|boolean',
+        ]);
+
+        Menu::create([
+            'menu_name' => $validatedData['menu_name'],
+            'menu_url' => $validatedData['menu_url'],
+            'type' => $validatedData['type'],
+            'main_menu_id' => $validatedData['main_menu_id'],
+            'order' => $validatedData['order'],
+            'icon' => $validatedData['icon'],
+            'active' => $validatedData['active'],
+            'created_by' => $currentUserId,
+            'updated_by' => $currentUserId,
+        ]);
+
+        return redirect()->route('menu.index')->with('success', 'Menu added successfully.');
     }
 
     /**

@@ -1,3 +1,7 @@
+@php
+    $menuTypes = ['Web', 'Android'];
+@endphp
+
 <x-layout>
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
@@ -31,6 +35,7 @@
                     <th scope="col" class="p-4">Type</th>
                     <th scope="col" class="p-4">Main Menu ID</th>
                     <th scope="col" class="p-4">Icon</th>
+                    <th scope="col" class="p-4">Order</th>
                     <th scope="col" class="p-4">Active</th>
                     <th scope="col" class="p-4">Created At</th>
                     <th scope="col" class="p-4">Created By</th>
@@ -48,7 +53,7 @@
             <tbody>
                 @if ($menus->count() == 0)
                     <tr>
-                        <td colspan="13">No menus to display.</td>
+                        <td colspan="14">No menus to display.</td>
                     </tr>
                 @endif
 
@@ -61,9 +66,10 @@
                         </th>
                         <td class="px-4 py-3">{{ $menu->menu_name }}</td>
                         <td class="px-4 py-3">{{ $menu->menu_url }}</td>
-                        <td class="px-4 py-3">{{ $menu->type }}</td>
+                        <td class="px-4 py-3">{{ $menuTypes[$menu->type] }}</td>
                         <td class="px-4 py-3 text-center">{{ $menu->main_menu_id }}</td>
                         <td class="px-4 py-3">{{ $menu->icon }}</td>
+                        <td class="px-4 py-3">{{ $menu->order }}</td>
                         <td class="px-4 py-3">
                             @if ($menu->active == 1)
                                 Active
