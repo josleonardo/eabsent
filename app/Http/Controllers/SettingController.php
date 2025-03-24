@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SettingController extends Controller
 {
@@ -29,7 +30,27 @@ class SettingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $currentUserId = Auth::id();
+
+        $validatedData = $request->validate([
+            'setting_name' => 'required|string|max:255|unique:settings',
+            'key' => 'nullable|string|max:255|unique:settings',
+            'value_1' => 'nullable|string|max:255',
+            'value_2' => 'nullable|string|max:255',
+            'active' => 'required|boolean',
+        ]);
+
+        Setting::create([
+            'setting_name' => $validatedData['setting_name'],
+            'key' => $validatedData['key'],
+            'value_1' => $validatedData['value_1'],
+            'value_2' => $validatedData['value_2'],
+            'active' => $validatedData['active'],
+            'created_by' => $currentUserId,
+            'updated_by' => $currentUserId,
+        ]);
+
+        return redirect()->route('setting.index')->with('success', 'Setting added successfully.');
     }
 
     /**
