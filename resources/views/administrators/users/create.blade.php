@@ -5,8 +5,7 @@
         {{-- Back button --}}
         <a href="{{ route('user.index') }}"
             class="inline-flex items-center p-2.5 rounded-md bg-blue-600 font-semibold text-sm text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
-            <svg class="size-5 text-white me-2" aria-hidden="true" fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
+            <svg class="size-5 text-white me-2" aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                 <path
                     d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
@@ -106,8 +105,8 @@
                     <label for="address" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
                         Current Address
                     </label>
-                    <input type="text" name="address" id="address"
-                        placeholder="Jl. Abc 1/2, Jakarta, Indonesia" value="{{ old('address') }}"
+                    <input type="text" name="address" id="address" placeholder="Jl. Abc 1/2, Jakarta, Indonesia"
+                        value="{{ old('address') }}"
                         class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     @error('address')
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
@@ -130,8 +129,7 @@
                     <label for="role" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
                         Role
                     </label>
-                    <select name="role" id="role"
-                        value="{{ old('role') }}"
+                    <select name="role" id="role" value="{{ old('role') }}"
                         class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         <option value="" selected>Select role</option>
                         @foreach ($roles as $role)
@@ -171,15 +169,7 @@
             </div>
 
             {{-- Active/inactive button --}}
-            <label class="inline-flex items-center cursor-pointer">
-                <input type="checkbox" name="active_checkbox" id="active_checkbox" class="sr-only peer" checked
-                    onclick="toggleActive()">
-                <input type="hidden" name="active" id="active" value="1">
-                <div
-                    class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
-                </div>
-                <span id="active_text" class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Active</span>
-            </label>
+            <x-btn-active />
 
             {{-- Add data button --}}
             <button type="submit"
@@ -195,19 +185,3 @@
         </form>
     </section>
 </x-layout>
-
-<script>
-    function toggleActive() {
-        const checkbox = document.getElementById('active_checkbox');
-        const hiddenInput = document.getElementById('active');
-        const activeText = document.getElementById('active_text');
-
-        if (checkbox.checked) {
-            hiddenInput.value = "1";
-            activeText.textContent = "Active";
-        } else {
-            hiddenInput.value = "0";
-            activeText.textContent = "Inactive";
-        }
-    }
-</script>
