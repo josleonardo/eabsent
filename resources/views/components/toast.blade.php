@@ -39,10 +39,3 @@
         </button>
     </div>
 @endif
-
-<script>
-    function dismissToast(type) {
-        const toast = document.getElementById('toast_' + type);
-        toast.style.display = 'none';
-    }
-</script>
