@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Schedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
@@ -29,7 +30,27 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $currentUserId = Auth::id();
+
+        $validatedData = $request->validate([
+            'schedule_name' => 'required|string|max:255|unique:schedules',
+            'day_of_week' => 'required|integer|max:7',
+            'check_in_time' => 'required|date_format:H:i',
+            'check_out_time' => 'required|date_format:H:i',
+            'active' => 'required|boolean',
+        ]);
+
+        Schedule::create([
+            'schedule_name' => $validatedData['schedule_name'],
+            'day_of_week' => $validatedData['day_of_week'],
+            'check_in_time' => $validatedData['check_in_time'],
+            'check_out_time' => $validatedData['check_out_time'],
+            'active' => $validatedData['active'],
+            'created_by' => $currentUserId,
+            'updated_by' => $currentUserId,
+        ]);
+
+        return redirect()->route('schedule.index')->with('success', 'Schedule added successfully.');
     }
 
     /**
