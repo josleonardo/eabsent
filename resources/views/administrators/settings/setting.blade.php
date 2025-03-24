@@ -6,11 +6,21 @@
         Adjust preferences, permissions, and other key options.
     </x-page-caption>
 
+    {{-- Toast notification --}}
+    @if (session('success'))
+        <x-toast type="success" :message="session('success')" />
+    @endif
+    @if (session('failed'))
+        <x-toast type="failed" :message="session('failed')" />
+    @endif
+
+    {{-- Toolbar contain search bar, filter, action buttons --}}
     <x-toolbar>
         <x-slot:pageName>{{ $pageName }}</x-slot>
         <x-slot:singleName>{{ $singleName }}</x-slot>
     </x-toolbar>
 
+    {{-- Table --}}
     <div class="relative overflow-x-auto shadow-md">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">

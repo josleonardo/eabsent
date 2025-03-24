@@ -5,11 +5,21 @@
         Store and update school levels for user access as well as deactivate levels as needed.
     </x-page-caption>
 
+    {{-- Toast notification --}}
+    @if (session('success'))
+        <x-toast type="success" :message="session('success')" />
+    @endif
+    @if (session('failed'))
+        <x-toast type="failed" :message="session('failed')" />
+    @endif
+
+    {{-- Toolbar contain search bar, filter, action buttons --}}
     <x-toolbar>
         <x-slot:pageName>{{ $pageName }}</x-slot>
         <x-slot:singleName>{{ $singleName }}</x-slot>
     </x-toolbar>
 
+    {{-- Table --}}
     <div class="relative overflow-x-auto shadow-md">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
@@ -31,9 +41,17 @@
             </thead>
 
             <tbody>
+                @if ($levels->count() == 0)
+                    <tr>
+                        <td colspan="9">No levels to display.</td>
+                    </tr>
+                @endif
+
                 @foreach ($levels as $key => $level)
-                    <tr class="{{ $level->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700'}} border-b border-gray-200 dark:border-gray-700">
-                        <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <tr
+                        class="{{ $level->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                        <th scope="row"
+                            class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ $levels->firstItem() + $key }}
                         </th>
                         <td class="px-4 py-3">{{ $level->level_name }}</td>
@@ -48,7 +66,7 @@
                         <td class="px-4 py-3 text-center">{{ $level->created_by }}</td>
                         <td class="px-4 py-3">{{ $level->updated_at }}</td>
                         <td class="px-4 py-3 text-center">{{ $level->updated_by }}</td>
-                         <td class="px-4 py-3 text-right">
+                        <td class="px-4 py-3 text-right">
                             <a href="#"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                         </td>

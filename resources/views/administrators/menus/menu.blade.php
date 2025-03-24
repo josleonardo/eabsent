@@ -2,15 +2,25 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <x-page-caption>
-        Customize app's and web's navigation by managing menus and submenus. 
+        Customize app's and web's navigation by managing menus and submenus.
         Control visibility and structure to improve user experience.
     </x-page-caption>
 
+    {{-- Toast notification --}}
+    @if (session('success'))
+        <x-toast type="success" :message="session('success')" />
+    @endif
+    @if (session('failed'))
+        <x-toast type="failed" :message="session('failed')" />
+    @endif
+
+    {{-- Toolbar contain search bar, filter, action buttons --}}
     <x-toolbar>
         <x-slot:pageName>{{ $pageName }}</x-slot>
         <x-slot:singleName>{{ $singleName }}</x-slot>
     </x-toolbar>
 
+    {{-- Table --}}
     <div class="relative overflow-x-auto shadow-md">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
@@ -43,8 +53,10 @@
                 @endif
 
                 @foreach ($menus as $key => $menu)
-                    <tr class="{{ $menu->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700'}} border-b border-gray-200 dark:border-gray-700">
-                        <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <tr
+                        class="{{ $menu->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                        <th scope="row"
+                            class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ $menus->firstItem() + $key }}
                         </th>
                         <td class="px-4 py-3">{{ $menu->menu_name }}</td>
@@ -64,10 +76,12 @@
                         <td class="px-4 py-3">{{ $menu->updated_at }}</td>
                         <td class="px-4 py-3 text-center">{{ $menu->updated_by }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                            <a href="#"
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                         </td>
                         <td class="px-4 py-3 text-right">
-                            <a href="#" class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">Detail</a>
+                            <a href="#"
+                                class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">Detail</a>
                         </td>
                     </tr>
                 @endforeach
