@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Level;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LevelController extends Controller
 {
@@ -29,7 +30,21 @@ class LevelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $currentUserId = Auth::id();
+
+        $validatedData = $request->validate([
+            'level_name' => 'required|string|max:255|unique:levels',
+            'active' => 'required|boolean',
+        ]);
+
+        Level::create([
+            'level_name' => $validatedData['level_name'],
+            'active' => $validatedData['active'],
+            'created_by' => $currentUserId,
+            'updated_by' => $currentUserId,
+        ]);
+
+        return redirect()->route('level.index')->with('success', 'Level added successfully.');
     }
 
     /**
