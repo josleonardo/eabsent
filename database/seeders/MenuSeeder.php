@@ -55,7 +55,7 @@ class MenuSeeder extends Seeder
             Menu::factory()->create([
                 'menu_name' => $androidMenu['menu_name'],
                 'menu_url' => $androidMenu['menu_url'],
-                'type' => 'android',
+                'type' => 1,
                 'main_menu_id' => 0,
                 'order' => $androidMenu['order'],
                 'icon' => $androidMenu['icon'],
@@ -184,7 +184,7 @@ class MenuSeeder extends Seeder
             Menu::factory()->create([
                 'menu_name' => $webMenu['menu_name'],
                 'menu_url' => $webMenu['menu_url'],
-                'type' => 'web',
+                'type' => 0,
                 'main_menu_id' => $webMenu['main_menu_id'],
                 'order' => $webMenu['order'],
                 'icon' => null,
