@@ -69,7 +69,7 @@
                         <td class="px-4 py-3">{{ $user->updated_at }}</td>
                         <td class="px-4 py-3 text-center">{{ $user->updated_by }}</td>
                         <td class="px-4 py-3">
-                            <a href="#"
+                            <a href="{{ route('user.edit', $user->id) }}"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                         </td>
                         <td class="px-4 py-3">

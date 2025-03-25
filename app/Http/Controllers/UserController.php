@@ -46,8 +46,8 @@ class UserController extends Controller
                 'regex:/[0-9]/', // Must contain a number
                 'regex:/[!-\/:-@[-`{-~]/', // Must contain a special character
             ],
-            'nik' => 'required|string|max:16|unique:user_profiles,nik',
-            'nuptk' => 'nullable|string|max:16|unique:user_profiles,nuptk',
+            'nik' => 'required|integer|numeric|digits:16|unique:user_profiles,nik',
+            'nuptk' => 'nullable|integer|numeric|digits:16|unique:user_profiles,nuptk',
             'position' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
             'phone_number' => 'nullable|string|max:20',
@@ -59,7 +59,7 @@ class UserController extends Controller
             'password.regex' => 'The password must contain at least one number and one special character.',
         ]);
 
-        // Create the user
+        // Create user credentials
         $user = User::create([
             'email' => $validatedData['email'],
             'username' => $validatedData['username'],
@@ -69,7 +69,7 @@ class UserController extends Controller
             'updated_by' => $currentUserId,
         ]);
 
-        // Create the user profile
+        // Create user profile
         $user->profile()->create([
             'fullname' => $validatedData['fullname'],
             'nik' => $validatedData['nik'],
@@ -85,11 +85,13 @@ class UserController extends Controller
         ]);
 
         // Attach the role to the user
-        $user->role()->attach($validatedData['role'], [
-            'active' => $validatedData['active'],
-            'created_by' => $currentUserId,
-            'updated_by' => $currentUserId,
-        ]);
+        if (!empty($validatedData['role'])) {
+            $user->role()->attach($validatedData['role'], [
+                'active' => $validatedData['active'],
+                'created_by' => $currentUserId,
+                'updated_by' => $currentUserId,
+            ]);
+        }
 
         return redirect()->route('user.index')->with('success', 'User added successfully');
     }
@@ -107,7 +109,9 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $roles = Role::all();
+        return view('administrators.users.edit', ['pageName' => 'Edit user'], compact('user', 'roles'));
     }
 
     /**
@@ -115,7 +119,61 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $currentUserId = Auth::id();
+        $user = User::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'email' => 'required|email|unique:users,email,' . $id,
+            'fullname' => 'required|string|max:255',
+            'username' => 'nullable|string|max:255|unique:users,username,' . $id,
+            'password' => 'nullable',
+            'nik' => 'required|integer|numeric|digits:16|unique:user_profiles,nik,' . $id . ',user_id',
+            'nuptk' => 'nullable|integer|numeric|digits:16|unique:user_profiles,nuptk,' . $id . ',user_id',
+            'position' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'phone_number' => 'nullable|string|max:20',
+            'role' => 'nullable|integer|exists:roles,id',
+            'employment_start' => 'required|date',
+            'employment_end' => 'nullable|date',
+            'active' => 'required|boolean',
+        ]);
+
+        // Update user credentials
+        $user->update([
+            'email' => $validatedData['email'],
+            'username' => $validatedData['username'],
+            'active' => $validatedData['active'],
+            'updated_by' => $currentUserId,
+        ]);
+
+        // Update user profile
+        $user->profile()->update([
+            'fullname' => $validatedData['fullname'],
+            'nik' => $validatedData['nik'],
+            'nuptk' => $validatedData['nuptk'],
+            'position' => $validatedData['position'],
+            'address' => $validatedData['address'],
+            'phone_number' => $validatedData['phone_number'],
+            'employment_start' => $validatedData['employment_start'],
+            'employment_end' => $validatedData['employment_end'],
+            'active' => $validatedData['active'],
+            'updated_by' => $currentUserId,
+        ]);
+
+        // Attach the role to the user
+        if (!empty($validatedData['role'])) {
+            $user->role()->sync([
+                $validatedData['role'] => [
+                    'active' => $validatedData['active'],
+                    'created_by' => $currentUserId,
+                    'updated_by' => $currentUserId,
+                ]
+            ]);
+        } else {
+            $user->role()->detach();
+        }
+
+        return redirect()->route('user.index')->with('success', 'User edited successfully');
     }
 
     /**
