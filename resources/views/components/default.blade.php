@@ -12,7 +12,7 @@
 
     <!-- Styles / Scripts -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
-    <script defer src="../../js/script.js"></script>
+    <script defer src="{{ asset('js/script.js') }}"></script>
     @vite('resources/css/app.css')
 </head>
 
