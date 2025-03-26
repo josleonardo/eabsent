@@ -73,7 +73,7 @@
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                         </td>
                         <td class="px-4 py-3">
-                            <a href="#"
+                            <a href="{{ route('user.show', $user->id) }}"
                                 class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">Detail</a>
                         </td>
                     </tr>
