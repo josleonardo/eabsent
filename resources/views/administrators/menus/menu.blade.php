@@ -44,16 +44,13 @@
                     <th scope="col" class="p-4">
                         <span class="sr-only">Edit</span>
                     </th>
-                    <th scope="col" class="p-4">
-                        <span class="sr-only">Detail</span>
-                    </th>
                 </tr>
             </thead>
 
             <tbody>
                 @if ($menus->count() == 0)
                     <tr>
-                        <td colspan="14">No menus to display.</td>
+                        <td colspan="13">No menus to display.</td>
                     </tr>
                 @endif
 
@@ -82,12 +79,8 @@
                         <td class="px-4 py-3">{{ $menu->updated_at }}</td>
                         <td class="px-4 py-3 text-center">{{ $menu->updated_by }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="#"
+                            <a href="{{ route('menu.edit', $menu) }}"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                        <td class="px-4 py-3 text-right">
-                            <a href="#"
-                                class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">Detail</a>
                         </td>
                     </tr>
                 @endforeach

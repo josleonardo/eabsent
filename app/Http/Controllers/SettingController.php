@@ -66,7 +66,7 @@ class SettingController extends Controller
      */
     public function edit(Setting $setting)
     {
-        //
+        return view('administrators.settings.edit', ['pageName' => 'Edit Setting'], compact('setting'));
     }
 
     /**
@@ -74,7 +74,26 @@ class SettingController extends Controller
      */
     public function update(Request $request, Setting $setting)
     {
-        //
+        $currentUserId = Auth::id();
+
+        $validatedData = $request->validate([
+            'setting_name' => 'required|string|max:255|unique:settings,setting_name,' . $setting->id,
+            'key' => 'nullable|string|max:255|unique:settings,key,' . $setting->id,
+            'value_1' => 'nullable|string|max:255',
+            'value_2' => 'nullable|string|max:255',
+            'active' => 'required|boolean',
+        ]);
+
+        $setting->update([
+            'setting_name' => $validatedData['setting_name'],
+            'key' => $validatedData['key'],
+            'value_1' => $validatedData['value_1'],
+            'value_2' => $validatedData['value_2'],
+            'active' => $validatedData['active'],
+            'updated_by' => $currentUserId,
+        ]);
+
+        return redirect()->route('setting.index')->with('success', 'Setting updated successfully.');
     }
 
     /**

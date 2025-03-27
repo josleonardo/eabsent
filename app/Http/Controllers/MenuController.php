@@ -33,7 +33,7 @@ class MenuController extends Controller
         $currentUserId = Auth::id();
 
         $validatedData = $request->validate([
-            'menu_name' => 'required|string|max:255|unique:menus',
+            'menu_name' => 'required|string|max:255',
             'menu_url' => 'required|string|max:255|unique:menus',
             'type' => 'required|integer|max:5',
             'main_menu_id' => 'required|integer',
@@ -70,7 +70,12 @@ class MenuController extends Controller
      */
     public function edit(Menu $menu)
     {
-        //
+        $types = [
+            0 => 'Web',
+            1 => 'Android',
+        ];
+
+        return view('administrators.menus.edit', ['pageName' => 'Edit menu'], compact('menu', 'types'));
     }
 
     /**
@@ -78,7 +83,30 @@ class MenuController extends Controller
      */
     public function update(Request $request, Menu $menu)
     {
-        //
+        $currentUserId = Auth::id();
+
+        $validatedData = $request->validate([
+            'menu_name' => 'required|string|max:255',
+            'menu_url' => 'required|string|max:255|unique:menus,menu_url,' . $menu->id,
+            'type' => 'required|integer|max:5',
+            'main_menu_id' => 'required|integer',
+            'order' => 'nullable|integer',
+            'icon' => 'nullable|string|max:255',
+            'active' => 'required|boolean',
+        ]);
+
+        $menu->update([
+            'menu_name' => $validatedData['menu_name'],
+            'menu_url' => $validatedData['menu_url'],
+            'type' => $validatedData['type'],
+            'main_menu_id' => $validatedData['main_menu_id'],
+            'order' => $validatedData['order'],
+            'icon' => $validatedData['icon'],
+            'active' => $validatedData['active'],
+            'updated_by' => $currentUserId,
+        ]);
+
+        return redirect()->route('menu.index')->with('success', 'Menu updated successfully.');
     }
 
     /**

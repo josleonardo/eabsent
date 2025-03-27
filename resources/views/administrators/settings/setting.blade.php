@@ -38,23 +38,21 @@
                     <th scope="col" class="p-4">
                         <span class="sr-only">Edit</span>
                     </th>
-                    <th scope="col" class="p-4">
-                        <span class="sr-only">Detail</span>
-                    </th>
                 </tr>
             </thead>
 
             <tbody>
                 @if ($settings->count() == 0)
                     <tr>
-                        <td colspan="12">No settings to display.</td>
+                        <td colspan="11">No settings to display.</td>
                     </tr>
                 @endif
 
                 @foreach ($settings as $key => $setting)
                     <tr
-                        class="{{ $setting->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700'}} border-b border-gray-200 dark:border-gray-700">
-                        <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        class="{{ $setting->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                        <th scope="row"
+                            class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ $settings->firstItem() + $key }}
                         </th>
                         <td class="px-4 py-3">{{ $setting->setting_name }}</td>
@@ -73,12 +71,8 @@
                         <td class="px-4 py-3">{{ $setting->updated_at }}</td>
                         <td class="px-4 py-3 text-center">{{ $setting->updated_by }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="#"
+                            <a href="{{ route('setting.edit', $setting) }}"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                        <td class="px-4 py-3">
-                            <a href="#"
-                                class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">Detail</a>
                         </td>
                     </tr>
                 @endforeach
