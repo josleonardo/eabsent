@@ -34,16 +34,13 @@
                     <th scope="col" class="p-4">
                         <span class="sr-only">Edit</span>
                     </th>
-                    <th scope="col" class="p-4">
-                        <span class="sr-only">Detail</span>
-                    </th>
                 </tr>
             </thead>
 
             <tbody>
                 @if ($levels->count() == 0)
                     <tr>
-                        <td colspan="9">No levels to display.</td>
+                        <td colspan="8">No levels to display.</td>
                     </tr>
                 @endif
 
@@ -67,12 +64,8 @@
                         <td class="px-4 py-3">{{ $level->updated_at }}</td>
                         <td class="px-4 py-3 text-center">{{ $level->updated_by }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="#"
+                            <a href="{{ route('level.edit', $level) }}"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                        <td class="px-4 py-3">
-                            <a href="#"
-                                class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">Detail</a>
                         </td>
                     </tr>
                 @endforeach

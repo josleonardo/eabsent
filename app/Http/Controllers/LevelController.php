@@ -60,7 +60,7 @@ class LevelController extends Controller
      */
     public function edit(Level $level)
     {
-        //
+        return view('administrators.levels.edit', ['pageName' => 'Edit level'], compact('level'));
     }
 
     /**
@@ -68,7 +68,20 @@ class LevelController extends Controller
      */
     public function update(Request $request, Level $level)
     {
-        //
+        $currentUserId = Auth::id();
+
+        $validatedData = $request->validate([
+            'level_name' => 'required|string|max:255|unique:levels,level_name,' . $level->id,
+            'active' => 'required|boolean',
+        ]);
+
+        $level->update([
+            'level_name' => $validatedData['level_name'],
+            'active' => $validatedData['active'],
+            'updated_by' => $currentUserId,
+        ]);
+
+        return redirect()->route('level.index')->with('success', 'Level updated successfully.');
     }
 
     /**

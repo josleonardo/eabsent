@@ -35,16 +35,13 @@
                     <th scope="col" class="p-4">
                         <span class="sr-only">Edit</span>
                     </th>
-                    <th scope="col" class="p-4">
-                        <span class="sr-only">Detail</span>
-                    </th>
                 </tr>
             </thead>
 
             <tbody>
                 @if ($roles->count() == 0)
                     <tr>
-                        <td colspan="9">No roles to display.</td>
+                        <td colspan="8">No roles to display.</td>
                     </tr>
                 @endif
 
@@ -68,12 +65,8 @@
                         <td class="px-4 py-3">{{ $role->updated_at }}</td>
                         <td class="px-4 py-3 text-center">{{ $role->updated_by }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="#"
+                            <a href="{{ route('role.edit', $role) }}"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                        <td class="px-4 py-3">
-                            <a href="#"
-                                class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">Detail</a>
                         </td>
                     </tr>
                 @endforeach
