@@ -1,7 +1,3 @@
-@php
-    $menuTypes = ['Web', 'Android'];
-@endphp
-
 <x-layout>
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
@@ -63,7 +59,7 @@
                         </th>
                         <td class="px-4 py-3">{{ $menu->menu_name }}</td>
                         <td class="px-4 py-3">{{ $menu->menu_url }}</td>
-                        <td class="px-4 py-3">{{ $menuTypes[$menu->type] }}</td>
+                        <td class="px-4 py-3">{{ $types[$menu->type] }}</td>
                         <td class="px-4 py-3 text-center">{{ $menu->main_menu_id }}</td>
                         <td class="px-4 py-3">{{ $menu->icon }}</td>
                         <td class="px-4 py-3">{{ $menu->order }}</td>

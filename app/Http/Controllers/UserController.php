@@ -174,7 +174,7 @@ class UserController extends Controller
             $user->role()->detach();
         }
 
-        return redirect()->route('user.index')->with('success', 'User edited successfully');
+        return redirect()->route('user.index')->with('success', 'User updated successfully');
     }
 
     /**

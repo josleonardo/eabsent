@@ -14,7 +14,9 @@ class MenuController extends Controller
     public function index()
     {
         $menus = Menu::paginate(10);
-        return view('administrators.menus.menu', ['pageName' => 'Menus', 'singleName' => 'menu'], compact('menus'));
+        $types = ['Web', 'Android',];
+
+        return view('administrators.menus.menu', ['pageName' => 'Menus', 'singleName' => 'menu'], compact('menus', 'types'));
     }
 
     /**
@@ -22,7 +24,12 @@ class MenuController extends Controller
      */
     public function create()
     {
-        return view('administrators.menus.create', ['pageName' => 'Add menu']);
+        $types = [
+            0 => 'Web',
+            1 => 'Android',
+        ];
+
+        return view('administrators.menus.create', ['pageName' => 'Add menu'], compact('types'));
     }
 
     /**
