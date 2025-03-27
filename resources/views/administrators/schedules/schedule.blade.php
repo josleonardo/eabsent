@@ -1,7 +1,3 @@
-@php
-    $daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-@endphp
-
 <x-layout>
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
@@ -42,16 +38,13 @@
                     <th scope="col" class="p-4">
                         <span class="sr-only">Edit</span>
                     </th>
-                    <th scope="col" class="p-4">
-                        <span class="sr-only">Detail</span>
-                    </th>
                 </tr>
             </thead>
 
             <tbody>
                 @if ($schedules->count() == 0)
                     <tr>
-                        <td colspan="12">No schedules to display.</td>
+                        <td colspan="11">No schedules to display.</td>
                     </tr>
                 @endif
 
@@ -63,7 +56,7 @@
                             {{ $schedules->firstItem() + $key }}
                         </th>
                         <td class="px-4 py-3">{{ $schedule->schedule_name }}</td>
-                        <td class="px-4 py-3 text-center">{{ $daysOfWeek[$schedule->day_of_week] }}</td>
+                        <td class="px-4 py-3 text-center">{{ $days[$schedule->day_of_week] }}</td>
                         <td class="px-4 py-3">{{ $schedule->check_in_time }}</td>
                         <td class="px-4 py-3">{{ $schedule->check_out_time }}</td>
                         <td class="px-4 py-3">
@@ -78,12 +71,8 @@
                         <td class="px-4 py-3">{{ $schedule->updated_at }}</td>
                         <td class="px-4 py-3 text-center">{{ $schedule->updated_by }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="#"
+                            <a href="{{ route('schedule.edit', $schedule) }}"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                        <td class="px-4 py-3">
-                            <a href="#"
-                                class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">Detail</a>
                         </td>
                     </tr>
                 @endforeach
