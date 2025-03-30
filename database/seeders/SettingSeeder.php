@@ -20,7 +20,7 @@ class SettingSeeder extends Seeder
                 'value_2' => '107.041969',
             ],
             [
-                'setting_name' => 'RadiusTitikAbse',
+                'setting_name' => 'RadiusTitikAbsen',
                 'key' => 'radius',
                 'value_1' => '100',
                 'value_2' => 'meter',

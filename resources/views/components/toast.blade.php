@@ -5,7 +5,7 @@
         class="fixed top-10/12 right-1/2 translate-1/2 z-40 flex items-center w-full max-w-xs p-2 mb-4 text-gray-500 bg-white rounded-lg border border-gray-400 shadow-sm dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600 sm:top-24 sm:right-4 sm:translate-0"
         role="alert">
         <div
-            class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-{{ $type == 'success' ? 'green' : 'red' }}-500 bg-{{ $type == 'success' ? 'green' : 'red' }}-100 rounded-lg dark:bg-{{ $type == 'success' ? 'green' : 'red' }}-800 dark:text-{{ $type == 'success' ? 'green' : 'red' }}-200">
+            class="inline-flex items-center justify-center shrink-0 w-8 h-8 rounded-lg {{ $type == 'success' ? 'text-green-500 bg-green-100 dark:text-green-200 dark:bg-green-800' : 'text-red-500 bg-red-100 dark:text-red-200 dark:bg-red-800' }}">
 
             @if ($type == 'success')
                 <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
