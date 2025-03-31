@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CorrectionController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
@@ -21,7 +23,20 @@ Route::middleware('auth')->group(function () {
         return view('home', ['pageName' => 'Home']);
     })->name('home.index');
 
+    Route::middleware('role_check:1,2,3')->group(function () {
+        Route::get('/approvals', function () {
+            return view('approvals.approvals', ['pageName' => 'Approvals']);
+        })->name('approvals.index');
+
+        Route::resource('leaves', LeaveController::class);
+        Route::resource('corrections', CorrectionController::class);
+    });
+
     Route::middleware('role_check:1,2')->group(function () {
+        Route::get('/admin', function () {
+            return view('administrators.admin', ['pageName' => 'Admin']);
+        })->name('admin.index');
+
         Route::resource('admin/user', UserController::class);
         Route::resource('admin/schedule', ScheduleController::class);
     });
