@@ -1,4 +1,4 @@
-<div class="py-4 w-full flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-2">
+<div class="w-full flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-2">
     {{-- Searchbar --}}
     <form action="" class="flex items-center w-full sm:w-1/3">
         <div class="relative w-full">

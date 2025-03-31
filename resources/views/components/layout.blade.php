@@ -6,11 +6,12 @@
         <x-sidebar />
     </div>
 
-    <main class="px-4 py-4 mt-16 sm:ml-64">
+    <main class="px-4 py-4 mt-16 space-y-4 sm:ml-64">
         <x-header>
             {{ $pageName }}
         </x-header>
-        <div class="mx-auto max-w-7xl pt-4">
+
+        <div class="mx-auto max-w-7xl space-y-4">
             <!-- Main content -->
             {{ $slot }}
         </div>
