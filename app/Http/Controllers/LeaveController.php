@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Leave;
+use App\Models\Level;
+use App\Models\UserProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LeaveController extends Controller
 {
@@ -12,7 +15,18 @@ class LeaveController extends Controller
      */
     public function index()
     {
-        //
+        $currentUserLevel = Auth::user()->levels->first()->id;
+        $users = UserProfile::all()->pluck('fullname', 'user_id');
+        $levels = Level::all()->pluck('level_name', 'id');
+        
+        $leaves = Leave::getLeaves($currentUserLevel);
+
+        return view('approvals.leaves.request', [
+            'pageName' => 'Leave Requests',
+            'leaves' => $leaves,
+            'users' => $users,
+            'levels' => $levels,
+        ]);
     }
 
     /**

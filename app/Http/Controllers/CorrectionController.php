@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Correction;
+use App\Models\Level;
+use App\Models\UserProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CorrectionController extends Controller
 {
@@ -12,7 +15,18 @@ class CorrectionController extends Controller
      */
     public function index()
     {
-        //
+        $currentUserLevel = Auth::user()->levels->first()->id;
+        $users = UserProfile::all()->pluck('fullname', 'user_id');
+        $levels = Level::all()->pluck('level_name', 'id');
+        
+        $corrections = Correction::getCorrections($currentUserLevel);
+        
+        return view('approvals.corrections.request', [
+            'pageName' => 'Correction Requests',
+            'corrections' => $corrections,
+            'users' => $users,
+            'levels' => $levels,
+        ]);
     }
 
     /**
