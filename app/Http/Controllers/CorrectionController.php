@@ -18,14 +18,18 @@ class CorrectionController extends Controller
         $currentUserLevel = Auth::user()->levels->first()->id;
         $users = UserProfile::all()->pluck('fullname', 'user_id');
         $levels = Level::all()->pluck('level_name', 'id');
+        $status = ['Rejected', 'Approved'];
         
-        $corrections = Correction::getCorrections($currentUserLevel);
+        $pendingCorrections = Correction::getPendingCorrections($currentUserLevel);
+        $processedCorrections = Correction::getProcessedCorrections($currentUserLevel);
         
-        return view('approvals.corrections.request', [
+        return view('approvals.corrections.index', [
             'pageName' => 'Correction Requests',
-            'corrections' => $corrections,
+            'pendingCorrections' => $pendingCorrections,
+            'processedCorrections' => $processedCorrections,
             'users' => $users,
             'levels' => $levels,
+            'status' => $status,
         ]);
     }
 
@@ -66,7 +70,25 @@ class CorrectionController extends Controller
      */
     public function update(Request $request, Correction $correction)
     {
-        //
+        if (!$correction) {
+            return redirect()->back()->with('error', 'Correction request not found.');
+        }
+        
+        $currentUserId = Auth::id();
+
+        $validatedData = $request->validate([
+            'approve_status' => 'required|in:0,1',
+        ]);
+
+        $correction->update([
+            'approve_status' => $validatedData['approve_status'],
+            'approved_at' => now(),
+            'approved_by' => $currentUserId,
+            'active' => $validatedData['approve_status'] == 1 ? 1 : 0,
+            'updated_by' => $currentUserId,
+        ]);
+
+        return redirect()->back()->with('success', 'Correction request updated successfully.');
     }
 
     /**
