@@ -18,14 +18,18 @@ class LeaveController extends Controller
         $currentUserLevel = Auth::user()->levels->first()->id;
         $users = UserProfile::all()->pluck('fullname', 'user_id');
         $levels = Level::all()->pluck('level_name', 'id');
-        
-        $leaves = Leave::getLeaves($currentUserLevel);
+        $status = ['Rejected', 'Approved'];
 
-        return view('approvals.leaves.request', [
+        $pendingLeaves = Leave::getPendingLeaves($currentUserLevel);
+        $processedLeaves = Leave::getProcessedLeaves($currentUserLevel);
+
+        return view('approvals.leaves.index', [
             'pageName' => 'Leave Requests',
-            'leaves' => $leaves,
+            'pendingLeaves' => $pendingLeaves,
+            'processedLeaves' => $processedLeaves,
             'users' => $users,
             'levels' => $levels,
+            'status' => $status,
         ]);
     }
 
@@ -66,7 +70,25 @@ class LeaveController extends Controller
      */
     public function update(Request $request, Leave $leave)
     {
-        //
+        if (!$leave) {
+            return redirect()->back()->with('error', 'Leave request not found.');
+        }
+        
+        $currentUserId = Auth::id();
+
+        $validatedData = $request->validate([
+            'approve_status' => 'required|in:0,1',
+        ]);
+
+        $leave->update([
+            'approve_status' => $validatedData['approve_status'],
+            'approved_at' => now(),
+            'approved_by' => $currentUserId,
+            'active' => $validatedData['approve_status'] == 1 ? 1 : 0,
+            'updated_by' => $currentUserId,
+        ]);
+
+        return redirect()->back()->with('success', 'Leave request updated successfully.');
     }
 
     /**

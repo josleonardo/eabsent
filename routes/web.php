@@ -28,7 +28,9 @@ Route::middleware('auth')->group(function () {
             return view('approvals.approvals', ['pageName' => 'Approvals']);
         })->name('approvals.index');
 
-        Route::resource('leaves', LeaveController::class);
+        Route::resource('leaves', LeaveController::class)->parameters([
+            'leaves' => 'leave'
+        ]);
         Route::resource('corrections', CorrectionController::class);
     });
 
