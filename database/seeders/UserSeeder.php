@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Level;
 use App\Models\Role;
+use App\Models\Schedule;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Database\Seeder;
@@ -25,6 +26,7 @@ class UserSeeder extends Seeder
                 'position' => 'Super Admin',
                 'role_id' => 1,
                 'level_id' => 1,
+                'schedule_name' => 'default',
             ],
             [
                 'username' => 'kepsek1',
@@ -34,6 +36,7 @@ class UserSeeder extends Seeder
                 'position' => 'Kepala Sekolah',
                 'role_id' => 2,
                 'level_id' => 4,
+                'schedule_name' => 'default',
             ],
             [
                 'username' => 'kepsek2',
@@ -43,6 +46,7 @@ class UserSeeder extends Seeder
                 'position' => 'Kepala Sekolah',
                 'role_id' => 3,
                 'level_id' => 5,
+                'schedule_name' => 'default',
             ],
             [
                 'username' => 'kepsek3',
@@ -52,6 +56,7 @@ class UserSeeder extends Seeder
                 'position' => 'Kepala Sekolah',
                 'role_id' => 3,
                 'level_id' => 6,
+                'schedule_name' => 'default',
             ],
             [
                 'username' => 'guru1',
@@ -61,6 +66,7 @@ class UserSeeder extends Seeder
                 'position' => 'Guru',
                 'role_id' => 4,
                 'level_id' => 5,
+                'schedule_name' => 'default',
             ],
             [
                 'username' => 'guru2',
@@ -70,6 +76,7 @@ class UserSeeder extends Seeder
                 'position' => 'Guru',
                 'role_id' => 4,
                 'level_id' => 5,
+                'schedule_name' => 'default',
             ],
             [
                 'username' => 'guru3',
@@ -79,6 +86,7 @@ class UserSeeder extends Seeder
                 'position' => 'Guru',
                 'role_id' => 4,
                 'level_id' => 6,
+                'schedule_name' => 'default',
             ],
         ];
 
@@ -128,8 +136,20 @@ class UserSeeder extends Seeder
                     'updated_by' => 1,
                 ]);
             }
+
+            // Attach schedules
+            $schedules = Schedule::where('schedule_name', $userCred['schedule_name'])->get();
+            if ($schedules) {
+                foreach ($schedules as $schedule) {
+                    $user->schedules()->attach($schedule->id, [
+                        'active' => true,
+                        'created_by' => 1,
+                        'updated_by' => 1,
+                    ]);
+                }
+            }
         }
 
-        // User::factory(10)->create();
+        // User::factory()->count(50)->create();
     }
 }

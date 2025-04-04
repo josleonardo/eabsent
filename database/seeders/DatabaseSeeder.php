@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             RoleMenuSeeder::class,
             UserSeeder::class,
             SettingSeeder::class,
+            AttendanceSeeder::class,
         ]);
     }
 }
