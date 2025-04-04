@@ -25,20 +25,23 @@ Route::middleware('auth')->group(function () {
     })->name('home.index');
 
     Route::middleware('role_check:1,2,3')->group(function () {
+        // Approval pages
         Route::get('/approvals', function () {
             return view('approvals.approvals', ['pageName' => 'Approvals']);
         })->name('approvals.index');
 
-        Route::resource('leaves', LeaveController::class)->parameters([
-            'leaves' => 'leave'
-        ]);
-        Route::resource('corrections', CorrectionController::class);
+        Route::resource('leaves', LeaveController::class)
+            ->parameters(['leaves' => 'leave'])
+            ->only(['index', 'update']);
+        Route::resource('corrections', CorrectionController::class)
+            ->only(['index', 'update']);
 
+        // Report pages
         Route::get('/reports', function () {
             return view('reports.reports', ['pageName' => 'Reports']);
         })->name('reports.index');
-        
-        Route::resource('attendances', AttendanceController::class);
+        Route::resource('attendances', AttendanceController::class)
+            ->only(['index', 'edit', 'update']);
     });
 
     Route::middleware('role_check:1,2')->group(function () {
@@ -46,14 +49,20 @@ Route::middleware('auth')->group(function () {
             return view('administrators.admin', ['pageName' => 'Admin']);
         })->name('admin.index');
 
-        Route::resource('admin/user', UserController::class);
-        Route::resource('admin/schedule', ScheduleController::class);
+        Route::resource('admin/user', UserController::class)
+            ->except(['destroy']);
+        Route::resource('admin/schedule', ScheduleController::class)
+            ->except(['show', 'destroy']);
     });
 
     Route::middleware('role_check:1')->group(function () {
-        Route::resource('admin/menu', MenuController::class);
-        Route::resource('admin/role', RoleController::class);
-        Route::resource('admin/level', LevelController::class);
-        Route::resource('admin/setting', SettingController::class);
+        Route::resource('admin/menu', MenuController::class)
+            ->except(['show', 'destroy']);
+        Route::resource('admin/role', RoleController::class)
+            ->except(['show', 'destroy']);
+        Route::resource('admin/level', LevelController::class)
+            ->except(['show', 'destroy']);
+        Route::resource('admin/setting', SettingController::class)
+            ->except(['show', 'destroy']);
     });
 });
