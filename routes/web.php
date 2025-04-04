@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CorrectionController;
 use App\Http\Controllers\LeaveController;
@@ -32,6 +33,12 @@ Route::middleware('auth')->group(function () {
             'leaves' => 'leave'
         ]);
         Route::resource('corrections', CorrectionController::class);
+
+        Route::get('/reports', function () {
+            return view('reports.reports', ['pageName' => 'Reports']);
+        })->name('reports.index');
+        
+        Route::resource('attendances', AttendanceController::class);
     });
 
     Route::middleware('role_check:1,2')->group(function () {

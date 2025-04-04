@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
@@ -12,7 +13,11 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $attendances = Attendance::getAttendances($user);
+        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        return view('reports.attendances.index', ['pageName' => 'Attendance report'], compact('attendances', 'days'));
     }
 
     /**
