@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -49,7 +50,12 @@ class AttendanceController extends Controller
      */
     public function edit(Attendance $attendance)
     {
-        //
+        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        $attendance->real_check_in = Carbon::parse($attendance->real_check_in)->format('H:i');
+        $attendance->real_check_out = Carbon::parse($attendance->real_check_out)->format('H:i');
+
+        return view('reports.attendances.edit', ['pageName' => 'Edit Attendance'], compact('attendance', 'days'));
     }
 
     /**
@@ -57,7 +63,15 @@ class AttendanceController extends Controller
      */
     public function update(Request $request, Attendance $attendance)
     {
-        //
+        $request->validate([
+            'real_check_in' => 'required|date_format:H:i',
+            'real_check_out' => 'required|date_format:H:i',
+            'status' => 'required|string',
+        ]);
+
+        $attendance->update($request->only('real_check_in', 'real_check_out', 'status'));
+
+        return redirect()->route('attendances.index')->with('success', 'Attendance updated successfully.');
     }
 
     /**
