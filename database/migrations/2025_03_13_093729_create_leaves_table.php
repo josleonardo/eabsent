@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->index();
             $table->date('start_date');
             $table->date('end_date');
             $table->string('reason');
-            $table->string('img_path')->nullable();
+            $table->string('file_path')->nullable();
             $table->tinyInteger('approve_status')->nullable();
             $table->dateTime('approved_at')->nullable();
             $table->integer('approved_by')->nullable();
