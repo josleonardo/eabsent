@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Correction;
-use App\Models\Level;
-use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,20 +13,16 @@ class CorrectionController extends Controller
      */
     public function index()
     {
-        $currentUserLevel = Auth::user()->levels->first()->id;
-        $users = UserProfile::all()->pluck('fullname', 'user_id');
-        $levels = Level::all()->pluck('level_name', 'id');
+        $user = Auth::user();
         $status = ['Rejected', 'Approved'];
         
-        $pendingCorrections = Correction::getPendingCorrections($currentUserLevel);
-        $processedCorrections = Correction::getProcessedCorrections($currentUserLevel);
+        $pending = Correction::getPending($user);
+        $processed = Correction::getProcessed($user);
         
         return view('approvals.corrections.index', [
             'pageName' => 'Correction Requests',
-            'pendingCorrections' => $pendingCorrections,
-            'processedCorrections' => $processedCorrections,
-            'users' => $users,
-            'levels' => $levels,
+            'pendingCorrections' => $pending,
+            'processedCorrections' => $processed,
             'status' => $status,
         ]);
     }
@@ -71,7 +65,7 @@ class CorrectionController extends Controller
     public function update(Request $request, Correction $correction)
     {
         if (!$correction) {
-            return redirect()->back()->with('error', 'Correction request not found.');
+            return redirect()->back()->with('error', 'No correction request found.');
         }
         
         $currentUserId = Auth::id();
@@ -84,11 +78,10 @@ class CorrectionController extends Controller
             'approve_status' => $validatedData['approve_status'],
             'approved_at' => now(),
             'approved_by' => $currentUserId,
-            'active' => $validatedData['approve_status'] == 1 ? 1 : 0,
             'updated_by' => $currentUserId,
         ]);
 
-        return redirect()->back()->with('success', 'Correction request updated successfully.');
+        return redirect()->back()->with('success', 'Correction request processed successfully.');
     }
 
     /**

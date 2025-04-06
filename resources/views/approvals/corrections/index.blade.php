@@ -58,8 +58,7 @@
                             class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="p-4">#</th>
-                                <th scope="col" class="p-4">User ID</th>
-                                <th scope="col" class="p-4">Fullname</th>
+                                <th scope="col" class="p-4">Requested By</th>
                                 <th scope="col" class="p-4">Level</th>
                                 <th scope="col" class="p-4">Date</th>
                                 <th scope="col" class="p-4">Start Time</th>
@@ -75,17 +74,16 @@
                         <tbody>
                             @foreach ($pendingCorrections as $key => $pendingCorrection)
                                 <tr
-                                    class="{{ $pendingCorrection->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                                    class="bg-gray-50 border-b border-gray-200 hover:bg-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ $pendingCorrections->firstItem() + $key }}
                                     </th>
-                                    <td class="px-4 py-3">{{ $pendingCorrection->user_id }}</td>
                                     <td class="px-4 py-3">
-                                        {{ $pendingCorrection->user_id ? $users[$pendingCorrection->user_id] : '' }}
+                                        {{ $pendingCorrection->requester->profile->fullname ?? $pendingCorrection->created_by }}
                                     </td>
                                     <td class="px-4 py-3">
-                                        {{ $pendingCorrection->level_id ? $levels[$pendingCorrection->level_id] : '' }}
+                                        {{ $pendingCorrection->requester->levels->first()->level_name ?? '' }}
                                     </td>
                                     <td class="px-4 py-3">{{ $pendingCorrection->correction_date }}</td>
                                     <td class="px-4 py-3">{{ $pendingCorrection->correction_start_time }}</td>
@@ -126,8 +124,7 @@
                             class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="p-4">#</th>
-                                <th scope="col" class="p-4">User ID</th>
-                                <th scope="col" class="p-4">Fullname</th>
+                                <th scope="col" class="p-4">Requested By</th>
                                 <th scope="col" class="p-4">Level</th>
                                 <th scope="col" class="p-4">Date</th>
                                 <th scope="col" class="p-4">Start Time</th>
@@ -143,17 +140,16 @@
                         <tbody>
                             @foreach ($processedCorrections as $key => $processedCorrection)
                                 <tr
-                                    class="{{ $processedCorrection->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                                    class="{{ $processedCorrection->approve_status == 0 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ $processedCorrections->firstItem() + $key }}
                                     </th>
-                                    <td class="px-4 py-3">{{ $processedCorrection->user_id }}</td>
                                     <td class="px-4 py-3">
-                                        {{ $processedCorrection->user_id ? $users[$processedCorrection->user_id] : '' }}
+                                        {{ $processedCorrection->requester->profile->fullname ?? $processedCorrection->created_by }}
                                     </td>
                                     <td class="px-4 py-3">
-                                        {{ $processedCorrection->level_id ? $levels[$processedCorrection->level_id] : '' }}
+                                        {{ $processedCorrection->requester->levels->first()->level_name ?? '' }}
                                     </td>
                                     <td class="px-4 py-3">{{ $processedCorrection->correction_date }}</td>
                                     <td class="px-4 py-3">{{ $processedCorrection->correction_start_time }}</td>
@@ -163,7 +159,7 @@
                                     <td class="px-4 py-3">{{ $status[$processedCorrection->approve_status] }}</td>
                                     <td class="px-4 py-3">{{ $processedCorrection->approved_at }}</td>
                                     <td class="px-4 py-3">
-                                        {{ $processedCorrection->approved_by ? $users[$processedCorrection->approved_by] : '' }}
+                                        {{ $processedCorrection->approver->profile->fullname ?? $processedCorrection->approved_by }}
                                     </td>
                                 </tr>
                             @endforeach
