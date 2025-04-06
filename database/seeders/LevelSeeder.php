@@ -13,7 +13,7 @@ class LevelSeeder extends Seeder
     public function run(): void
     {
         $levels = [
-            ['level_name' => 'Super Admin'],
+            ['level_name' => 'Admin'],
             ['level_name' => 'KB'],
             ['level_name' => 'TK'],
             ['level_name' => 'SD'],
