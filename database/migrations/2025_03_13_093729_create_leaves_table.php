@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->index();
-            $table->integer('level_id')->index();
             $table->date('start_date');
             $table->date('end_date');
             $table->string('reason');
