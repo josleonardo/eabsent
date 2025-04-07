@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Leave extends Model
 {
@@ -24,42 +26,104 @@ class Leave extends Model
     ];
 
     /**
-     * Get pending leaves based on the user's level.
-     *
-     * @param int $userLevelId
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * Relationship to the user who created the correction.
      */
-    public static function getPendingLeaves($userLevelId)
+    public function requester(): BelongsTo
     {
-        if ($userLevelId == 1) {
-            // If the user level is 1, get all leaves
-            return self::where('approve_status', null)->latest()->paginate(10);
-        }
-
-        // Otherwise, get leaves where level_id matches the user's level_id
-        return self::where([
-            ['level_id', $userLevelId],
-            ['approve_status', null],
-        ])->latest()->paginate(10);
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
     /**
-     * Get processed leaves based on the user's level.
+     * Relationship to the user who approve the correction.
+     */
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by', 'id');
+    }
+
+    /**
+     * Get pending corrections.
      *
-     * @param int $userLevelId
+     * @param $user
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public static function getProcessedLeaves($userLevelId)
+    public static function getPending($user)
     {
-        if ($userLevelId == 1) {
-            // If the user level is 1, get all leaves
-            return self::where('approve_status', '!=', null)->latest('approved_at')->paginate(10);
+        $currentUserRole = $user->role->first()->id ?? null;
+        $currentUserLevel = $user->levels->first()->id ?? null;
+
+        $query = self::select(['id', 'start_date', 'end_date', 'reason', 'file_path', 'created_at', 'created_by']);
+
+        // If the user role is a superadmin or admin
+        if (in_array($currentUserRole, [1, 2])) {
+            if ($currentUserLevel == 1) {
+                // If the user level is admin, get all corrections
+                return $query->where('approve_status', null)->latest()->paginate(10);
+            } else {
+                // Otherwise, get corrections where level_id matches the user's level_id
+                return $query->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
+                    $q->where('level_id', $currentUserLevel)
+                        ->where('approve_status', null);
+                })->latest()->paginate(10);
+            }
         }
 
-        // Otherwise, get leaves where level_id matches the user's level_id
-        return self::where([
-            ['level_id', $userLevelId],
-            ['approve_status', '!=', null],
-        ])->latest('approved_at')->paginate(10);
+        // If the user role is headmaster, get attendances where role is teacher and level matches the user's level
+        if ($currentUserRole == 3) {
+            return $query->whereHas('requester.role', function (Builder $q) {
+                $q->where('role_id', 4);
+            })
+                ->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
+                    $q->where('level_id', $currentUserLevel)
+                        ->where('approve_status', null);
+                })->latest()->paginate(10);
+        }
+
+        // Default case: return an empty result if no conditions are met
+        return $query->whereRaw('1 = 0')->paginate(10);
+    }
+
+    /**
+     * Get processed corrections.
+     *
+     * @param $user
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public static function getProcessed($user)
+    {
+        $currentUserRole = $user->role->first()->id ?? null;
+        $currentUserLevel = $user->levels->first()->id ?? null;
+
+        $query = self::select(['id', 'start_date', 'end_date', 'reason', 'file_path', 'approve_status', 'approved_at', 'approved_by', 'created_at', 'created_by', 'updated_at']);
+
+        // If the user role is a superadmin or admin
+        if (in_array($currentUserRole, [1, 2])) {
+            if ($currentUserLevel == 1) {
+                // If the user level is admin, get all processed corrections
+                return $query->where('approve_status', '!=', null)->latest('approved_at')->paginate(10);
+            } else {
+                // Get processed corrections where level matches the current user level
+                return $query->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
+                    $q->where('level_id', $currentUserLevel)
+                        ->where('approve_status', '!=', null);
+                })->latest('approved_at')->paginate(10);
+            }
+        }
+
+        // If the user role is headmaster
+        if ($currentUserRole == 3) {
+            // Get processed corrections where role is teacher
+            return $query->whereHas('requester.role', function (Builder $q) {
+                $q->where('role_id', 4);
+            })
+                // and level matches the current user level
+                ->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
+                    $q->where('level_id', $currentUserLevel)
+                        ->where('approve_status', '!=', null);;
+                })->latest('approved_at')->paginate(10);
+        }
+
+        // Default case: return an empty result if no conditions are met
+        return $query->whereRaw('1 = 0')->paginate(10);
     }
 }

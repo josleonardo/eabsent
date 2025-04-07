@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Leave;
-use App\Models\Level;
-use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,20 +13,16 @@ class LeaveController extends Controller
      */
     public function index()
     {
-        $currentUserLevel = Auth::user()->levels->first()->id;
-        $users = UserProfile::all()->pluck('fullname', 'user_id');
-        $levels = Level::all()->pluck('level_name', 'id');
+        $user = Auth::user();
         $status = ['Rejected', 'Approved'];
 
-        $pendingLeaves = Leave::getPendingLeaves($currentUserLevel);
-        $processedLeaves = Leave::getProcessedLeaves($currentUserLevel);
+        $pending = Leave::getPending($user);
+        $processed = Leave::getProcessed($user);
 
         return view('approvals.leaves.index', [
             'pageName' => 'Leave Requests',
-            'pendingLeaves' => $pendingLeaves,
-            'processedLeaves' => $processedLeaves,
-            'users' => $users,
-            'levels' => $levels,
+            'pendingLeaves' => $pending,
+            'processedLeaves' => $processed,
             'status' => $status,
         ]);
     }
@@ -71,7 +65,7 @@ class LeaveController extends Controller
     public function update(Request $request, Leave $leave)
     {
         if (!$leave) {
-            return redirect()->back()->with('error', 'Leave request not found.');
+            return redirect()->back()->with('error', 'No leave request found.');
         }
         
         $currentUserId = Auth::id();
@@ -84,11 +78,10 @@ class LeaveController extends Controller
             'approve_status' => $validatedData['approve_status'],
             'approved_at' => now(),
             'approved_by' => $currentUserId,
-            'active' => $validatedData['approve_status'] == 1 ? 1 : 0,
             'updated_by' => $currentUserId,
         ]);
 
-        return redirect()->back()->with('success', 'Leave request updated successfully.');
+        return redirect()->back()->with('success', 'Leave request processed successfully.');
     }
 
     /**

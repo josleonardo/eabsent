@@ -47,7 +47,7 @@
             </ul>
         </div>
 
-        {{-- Pending leave requests list --}}
+        {{-- Pending leave requests --}}
         <div class="" id="pending_leaves" x-show="tab === 'pending'">
             @if ($pendingLeaves->isEmpty())
                 <p class="text-gray-500">No pending leave requests.</p>
@@ -58,13 +58,12 @@
                             class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="p-4">#</th>
-                                <th scope="col" class="p-4">User ID</th>
-                                <th scope="col" class="p-4">Fullname</th>
+                                <th scope="col" class="p-4">Requested By</th>
                                 <th scope="col" class="p-4">Level</th>
                                 <th scope="col" class="p-4">Start Date</th>
                                 <th scope="col" class="p-4">End Date</th>
                                 <th scope="col" class="p-4">Reason</th>
-                                <th scope="col" class="p-4">Image File</th>
+                                <th scope="col" class="p-4">File</th>
                                 <th scope="col" class="p-4">Requested At</th>
                                 <th scope="col" class="p-4">
                                     <span class="sr-only">Approve/Reject</span>
@@ -75,20 +74,22 @@
                         <tbody>
                             @foreach ($pendingLeaves as $key => $pendingLeave)
                                 <tr
-                                    class="{{ $pendingLeave->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                                    class="bg-gray-50 border-b border-gray-200 hover:bg-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ $pendingLeaves->firstItem() + $key }}
                                     </th>
-                                    <td class="px-4 py-3">{{ $pendingLeave->user_id }}</td>
-                                    <td class="px-4 py-3">{{ $pendingLeave->user_id ? $users[$pendingLeave->user_id] : '' }}
+                                    <td class="px-4 py-3">
+                                        {{ $pendingLeave->requester->profile->fullname ?? $pendingLeave->created_by }}
                                     </td>
-                                    <td class="px-4 py-3">{{ $pendingLeave->level_id ? $levels[$pendingLeave->level_id] : '' }}
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        {{ $pendingLeave->requester->levels->first()->level_name ?? '' }}
                                     </td>
                                     <td class="px-4 py-3">{{ $pendingLeave->start_date }}</td>
                                     <td class="px-4 py-3">{{ $pendingLeave->end_date }}</td>
                                     <td class="px-4 py-3">{{ $pendingLeave->reason }}</td>
-                                    <td class="px-4 py-3">{{ $pendingLeave->img_path }}</td>
+                                    <td class="px-4 py-3">{{ $pendingLeave->file_path }}</td>
                                     <td class="px-4 py-3">{{ $pendingLeave->created_at }}</td>
                                     <td class="px-4 py-3">
                                         <form action="{{ route('leaves.update', $pendingLeave->id) }}" method="POST"
@@ -113,7 +114,7 @@
             @endif
         </div>
 
-        {{-- Processed leave request list --}}
+        {{-- Processed leave request --}}
         <div class="" id="processed_leaves" x-show="tab === 'processed'" x-cloak>
             @if ($processedLeaves->isEmpty())
                 <p class="text-gray-500">No processed leave requests.</p>
@@ -124,13 +125,12 @@
                             class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="p-4">#</th>
-                                <th scope="col" class="p-4">User ID</th>
-                                <th scope="col" class="p-4">Fullname</th>
+                                <th scope="col" class="p-4">Requested By</th>
                                 <th scope="col" class="p-4">Level</th>
                                 <th scope="col" class="p-4">Start Date</th>
                                 <th scope="col" class="p-4">End Date</th>
                                 <th scope="col" class="p-4">Reason</th>
-                                <th scope="col" class="p-4">Image File</th>
+                                <th scope="col" class="p-4">File</th>
                                 <th scope="col" class="p-4">Requested At</th>
                                 <th scope="col" class="p-4">Status</th>
                                 <th scope="col" class="p-4">Processed At</th>
@@ -141,25 +141,26 @@
                         <tbody>
                             @foreach ($processedLeaves as $key => $processedLeave)
                                 <tr
-                                    class="{{ $processedLeave->active != 1 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                                    class="{{ $processedLeave->approve_status == 0 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ $processedLeaves->firstItem() + $key }}
                                     </th>
-                                    <td class="px-4 py-3">{{ $processedLeave->user_id }}</td>
                                     <td class="px-4 py-3">
-                                        {{ $processedLeave->user_id ? $users[$processedLeave->user_id] : '' }}</td>
+                                        {{ $processedLeave->requester->profile->fullname ?? $processedLeave->created_by }}
+                                    </td>
                                     <td class="px-4 py-3">
-                                        {{ $processedLeave->level_id ? $levels[$processedLeave->level_id] : '' }}</td>
+                                        {{ $processedLeave->requester->levels->first()->level_name ?? '' }}</td>
                                     <td class="px-4 py-3">{{ $processedLeave->start_date }}</td>
                                     <td class="px-4 py-3">{{ $processedLeave->end_date }}</td>
                                     <td class="px-4 py-3">{{ $processedLeave->reason }}</td>
-                                    <td class="px-4 py-3">{{ $processedLeave->img_path }}</td>
+                                    <td class="px-4 py-3">{{ $processedLeave->file_path }}</td>
                                     <td class="px-4 py-3">{{ $processedLeave->created_at }}</td>
                                     <td class="px-4 py-3">{{ $status[$processedLeave->approve_status] }}</td>
                                     <td class="px-4 py-3">{{ $processedLeave->approved_at }}</td>
                                     <td class="px-4 py-3">
-                                        {{ $processedLeave->approved_by ? $users[$processedLeave->approved_by] : '' }}</td>
+                                        {{ $processedLeave->approver->profile->fullname ?? $processedLeave->approved_by }}
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
