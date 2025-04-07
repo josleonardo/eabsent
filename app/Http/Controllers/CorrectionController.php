@@ -11,16 +11,18 @@ class CorrectionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $status = ['Rejected', 'Approved'];
         
         $pending = Correction::getPending($user);
         $processed = Correction::getProcessed($user);
+        $activeTab = $request->query('tab', 'pending'); // default to 'pending'
         
         return view('approvals.corrections.index', [
             'pageName' => 'Correction Requests',
+            'activeTab' => $activeTab,
             'pendingCorrections' => $pending,
             'processedCorrections' => $processed,
             'status' => $status,

@@ -11,16 +11,18 @@ class LeaveController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $status = ['Rejected', 'Approved'];
-
+        
         $pending = Leave::getPending($user);
         $processed = Leave::getProcessed($user);
+        $activeTab = $request->query('tab', 'pending'); // default to 'pending'
 
         return view('approvals.leaves.index', [
             'pageName' => 'Leave Requests',
+            'activeTab' => $activeTab,
             'pendingLeaves' => $pending,
             'processedLeaves' => $processed,
             'status' => $status,

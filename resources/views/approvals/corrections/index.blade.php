@@ -25,19 +25,23 @@
         Back
     </a>
 
-    <div x-data="{ tab: 'pending' }">
+    <div x-data="{ tab: '{{ $activeTab }}' }" x-init="$watch('tab', value => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('tab', value);
+        history.replaceState(null, '', url);
+    })">
         {{-- Menu Tabs --}}
         <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
                 <li class="me-2">
-                    <a href="#pending-corrections" @click="tab = 'pending'"
+                    <a @click="tab = 'pending'"
                         :class="{ 'border-blue-600 text-blue-600 dark:text-blue-500 dark:border-blue-500': tab === 'pending' }"
                         class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group">
                         Pending
                     </a>
                 </li>
                 <li class="me-2">
-                    <a href="#processed-corrections" @click="tab = 'processed'"
+                    <a @click="tab = 'processed'"
                         :class="{ 'border-blue-600 text-blue-600 dark:text-blue-500 dark:border-blue-500': tab === 'processed' }"
                         class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group"
                         aria-current="page">
@@ -109,7 +113,8 @@
                 </div>
 
                 {{-- Pagination --}}
-                <div class="my-4">{{ $pendingCorrections->onEachSide(2)->links() }}</div>
+                <div class="my-4">{{ $pendingCorrections->appends(['tab' => 'pending'])->onEachSide(2)->links() }}
+                </div>
             @endif
         </div>
 
@@ -168,7 +173,8 @@
                 </div>
 
                 {{-- Pagination --}}
-                <div class="my-4">{{ $processedCorrections->onEachSide(2)->links() }}</div>
+                <div class="my-4">
+                    {{ $processedCorrections->appends(['tab' => 'processed'])->onEachSide(2)->links() }}</div>
             @endif
         </div>
     </div>

@@ -42,7 +42,7 @@ class Leave extends Model
     }
 
     /**
-     * Get pending corrections.
+     * Get pending leaves.
      *
      * @param $user
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
@@ -57,14 +57,14 @@ class Leave extends Model
         // If the user role is a superadmin or admin
         if (in_array($currentUserRole, [1, 2])) {
             if ($currentUserLevel == 1) {
-                // If the user level is admin, get all corrections
-                return $query->where('approve_status', null)->latest()->paginate(10);
+                // If the user level is admin, get all leaves
+                return $query->where('approve_status', null)->latest()->paginate(10, ['*'], 'pending_page');
             } else {
-                // Otherwise, get corrections where level_id matches the user's level_id
+                // Otherwise, get leaves where level_id matches the user's level_id
                 return $query->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
                     $q->where('level_id', $currentUserLevel)
                         ->where('approve_status', null);
-                })->latest()->paginate(10);
+                })->latest()->paginate(10, ['*'], 'pending_page');
             }
         }
 
@@ -76,15 +76,15 @@ class Leave extends Model
                 ->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
                     $q->where('level_id', $currentUserLevel)
                         ->where('approve_status', null);
-                })->latest()->paginate(10);
+                })->latest()->paginate(10, ['*'], 'pending_page');
         }
 
         // Default case: return an empty result if no conditions are met
-        return $query->whereRaw('1 = 0')->paginate(10);
+        return $query->whereRaw('1 = 0')->paginate(10, ['*'], 'pending_page');
     }
 
     /**
-     * Get processed corrections.
+     * Get processed leaves.
      *
      * @param $user
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
@@ -99,20 +99,20 @@ class Leave extends Model
         // If the user role is a superadmin or admin
         if (in_array($currentUserRole, [1, 2])) {
             if ($currentUserLevel == 1) {
-                // If the user level is admin, get all processed corrections
-                return $query->where('approve_status', '!=', null)->latest('approved_at')->paginate(10);
+                // If the user level is admin, get all processed leaves
+                return $query->where('approve_status', '!=', null)->latest('approved_at')->paginate(10, ['*'], 'processed_page');
             } else {
-                // Get processed corrections where level matches the current user level
+                // Get processed leaves where level matches the current user level
                 return $query->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
                     $q->where('level_id', $currentUserLevel)
                         ->where('approve_status', '!=', null);
-                })->latest('approved_at')->paginate(10);
+                })->latest('approved_at')->paginate(10, ['*'], 'processed_page');
             }
         }
 
         // If the user role is headmaster
         if ($currentUserRole == 3) {
-            // Get processed corrections where role is teacher
+            // Get processed leaves where role is teacher
             return $query->whereHas('requester.role', function (Builder $q) {
                 $q->where('role_id', 4);
             })
@@ -120,10 +120,10 @@ class Leave extends Model
                 ->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
                     $q->where('level_id', $currentUserLevel)
                         ->where('approve_status', '!=', null);;
-                })->latest('approved_at')->paginate(10);
+                })->latest('approved_at')->paginate(10, ['*'], 'processed_page');
         }
 
         // Default case: return an empty result if no conditions are met
-        return $query->whereRaw('1 = 0')->paginate(10);
+        return $query->whereRaw('1 = 0')->paginate(10, ['*'], 'processed_page');
     }
 }
