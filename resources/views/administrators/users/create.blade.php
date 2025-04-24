@@ -17,155 +17,111 @@
         <form action="{{ route('user.store') }}" method="POST" class="space-y-6 max-w-7xl">
             @csrf
 
-            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <div class="w-full">
-                    <label for="email" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Email address
-                    </label>
-                    <input type="email" name="email" id="email" placeholder="user@example.com" required
-                        value="{{ old('email') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('email')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+            <div class="grid gap-4 md:grid-cols-2 md:gap-6">
+                <x-forms.input-field 
+                    label="Email Address" 
+                    name="email"
+                    id="email"
+                    type="email"
+                    placeholder="user@example.com"
+                    :isRequired="true"
+                />
 
-                <div class="w-full">
-                    <label for="fullname" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Full Name
-                    </label>
-                    <input type="text" name="fullname" id="fullname" placeholder="John Doe" required
-                        value="{{ old('fullname') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('fullname')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field 
+                    label="Full Name" 
+                    name="fullname"
+                    id="fullname"
+                    placeholder="John Doe"
+                    :isRequired="true"
+                />
 
-                <div class="w-full">
-                    <label for="username" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Username
-                    </label>
-                    <input type="text" name="username" id="username" placeholder="JohnDoe123"
-                        value="{{ old('username') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('username')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field 
+                    label="Username" 
+                    name="username"
+                    id="username"
+                    placeholder="JohnDoe123"
+                />
 
-                <div class="w-full">
-                    <label for="password" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Password
-                    </label>
-                    <input type="password" name="password" id="password"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('password')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field 
+                    label="Password" 
+                    name="password"
+                    id="password"
+                    type="password"
+                />
 
-                <div class="w-full">
-                    <label for="nik" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        NIK
-                    </label>
-                    <input type="text" name="nik" id="nik" placeholder="1234567890123456" required
-                        value="{{ old('nik') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('nik')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field 
+                    label="NIK" 
+                    name="nik"
+                    id="nik"
+                    placeholder="1234567890123456"
+                    :isRequired="true"
+                />
 
-                <div class="w-full">
-                    <label for="nuptk" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        NUPTK
-                    </label>
-                    <input type="text" name="nuptk" id="nuptk" placeholder="2368934567893653"
-                        value="{{ old('nuptk') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('nuptk')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field 
+                    label="NUPTK" 
+                    name="nuptk"
+                    id="nuptk"
+                    placeholder="2368934567893653"
+                />
 
-                <div class="w-full">
-                    <label for="position" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Position
-                    </label>
-                    <input type="text" name="position" id="position" placeholder="Teacher"
-                        value="{{ old('position') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('position')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field 
+                    label="Position" 
+                    name="position"
+                    id="position"
+                    placeholder="Teacher"
+                />
 
-                <div class="w-full">
-                    <label for="address" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Current Address
-                    </label>
-                    <input type="text" name="address" id="address" placeholder="Jl. Abc 1/2, Jakarta, Indonesia"
-                        value="{{ old('address') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('address')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field 
+                    label="Current Address" 
+                    name="address"
+                    id="address"
+                    placeholder="Jl. Abc 1/2, Jakarta, Indonesia"
+                />
 
-                <div class="w-full">
-                    <label for="phone_number" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Phone Number
-                    </label>
-                    <input type="text" name="phone_number" id="phone_number" placeholder="081212345678"
-                        value="{{ old('phone_number') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('phone_number')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field 
+                    label="Phone Number" 
+                    name="phone_number"
+                    id="phone_number"
+                    placeholder="081212345678"
+                />
 
-                <div>
-                    <label for="role" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Role
-                    </label>
-                    <select name="role" id="role" value="{{ old('role') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        <option value="" selected>Select role</option>
-                        @foreach ($roles as $role)
-                            <option value="{{ $role->id }}">{{ $role->role_name }}</option>
-                        @endforeach
-                    </select>
-                    @error('role')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.select 
+                    label="Role"
+                    name="role"
+                    id="role"
+                    :options="$roles"
+                    display="role_name"
+                />
+                
+                <x-forms.select 
+                    label="Level"
+                    name="level"
+                    id="level"
+                    :options="$levels"
+                    display="level_name"
+                />
 
-                <div class="w-full">
-                    <label for="employment_start"
-                        class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Employment Start
-                    </label>
-                    <input type="date" name="employment_start" id="employment_start"
-                        value="{{ old('employment_start') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('employment_start')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.select 
+                    label="Schedule"
+                    name="schedule"
+                    id="schedule"
+                    :options="$schedules"
+                />
 
-                <div class="w-full">
-                    <label for="employment_end"
-                        class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Employment End
-                    </label>
-                    <input type="date" name="employment_end" id="employment_end"
-                        value="{{ old('employment_end') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('employment_end')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field 
+                    label="Employment Start"
+                    name="employment_start"
+                    id="employment_start"
+                    type="date"
+                    :isRequired="true"
+                />
+
+                <x-forms.input-field 
+                    label="Employment End"
+                    name="employment_end"
+                    id="employment_end"
+                    type="date"
+                />
             </div>
 
             {{-- Active/inactive button --}}
