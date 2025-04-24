@@ -15,7 +15,9 @@ class Select extends Component
     public function __construct(
         public string $label,
         public string $name,
+        public string $id,
         public Collection $options,
+        public ?string $display,
         public bool $isRequired = false,
         public bool $isDisabled = false,
         public $value = null,
