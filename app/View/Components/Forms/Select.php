@@ -20,7 +20,7 @@ class Select extends Component
         public ?string $display,
         public bool $isRequired = false,
         public bool $isDisabled = false,
-        public $value = null,
+        public $selected = null,
     )
     {
         //
