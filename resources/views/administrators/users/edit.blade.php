@@ -19,116 +19,43 @@
             @method('PUT')
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <x-forms.input-field 
-                    label="Email Address" 
-                    name="email"
-                    id="email"
-                    type="email"
-                    placeholder="user@example.com"
-                    :isRequired="true"
-                    :value="$user->email"
-                />
+                <x-forms.input-field label="Email Address" name="email" id="email" type="email"
+                    placeholder="user@example.com" :isRequired="true" :value="$user->email" />
 
-                <x-forms.input-field 
-                    label="Full Name" 
-                    name="fullname"
-                    id="fullname"
-                    placeholder="John Doe"
-                    :isRequired="true"
-                    :value="$user->profile->fullname"
-                />
+                <x-forms.input-field label="Full Name" name="fullname" id="fullname" placeholder="John Doe"
+                    :isRequired="true" :value="$user->profile->fullname" />
 
-                <x-forms.input-field 
-                    label="Username" 
-                    name="username"
-                    id="username"
-                    placeholder="JohnDoe123"
-                    :value="$user->username"
-                />
+                <x-forms.input-field label="Username" name="username" id="username" placeholder="JohnDoe123"
+                    :value="$user->username" />
 
-                <x-forms.input-field 
-                    label="NIK" 
-                    name="nik"
-                    id="nik"
-                    placeholder="1234567890123456"
-                    :isRequired="true"
-                    :value="$user->profile->nik"
-                />
+                <x-forms.input-field label="NIK" name="nik" id="nik" placeholder="1234567890123456"
+                    :isRequired="true" :value="$user->profile->nik" />
 
-                <x-forms.input-field 
-                    label="NUPTK" 
-                    name="nuptk"
-                    id="nuptk"
-                    placeholder="2368934567893653"
-                    :value="$user->profile->nuptk"
-                />
+                <x-forms.input-field label="NUPTK" name="nuptk" id="nuptk" placeholder="2368934567893653"
+                    :value="$user->profile->nuptk" />
 
-                <x-forms.input-field 
-                    label="Position" 
-                    name="position"
-                    id="position"
-                    placeholder="Teacher"
-                    :value="$user->profile->position"
-                />
+                <x-forms.input-field label="Position" name="position" id="position" placeholder="Teacher"
+                    :value="$user->profile->position" />
 
-                <x-forms.input-field 
-                    label="Current Address" 
-                    name="address"
-                    id="address"
-                    placeholder="Jl. Abc 1/2, Jakarta, Indonesia"
-                    :value="$user->profile->address"
-                />
+                <x-forms.input-field label="Current Address" name="address" id="address"
+                    placeholder="Jl. Abc 1/2, Jakarta, Indonesia" :value="$user->profile->address" />
 
-                <x-forms.input-field 
-                    label="Phone Number" 
-                    name="phone_number"
-                    id="phone_number"
-                    placeholder="081212345678"
-                    :value="$user->profile->phone_number"
-                />
+                <x-forms.input-field label="Phone Number" name="phone_number" id="phone_number"
+                    placeholder="081212345678" :value="$user->profile->phone_number" />
 
-                <x-forms.select 
-                    label="Role"
-                    name="role"
-                    id="role"
-                    :options="$roles"
-                    display="role_name"
-                    :selected="$user->role->first()->id ?? null"
-                />
-                
-                <x-forms.select 
-                    label="Level"
-                    name="level"
-                    id="level"
-                    :options="$levels"
-                    display="level_name"
-                    :selected="$user->levels->first()->id ?? null"
-                />
-                
-                <x-forms.select 
-                    label="Schedule"
-                    name="schedule"
-                    id="schedule"
-                    :options="$schedules"
-                    :selected="implode(',', $user->schedules->pluck('id')->toArray()) ?? []"
-                />
+                <x-forms.select label="Role" name="role" id="role" :options="$roles" display="role_name"
+                    :selected="$user->role->first()->id ?? null" />
 
-                <x-forms.input-field 
-                    label="Employment Start"
-                    name="employment_start"
-                    id="employment_start"
-                    type="date"
-                    :isRequired="true"
-                    :value="$user->profile->employment_start"
-                />
+                <x-forms.select label="Level" name="level" id="level" :options="$levels" display="level_name"
+                    :selected="$user->levels->first()->id ?? null" />
 
-                <x-forms.input-field 
-                    label="Employment End"
-                    name="employment_end"
-                    id="employment_end"
-                    type="date"
-                    :value="$user->profile->employment_end"
-                />
+                <x-forms.select label="Schedule" name="schedule" id="schedule" :options="$schedules" :selected="implode(',', $user->schedules->pluck('id')->toArray()) ?? []" />
+
+                <x-forms.input-field label="Employment Start" name="employment_start" id="employment_start"
+                    type="date" :isRequired="true" :value="$user->profile->employment_start" />
+
+                <x-forms.input-field label="Employment End" name="employment_end" id="employment_end" type="date"
+                    :value="$user->profile->employment_end" />
             </div>
 
             {{-- Active/inactive button --}}

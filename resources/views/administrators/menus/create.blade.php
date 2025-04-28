@@ -18,29 +18,11 @@
             @csrf
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <div class="w-full">
-                    <label for="menu_name" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Menu Name
-                    </label>
-                    <input type="text" name="menu_name" id="menu_name" placeholder="Menu Name" required
-                        value="{{ old('menu_name') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('menu_name')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Menu Name" name="menu_name" id="menu_name" placeholder="Menu Name"
+                    :isRequired="true" />
 
-                <div class="w-full">
-                    <label for="menu_url" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Menu URL
-                    </label>
-                    <input type="text" name="menu_url" id="menu_url" placeholder="menu-name-url" required
-                        value="{{ old('menu_url') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('menu_url')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Menu URL" name="menu_url" id="menu_url" placeholder="menu-name-url"
+                    :isRequired="true" />
 
                 <div>
                     <label for="type" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
@@ -59,38 +41,12 @@
                     @enderror
                 </div>
 
-                <div class="w-full">
-                    <label for="main_menu_id" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Main Menu ID
-                    </label>
-                    <input type="number" name="main_menu_id" id="main_menu_id" placeholder="1" required
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('main_menu_id')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Main Menu ID" name="main_menu_id" id="main_menu_id" type="number"
+                    placeholder="1" :isRequired="true" />
 
-                <div class="w-full">
-                    <label for="order" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Order
-                    </label>
-                    <input type="number" name="order" id="order" placeholder="1"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('order')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Order" name="order" id="order" type="number" placeholder="1" />
 
-                <div class="w-full">
-                    <label for="icon" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Icon
-                    </label>
-                    <input type="text" name="icon" id="icon" placeholder="home-rounded"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('icon')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Icon" name="icon" id="icon" placeholder="home-rounded" />
             </div>
 
             {{-- Active/inactive button --}}

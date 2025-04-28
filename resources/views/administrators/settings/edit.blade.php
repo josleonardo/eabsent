@@ -19,50 +19,14 @@
             @method('PUT')
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <div class="w-full">
-                    <label for="setting_name" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Setting Name
-                    </label>
-                    <input type="text" name="setting_name" id="setting_name" required
-                        value="{{ old('setting_name', $setting->setting_name) }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('setting_name')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Setting Name" name="setting_name" id="setting_name" :isRequired="true"
+                    :value="$setting->setting_name" />
 
-                <div class="w-full">
-                    <label for="key" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Key
-                    </label>
-                    <input type="text" name="key" id="key" value="{{ old('key', $setting->key) }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('key')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Key" name="key" id="key" :value="$setting->key" />
 
-                <div class="w-full">
-                    <label for="value_1" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Value 1
-                    </label>
-                    <input type="text" name="value_1" id="value_1" value="{{ old('value_1', $setting->value_1) }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('value_1')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Value 1" name="value_1" id="value_1" :value="$setting->value_1" />
 
-                <div class="w-full">
-                    <label for="value_2" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Value 2
-                    </label>
-                    <input type="text" name="value_2" id="value_2" value="{{ old('value_2', $setting->value_2) }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('value_2')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Value 2" name="value_2" id="value_2" :value="$setting->value_2" />
             </div>
 
             {{-- Active/inactive button --}}

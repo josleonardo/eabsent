@@ -18,17 +18,8 @@
             @csrf
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <div class="w-full">
-                    <label for="schedule_name" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Schedule Name
-                    </label>
-                    <input type="text" name="schedule_name" id="schedule_name" placeholder="Middle School" required
-                        value="{{ old('schedule_name') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('schedule_name')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Schedule Name" name="schedule_name" id="schedule_name"
+                    placeholder="Middle School" :isRequired="true" />
 
                 <div class="w-full">
                     <label for="day_of_week" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
@@ -46,29 +37,11 @@
                     @enderror
                 </div>
 
-                <div class="w-full">
-                    <label for="check_in_time" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Check In Time
-                    </label>
-                    <input type="time" name="check_in_time" id="check_in_time" required
-                        value="{{ old('check_in_time', '00:00') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('check_in_time')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Check In Time" name="check_in_time" id="check_in_time" type="time"
+                    :isRequired="true" value="00:00" />
 
-                <div class="w-full">
-                    <label for="check_out_time" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Check Out Time
-                    </label>
-                    <input type="time" name="check_out_time" id="check_out_time" required
-                        value="{{ old('check_out_time', '00:00') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('check_out_time')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Check Out Time" name="check_out_time" id="check_out_time" type="time"
+                    :isRequired="true" value="00:00" />
             </div>
 
             {{-- Active/inactive button --}}

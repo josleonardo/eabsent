@@ -18,110 +18,39 @@
             @csrf
 
             <div class="grid gap-4 md:grid-cols-2 md:gap-6">
-                <x-forms.input-field 
-                    label="Email Address" 
-                    name="email"
-                    id="email"
-                    type="email"
-                    placeholder="user@example.com"
-                    :isRequired="true"
-                />
+                <x-forms.input-field label="Email Address" name="email" id="email" type="email"
+                    placeholder="user@example.com" :isRequired="true" />
 
-                <x-forms.input-field 
-                    label="Full Name" 
-                    name="fullname"
-                    id="fullname"
-                    placeholder="John Doe"
-                    :isRequired="true"
-                />
+                <x-forms.input-field label="Full Name" name="fullname" id="fullname" placeholder="John Doe"
+                    :isRequired="true" />
 
-                <x-forms.input-field 
-                    label="Username" 
-                    name="username"
-                    id="username"
-                    placeholder="JohnDoe123"
-                />
+                <x-forms.input-field label="Username" name="username" id="username" placeholder="JohnDoe123" />
 
-                <x-forms.input-field 
-                    label="Password" 
-                    name="password"
-                    id="password"
-                    type="password"
-                />
+                <x-forms.input-field label="Password" name="password" id="password" type="password" />
 
-                <x-forms.input-field 
-                    label="NIK" 
-                    name="nik"
-                    id="nik"
-                    placeholder="1234567890123456"
-                    :isRequired="true"
-                />
+                <x-forms.input-field label="NIK" name="nik" id="nik" placeholder="1234567890123456"
+                    :isRequired="true" />
 
-                <x-forms.input-field 
-                    label="NUPTK" 
-                    name="nuptk"
-                    id="nuptk"
-                    placeholder="2368934567893653"
-                />
+                <x-forms.input-field label="NUPTK" name="nuptk" id="nuptk" placeholder="2368934567893653" />
 
-                <x-forms.input-field 
-                    label="Position" 
-                    name="position"
-                    id="position"
-                    placeholder="Teacher"
-                />
+                <x-forms.input-field label="Position" name="position" id="position" placeholder="Teacher" />
 
-                <x-forms.input-field 
-                    label="Current Address" 
-                    name="address"
-                    id="address"
-                    placeholder="Jl. Abc 1/2, Jakarta, Indonesia"
-                />
+                <x-forms.input-field label="Current Address" name="address" id="address"
+                    placeholder="Jl. Abc 1/2, Jakarta, Indonesia" />
 
-                <x-forms.input-field 
-                    label="Phone Number" 
-                    name="phone_number"
-                    id="phone_number"
-                    placeholder="081212345678"
-                />
+                <x-forms.input-field label="Phone Number" name="phone_number" id="phone_number"
+                    placeholder="081212345678" />
 
-                <x-forms.select 
-                    label="Role"
-                    name="role"
-                    id="role"
-                    :options="$roles"
-                    display="role_name"
-                />
-                
-                <x-forms.select 
-                    label="Level"
-                    name="level"
-                    id="level"
-                    :options="$levels"
-                    display="level_name"
-                />
+                <x-forms.select label="Role" name="role" id="role" :options="$roles" display="role_name" />
 
-                <x-forms.select 
-                    label="Schedule"
-                    name="schedule"
-                    id="schedule"
-                    :options="$schedules"
-                />
+                <x-forms.select label="Level" name="level" id="level" :options="$levels" display="level_name" />
 
-                <x-forms.input-field 
-                    label="Employment Start"
-                    name="employment_start"
-                    id="employment_start"
-                    type="date"
-                    :isRequired="true"
-                />
+                <x-forms.select label="Schedule" name="schedule" id="schedule" :options="$schedules" />
 
-                <x-forms.input-field 
-                    label="Employment End"
-                    name="employment_end"
-                    id="employment_end"
-                    type="date"
-                />
+                <x-forms.input-field label="Employment Start" name="employment_start" id="employment_start"
+                    type="date" :isRequired="true" />
+
+                <x-forms.input-field label="Employment End" name="employment_end" id="employment_end" type="date" />
             </div>
 
             {{-- Active/inactive button --}}
