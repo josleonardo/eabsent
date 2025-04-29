@@ -44,8 +44,7 @@
                     :isRequired="true" value="00:00" />
             </div>
 
-            {{-- Active/inactive button --}}
-            <x-btn-active />
+            <x-forms.toggle name="active" :checked="true" trueLabel="Active" falseLabel="Inactive" />
 
             {{-- Add data button --}}
             <button type="submit"

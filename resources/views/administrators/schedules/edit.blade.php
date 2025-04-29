@@ -47,8 +47,7 @@
                     :isRequired="true" :value="$schedule->check_out_time" />
             </div>
 
-            {{-- Active/inactive button --}}
-            <x-btn-active :active="$schedule->active" />
+            <x-forms.toggle name="active" :checked="$schedule->active" trueLabel="Active" falseLabel="Inactive" />
 
             {{-- Edit data button --}}
             <button type="submit"

@@ -21,8 +21,7 @@
                 <x-forms.input-field label="Role Name" name="role_name" id="role_name" :isRequired="true" />
             </div>
 
-            {{-- Active/inactive button --}}
-            <x-btn-active />
+            <x-forms.toggle name="active" :checked="true" trueLabel="Active" falseLabel="Inactive" />
 
             {{-- Add data button --}}
             <button type="submit"

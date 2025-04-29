@@ -23,8 +23,7 @@
                     :value="$role->role_name" />
             </div>
 
-            {{-- Active/inactive button --}}
-            <x-btn-active :active="$role->active" />
+            <x-forms.toggle name="active" :checked="$role->active" trueLabel="Active" falseLabel="Inactive" />
 
             {{-- Edit data button --}}
             <button type="submit"

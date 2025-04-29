@@ -53,8 +53,7 @@
                     :value="$menu->icon" />
             </div>
 
-            {{-- Active/inactive button --}}
-            <x-btn-active :active="$menu->active" />
+            <x-forms.toggle name="active" :checked="$menu->active" trueLabel="Active" falseLabel="Inactive" />
 
             {{-- Edit data button --}}
             <button type="submit"

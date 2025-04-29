@@ -29,8 +29,7 @@
                 <x-forms.input-field label="Value 2" name="value_2" id="value_2" :value="$setting->value_2" />
             </div>
 
-            {{-- Active/inactive button --}}
-            <x-btn-active :active="$setting->active" />
+            <x-forms.toggle name="active" :checked="$setting->active" trueLabel="Active" falseLabel="Inactive" />
 
             {{-- Edit data button --}}
             <button type="submit"

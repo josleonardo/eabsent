@@ -57,9 +57,8 @@
                 <x-forms.input-field label="Employment End" name="employment_end" id="employment_end" type="date"
                     :value="$user->profile->employment_end" />
             </div>
-
-            {{-- Active/inactive button --}}
-            <x-btn-active :active="$user->active" />
+            
+            <x-forms.toggle name="active" :checked="$user->active" trueLabel="Active" falseLabel="Inactive" />
 
             {{-- Add data button --}}
             <button type="submit"

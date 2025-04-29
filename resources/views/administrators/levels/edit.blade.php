@@ -23,8 +23,7 @@
                     :value="$level->level_name" />
             </div>
 
-            {{-- Active/inactive button --}}
-            <x-btn-active :active="$level->active" />
+            <x-forms.toggle name="active" :checked="$level->active" trueLabel="Active" falseLabel="Inactive" />
 
             {{-- Edit data button --}}
             <button type="submit"
