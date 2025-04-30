@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\Menu;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,26 +24,31 @@ class ViewServiceProvider extends ServiceProvider
     {
         View::composer('components.sidebar', function ($view) {
             $user = Auth::user();
-            $allowedRoles = [1, 2, 3];
-            $userRoleActive = $user->roleActive($allowedRoles);
-
-            // If user not exist or user or role_user or role not active
-            if (!$user || !$user->active || !$userRoleActive) {
-                $view->with('menuItems', collect());
+            $role = $user->role->first();
+            $allowedRoles = in_array($role->id, [1, 2, 3]);
+            
+            // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
+            if (!$user || !$user->active || !$role || !$allowedRoles || !$role->active || !$role->pivot->active) {
+                $view->with('sideMenus', collect());
                 return;
             }
 
-            $menuItems = Menu::whereHas('roles', function ($query) use ($userRoleActive) {
-                $query->where([
+            $sideMenus = Menu::select('id', 'menu_name', 'menu_url')
+                ->where([
                     ['type', 'web'],
                     ['main_menu_id', 0],
-                    ['role_id', $userRoleActive->id],
-                    ['role_menu.active', 1],
                     ['menus.active', 1],
-                ]);
-            })->orderBy('order')->get();
+                ])
+                ->whereHas('roles', function ($query) use ($role) {
+                    $query->where([
+                        ['role_id', $role->id],
+                        ['role_menu.active', 1],
+                    ]);
+                })
+                ->orderBy('order')
+                ->get();
 
-            $view->with('menuItems', $menuItems);
+            $view->with('sideMenus', $sideMenus);
         });
     }
 }
