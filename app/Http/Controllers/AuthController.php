@@ -31,9 +31,11 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
-            $allowedRoles = [1, 2, 3];
+            $role = $user->role->first();
+            $allowedRoles = in_array($role->id, [1, 2, 3]);
 
-            if (!$user || !$user->active || !$user->roleActive($allowedRoles)) {
+            // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
+            if (!$user || !$user->active || !$role || !$allowedRoles || !$role->active || !$role->pivot->active) {
                 Auth::logout();
                 throw ValidationException::withMessages([
                     'credentials' => 'Invalid credentials'

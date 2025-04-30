@@ -17,8 +17,11 @@ class RoleCheckMiddleware
     public function handle(Request $request, Closure $next, ...$allowedRoles): Response
     {
         $user = Auth::user();
+        $role = $user->role->first();
+        $allowedRoles = in_array($role->id, [1, 2, 3]);
 
-        if (!$user || !$user->active || !$user->roleActive($allowedRoles)) {
+        // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
+        if (!$user || !$user->active || !$role || !$allowedRoles || !$role->active || !$role->pivot->active) {
             abort(403, 'Unauthorized');
         }
 
