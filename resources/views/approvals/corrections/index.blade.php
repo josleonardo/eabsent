@@ -2,8 +2,7 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <x-page-caption>
-        Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in
-        touch, grow your business, and more.
+        Manage attendance correction requests. Review the reasons and details for each correction, take action to accept or deny, and access a record of all processed requests.
     </x-page-caption>
 
     {{-- Toast notification --}}
@@ -45,7 +44,7 @@
                         :class="{ 'border-blue-600 text-blue-600 dark:text-blue-500 dark:border-blue-500': tab === 'processed' }"
                         class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group"
                         aria-current="page">
-                        Processed
+                        History
                     </a>
                 </li>
             </ul>

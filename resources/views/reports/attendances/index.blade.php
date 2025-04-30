@@ -2,8 +2,7 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <x-page-caption>
-        Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in
-        touch, grow your business, and more.
+        View detailed logs of user attendance. Use this page to manage attendance data, including check-in and check-out times, and status updates.
     </x-page-caption>
 
     {{-- Toast notification --}}

@@ -2,8 +2,7 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <x-page-caption>
-        Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in
-        touch, grow your business, and more.
+        Review and manage all pending requests for approval. You can view request details, accept or deny submissions, and track processed approvals in the history tab.
     </x-page-caption>
 
     <div

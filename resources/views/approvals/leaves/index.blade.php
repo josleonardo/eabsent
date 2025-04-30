@@ -2,8 +2,7 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <x-page-caption>
-        Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in
-        touch, grow your business, and more.
+        View, approve, or reject employee leave requests. Each request includes detailed information, and processed decisions are logged for reference in the request history section.
     </x-page-caption>
 
     {{-- Toast notification --}}
@@ -45,14 +44,14 @@
                         :class="{ 'border-blue-600 text-blue-600 dark:text-blue-500 dark:border-blue-500': tab === 'processed' }"
                         class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group"
                         aria-current="page">
-                        Processed
+                        History
                     </a>
                 </li>
             </ul>
         </div>
 
         {{-- Pending leave requests --}}
-        <div class="" id="pending_leaves" x-show="tab === 'pending'">
+        <div id="pending_leaves" x-show="tab === 'pending'">
             @if ($pendingLeaves->isEmpty())
                 <p class="text-gray-500">No pending leave requests.</p>
             @else
@@ -120,7 +119,7 @@
         </div>
 
         {{-- Processed leave request --}}
-        <div class="" id="processed_leaves" x-show="tab === 'processed'" x-cloak>
+        <div id="processed_leaves" x-show="tab === 'processed'" x-cloak>
             @if ($processedLeaves->isEmpty())
                 <p class="text-gray-500">No processed leave requests.</p>
             @else

@@ -2,8 +2,7 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <x-page-caption>
-        Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in
-        touch, grow your business, and more.
+        Central hub for system management. Use this page to manage user accounts, assign roles and levels, configure schedules, organize menus, and update default application settings.
     </x-page-caption>
 
     <div

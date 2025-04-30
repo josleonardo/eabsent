@@ -2,8 +2,7 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <x-page-caption>
-        Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in
-        touch, grow your business, and more.
+        Access all records and reports data. View detailed logs of user data, compliance, and record-keeping.
     </x-page-caption>
 
     <div
