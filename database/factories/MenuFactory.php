@@ -17,10 +17,10 @@ class MenuFactory extends Factory
     public function definition(): array
     {
         return [
-            'menu_name' => fake()->word(),
-            'menu_url' => fake()->url(),
+            'menu_id' => fake()->numberBetween(1, 20),
+            'name' => fake()->word(),
+            'url' => fake()->url(),
             'type' => fake()->randomElement(['Android', 'Web']),
-            'main_menu_id' => fake()->numberBetween(1, 20),
             'order' => fake()->numberBetween(1, 20),
             'icon' => fake()->words(rand(1, 3), true),
             'active' => fake()->boolean(90),

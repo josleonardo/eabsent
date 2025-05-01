@@ -17,7 +17,7 @@ class LevelFactory extends Factory
     public function definition(): array
     {
         return [
-            'level_name' => fake()->unique()->word(),
+            'name' => fake()->unique()->word(),
             'active' => fake()->boolean(90),
             'created_at' => now(),
             'updated_at' => now(),

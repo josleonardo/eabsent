@@ -13,17 +13,16 @@ class LevelSeeder extends Seeder
     public function run(): void
     {
         $levels = [
-            ['level_name' => 'Admin'],
-            ['level_name' => 'KB'],
-            ['level_name' => 'TK'],
-            ['level_name' => 'SD'],
-            ['level_name' => 'SMP'],
-            ['level_name' => 'SMA'],
+            ['name' => 'Admin'],
+            ['name' => 'K'],
+            ['name' => 'Elem'],
+            ['name' => 'JHS'],
+            ['name' => 'SHS'],
         ];
 
         foreach ($levels as $level) {
             Level::factory()->create([
-                'level_name' => $level['level_name'],
+                'name' => $level['name'],
                 'active' => true,
             ]);
         }
