@@ -34,6 +34,6 @@ class Menu extends Model
     {
         return $this->belongsToMany(Role::class, 'role_menu', 'menu_id', 'role_id')
             ->withTimestamps()
-            ->withPivot('id', 'active', 'created_by', 'updated_by');
+            ->withPivot('active', 'created_by', 'updated_by');
     }
 }

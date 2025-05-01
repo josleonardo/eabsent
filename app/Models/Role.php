@@ -27,15 +27,15 @@ class Role extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'role_user', 'role_id', 'user_id')
+        return $this->belongsToMany(User::class, 'user_role', 'role_id', 'user_id')
             ->withTimestamps()
-            ->withPivot('id', 'active', 'created_by', 'updated_by');
+            ->withPivot('active', 'created_by', 'updated_by');
     }
 
     public function menus(): BelongsToMany
     {
         return $this->belongsToMany(Menu::class, 'role_menu', 'role_id', 'menu_id')
             ->withTimestamps()
-            ->withPivot('id', 'active', 'created_by', 'updated_by');
+            ->withPivot('active', 'created_by', 'updated_by');
     }
 }

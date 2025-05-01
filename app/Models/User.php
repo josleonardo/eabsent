@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -62,23 +61,23 @@ class User extends Authenticatable
 
     public function role(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id')
+        return $this->belongsToMany(Role::class, 'user_role', 'user_id', 'role_id')
             ->withTimestamps()
-            ->withPivot('id', 'active', 'created_by', 'updated_by')
+            ->withPivot('active', 'created_by', 'updated_by')
             ->limit(1); // Ensures only one role per user
     }
     
     public function levels(): BelongsToMany
     {
-        return $this->belongsToMany(Level::class, 'level_user', 'user_id', 'level_id')
+        return $this->belongsToMany(Level::class, 'user_level', 'user_id', 'level_id')
             ->withTimestamps()
-            ->withPivot('id', 'active', 'created_by', 'updated_by');
+            ->withPivot('active', 'created_by', 'updated_by');
     }
 
     public function schedules(): BelongsToMany
     {
-        return $this->belongsToMany(Schedule::class, 'schedule_user', 'user_id', 'schedule_id')
+        return $this->belongsToMany(Schedule::class, 'user_schedule', 'user_id', 'schedule_id')
             ->withTimestamps()
-            ->withPivot('id', 'active', 'created_by', 'updated_by');
+            ->withPivot('active', 'created_by', 'updated_by');
     }
 }

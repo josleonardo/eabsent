@@ -27,7 +27,7 @@ class Level extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'level_user', 'level_id', 'user_id')
+        return $this->belongsToMany(User::class, 'user_level', 'level_id', 'user_id')
             ->withTimestamps()
             ->withPivot('active', 'created_by', 'updated_by');
     }

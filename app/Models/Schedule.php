@@ -30,8 +30,8 @@ class Schedule extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'schedule_user', 'schedule_id', 'user_id')
+        return $this->belongsToMany(User::class, 'user_schedule', 'schedule_id', 'user_id')
             ->withTimestamps()
-            ->withPivot('id', 'active', 'created_by', 'updated_by');
+            ->withPivot('active', 'created_by', 'updated_by');
     }
 }
