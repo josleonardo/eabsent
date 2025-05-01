@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Setting>
  */
-class SettingFactory extends Factory
+class AppSettingFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class SettingFactory extends Factory
     public function definition(): array
     {
         return [
-            'setting_name' => fake()->unique()->word(),
+            'name' => fake()->unique()->word(),
             'key' => fake()->word(),
             'value_1' => fake()->randomElement([fake()->word(), fake()->numberBetween(1, 100)]),
             'value_2' => fake()->randomElement([fake()->word(), fake()->numberBetween(1, 100)]),
