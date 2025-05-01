@@ -15,12 +15,14 @@ return new class extends Migration
             $table->foreignId('user_id')->primary()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('nik')->unique();
             $table->unsignedBigInteger('nuptk')->unique()->nullable();
-            $table->string('fullname');
+            $table->string('first_name');
+            $table->string('last_name')->nullable();
             $table->string('position')->nullable();
             $table->string('address')->nullable();
             $table->string('phone_number')->nullable();
             $table->date('employment_start')->nullable();
             $table->date('employment_end')->nullable();
+            $table->string('display_picture')->nullable();
             $table->boolean('active')->nullable();
             $table->datetimes();
             $table->integer('created_by')->nullable();
