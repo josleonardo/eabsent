@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('schedule_user', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('schedule_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+        Schema::create('user_schedule', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('schedule_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->boolean('active')->nullable();
             $table->datetimes();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
+
+            $table->primary(['user_id', 'schedule_id']);
         });
     }
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('schedule_user');
+        Schema::dropIfExists('user_schedule');
     }
 };

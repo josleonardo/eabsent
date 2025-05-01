@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('settings', function (Blueprint $table) {
-            $table->id();
-            $table->string('setting_name')->unique();
-            $table->string('key')->nullable();
-            $table->string('value_1')->nullable();
-            $table->string('value_2')->nullable();
+        Schema::create('user_level', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('level_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->boolean('active')->nullable();
             $table->datetimes();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
+
+            $table->primary(['user_id', 'level_id']);
         });
     }
 
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('settings');
+        Schema::dropIfExists('user_level');
     }
 };

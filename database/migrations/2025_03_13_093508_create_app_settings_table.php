@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('role_user', function (Blueprint $table) {
+        Schema::create('app_settings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('role_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('name')->unique();
+            $table->string('key')->nullable();
+            $table->string('value_1')->nullable();
+            $table->string('value_2')->nullable();
             $table->boolean('active')->nullable();
             $table->datetimes();
             $table->integer('created_by')->nullable();
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('role_user');
+        Schema::dropIfExists('app_settings');
     }
 };
