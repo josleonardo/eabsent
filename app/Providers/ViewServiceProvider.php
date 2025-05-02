@@ -24,7 +24,7 @@ class ViewServiceProvider extends ServiceProvider
     {
         View::composer('components.sidebar', function ($view) {
             $user = Auth::user();
-            $role = $user->role->first();
+            $role = $user->roles->first();
             $allowedRoles = in_array($role->id, [1, 2, 3]);
             
             // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
@@ -33,10 +33,10 @@ class ViewServiceProvider extends ServiceProvider
                 return;
             }
 
-            $sideMenus = Menu::select('id', 'menu_name', 'menu_url')
+            $sideMenus = Menu::select('id', 'name', 'url')
                 ->where([
                     ['type', 'web'],
-                    ['main_menu_id', 0],
+                    ['menu_id', 0],
                     ['menus.active', 1],
                 ])
                 ->whereHas('roles', function ($query) use ($role) {

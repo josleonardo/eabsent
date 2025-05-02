@@ -20,8 +20,8 @@ class AuthController extends Controller
     public function signin(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|string',
         ]);
 
         $remember = $request->has('remember');
@@ -31,7 +31,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
-            $role = $user->role->first();
+            $role = $user->roles->first();
             $allowedRoles = in_array($role->id, [1, 2, 3]);
 
             // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
