@@ -17,10 +17,10 @@ class Menu extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'menu_name',
-        'menu_url',
+        'menu_id',
+        'name',
+        'url',
         'type',
-        'main_menu_id',
         'order',
         'icon',
         'active',

@@ -59,12 +59,11 @@ class User extends Authenticatable
         return $this->hasOne(UserProfile::class, 'user_id', 'id');
     }
 
-    public function role(): BelongsToMany
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_role', 'user_id', 'role_id')
             ->withTimestamps()
-            ->withPivot('active', 'created_by', 'updated_by')
-            ->limit(1); // Ensures only one role per user
+            ->withPivot('active', 'created_by', 'updated_by');
     }
     
     public function levels(): BelongsToMany

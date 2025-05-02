@@ -17,7 +17,7 @@ class Level extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'level_name',
+        'name',
         'active',
         'created_at',
         'updated_at',

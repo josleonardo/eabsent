@@ -17,7 +17,7 @@ class Schedule extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'schedule_name',
+        'name',
         'day_of_week',
         'check_in_time',
         'check_out_time',

@@ -16,7 +16,7 @@ class AppSetting extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'setting_name',
+        'name',
         'key',
         'value_1',
         'value_2',
