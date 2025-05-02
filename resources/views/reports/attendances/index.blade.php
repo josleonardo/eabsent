@@ -2,7 +2,8 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <x-page-caption>
-        View detailed logs of user attendance. Use this page to manage attendance data, including check-in and check-out times, and status updates.
+        View detailed logs of user attendance. Use this page to manage attendance data, including check-in and check-out
+        times, and status updates.
     </x-page-caption>
 
     {{-- Toast notification --}}
@@ -14,7 +15,7 @@
     @endif
 
     {{-- Back button --}}
-    <a href="{{ route('reports.index') }}"
+    <a href="{{ route('report.index') }}"
         class="inline-flex items-center p-2.5 rounded-md bg-blue-600 font-semibold text-sm text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
         <svg class="size-5 text-white me-2" aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -57,7 +58,11 @@
                                 class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $attendances->firstItem() + $key }}
                             </th>
-                            <td class="px-4 py-3">{{ $attendance->users->profile->fullname ?? $attendance->user_id }}</td>
+                            <td class="px-4 py-3">
+                                {{ $attendance->users->profile->first_name && $attendance->users->profile->last_name
+                                    ? $attendance->users->profile->first_name . ' ' . $attendance->users->profile->last_name
+                                    : $attendance->user_id }}
+                            </td>
                             <td class="px-4 py-3">{{ $days[$attendance->day_of_week] }}
                             </td>
                             <td class="px-4 py-3">
@@ -71,8 +76,8 @@
                             <td class="px-4 py-3">{{ $attendance->updated_at }}</td>
                             <td class="px-4 py-3">{{ $attendance->updated_by }}</td>
                             <td class="px-4 py-3">
-                                <a href="{{ route('attendances.edit', $attendance->id) }}"
-                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Correction</a>
+                                <a href="{{ route('attendance.edit', $attendance->id) }}"
+                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Correction</a>
                             </td>
                         </tr>
                     @endforeach

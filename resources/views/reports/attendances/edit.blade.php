@@ -3,7 +3,7 @@
 
     <section class="p-3 space-y-6 border border-gray-200 sm:p-4 dark:bg-gray-800 dark:border-gray-700">
         {{-- Back button --}}
-        <a href="{{ route('attendances.index') }}"
+        <a href="{{ route('attendance.index') }}"
             class="inline-flex items-center p-2.5 rounded-md bg-blue-600 font-semibold text-sm text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
             <svg class="size-5 text-white me-2" aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -14,96 +14,33 @@
         </a>
 
         {{-- Edit form --}}
-        <form action="{{ route('attendances.update', $attendance->id) }}" method="POST" class="space-y-6 max-w-7xl">
+        <form action="{{ route('attendance.update', $attendance->id) }}" method="POST" class="space-y-6 max-w-7xl">
             @csrf
             @method('PUT')
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <div class="w-full">
-                    <label for="user_id" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        User ID
-                    </label>
-                    <input type="user_id" name="user_id" id="user_id" aria-label="disabled input"
-                        placeholder="Disabled input" disabled value="{{ old('user_id', $attendance->user_id) }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('user_id')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="User ID" name="user_id" id="user_id" :isDisabled="true"
+                    :value="$attendance->user_id" />
 
-                <div class="w-full">
-                    <label for="fullname" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Full Name
-                    </label>
-                    <input type="text" name="fullname" id="fullname" aria-label="disabled input"
-                        placeholder="Disabled input" disabled
-                        value="{{ old('fullname', $attendance->users->profile->fullname ?? '') }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('fullname')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Fullname" name="fullname" id="fullname" :isDisabled="true"
+                    :value=" $attendance->users->profile->first_name && $attendance->users->profile->last_name
+                    ? $attendance->users->profile->first_name . ' ' . $attendance->users->profile->last_name
+                    : ''" />
 
-                <div class="w-full">
-                    <label for="day_of_week" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Day
-                    </label>
-                    <input type="text" name="day_of_week" id="day_of_week" aria-label="disabled input"
-                        placeholder="Disabled input" disabled
-                        value="{{ old('day_of_week', $days[$attendance->day_of_week]) }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('day_of_week')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Day" name="day_of_week" id="day_of_week" :isDisabled="true"
+                    :value="$days[$attendance->day_of_week]" />
 
-                <div class="w-full">
-                    <label for="date" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Date
-                    </label>
-                    <input type="date" name="date" id="date" aria-label="disabled input"
-                        placeholder="Disabled input" disabled value="{{ old('date', $attendance->date) }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('date')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Date" name="date" id="date" type="date" :isDisabled="true"
+                    :value="$attendance->date" />
 
-                <div class="w-full">
-                    <label for="real_check_in" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Check In Time
-                    </label>
-                    <input type="time" name="real_check_in" id="real_check_in" required
-                        value="{{ old('real_check_in', $attendance->real_check_in) }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('real_check_in')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Check In Time" name="real_check_in" id="real_check_in" type="time"
+                    :isRequired="true" :value="$attendance->real_check_in" />
 
-                <div class="w-full">
-                    <label for="real_check_out" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Check Out Time
-                    </label>
-                    <input type="time" name="real_check_out" id="real_check_out" required
-                        value="{{ old('real_check_out', $attendance->real_check_out) }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('real_check_out')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Check Out Time" name="real_check_out" id="real_check_out" type="time"
+                    :isRequired="true" :value="$attendance->real_check_out" />
 
-                <div class="w-full">
-                    <label for="status" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Status
-                    </label>
-                    <input type="text" name="status" id="status" required
-                        value="{{ old('status', $attendance->status) }}"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    @error('status')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
-                    @enderror
-                </div>
+                <x-forms.input-field label="Status" name="status" id="status" :isRequired="true"
+                    :value="$attendance->status" />
             </div>
 
             {{-- Edit data button --}}

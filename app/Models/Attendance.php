@@ -35,38 +35,38 @@ class Attendance extends Model
     /**
      * Get attendances based on the user's role and level.
      *
-     * @param int $currentUserLevel
-     * @param int $currentUserRole
+     * @param int $userLevel
+     * @param int $userRole
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public static function getAttendances($user)
     {
-        $currentUserRole = $user->role->first()->id ?? null;
-        $currentUserLevel = $user->levels->first()->id ?? null;
+        $userRole = $user->roles->first()->id ?? null;
+        $userLevel = $user->levels->first()->id ?? null;
 
         $query = self::select(['id', 'user_id', 'day_of_week', 'date', 'sched_check_in', 'sched_check_out', 'real_check_in', 'real_check_out', 'status', 'updated_at', 'updated_by'])
-            ->with(['users.profile:user_id,fullname']);
+            ->with(['users.profile:user_id,first_name,last_name', 'users.levels:id,name', 'users.roles:id,name']);
 
         // If the user role is a superadmin or admin
-        if (in_array($currentUserRole, [1, 2])) {
-            if ($currentUserLevel == 1) {
+        if (in_array($userRole, [1, 2])) {
+            if ($userLevel == 1) {
                 // If level admin, get all attendances
                 return $query->latest('date')->paginate(25);
             } else {
                 // If not level admin, get attendances where level matches the user's level
-                return $query->whereHas('users.levels', function (Builder $q) use ($currentUserLevel) {
-                    $q->where('level_id', $currentUserLevel);
+                return $query->whereHas('users.levels', function (Builder $q) use ($userLevel) {
+                    $q->where('level_id', $userLevel);
                 })->latest('date')->paginate(25);
             }
         }
 
         // If the user role is headmaster, get attendances where role is teacher and level matches the user's level
-        if ($currentUserRole == 3) {
-            return $query->whereHas('users.role', function (Builder $q) {
+        if ($userRole == 3) {
+            return $query->whereHas('users.roles', function (Builder $q) {
                 $q->where('role_id', 4);
             })
-                ->whereHas('users.levels', function (Builder $q) use ($currentUserLevel) {
-                    $q->where('level_id', $currentUserLevel);
+                ->whereHas('users.levels', function (Builder $q) use ($userLevel) {
+                    $q->where('level_id', $userLevel);
                 })->latest('date')->paginate(25);
         }
 

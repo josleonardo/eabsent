@@ -18,7 +18,7 @@ class AttendanceController extends Controller
         $attendances = Attendance::getAttendances($user);
         $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        return view('reports.attendances.index', ['pageName' => 'Attendance report'], compact('attendances', 'days'));
+        return view('reports.attendances.index', ['pageName' => 'Attendance report'] + compact('attendances', 'days'));
     }
 
     /**
@@ -55,7 +55,7 @@ class AttendanceController extends Controller
         $attendance->real_check_in = Carbon::parse($attendance->real_check_in)->format('H:i');
         $attendance->real_check_out = Carbon::parse($attendance->real_check_out)->format('H:i');
 
-        return view('reports.attendances.edit', ['pageName' => 'Edit Attendance'], compact('attendance', 'days'));
+        return view('reports.attendances.edit', ['pageName' => 'Edit Attendance'] + compact('attendance', 'days'));
     }
 
     /**
@@ -63,15 +63,22 @@ class AttendanceController extends Controller
      */
     public function update(Request $request, Attendance $attendance)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'real_check_in' => 'required|date_format:H:i',
             'real_check_out' => 'required|date_format:H:i',
             'status' => 'required|string',
         ]);
 
-        $attendance->update($request->only('real_check_in', 'real_check_out', 'status'));
+        $currentUserId = Auth::id();
 
-        return redirect()->route('attendances.index')->with('success', 'Attendance updated successfully.');
+        $attendance->update([
+            'real_check_in' => $validatedData['real_check_in'],
+            'real_check_out' => $validatedData['real_check_out'],
+            'status' => $validatedData['status'],
+            'updated_by' => $currentUserId,
+        ]);
+
+        return redirect()->route('attendance.index')->with('success', 'Attendance updated successfully.');
     }
 
     /**
