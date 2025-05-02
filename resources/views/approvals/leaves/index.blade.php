@@ -2,7 +2,7 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <x-page-caption>
-        View, approve, or reject employee leave requests. Each request includes detailed information, and processed decisions are logged for reference in the request history section.
+        View, approve, or reject employee leave requests. Each request includes detailed information, and history decisions are logged for reference in the request history section.
     </x-page-caption>
 
     {{-- Toast notification --}}
@@ -14,7 +14,7 @@
     @endif
 
     {{-- Back button --}}
-    <a href="{{ route('approvals.index') }}"
+    <a href="{{ route('approval.index') }}"
         class="inline-flex items-center p-2.5 rounded-md bg-blue-600 font-semibold text-sm text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
         <svg class="size-5 text-white me-2" aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -40,8 +40,8 @@
                     </a>
                 </li>
                 <li class="me-2">
-                    <a @click="tab = 'processed'"
-                        :class="{ 'border-blue-600 text-blue-600 dark:text-blue-500 dark:border-blue-500': tab === 'processed' }"
+                    <a @click="tab = 'history'"
+                        :class="{ 'border-blue-600 text-blue-600 dark:text-blue-500 dark:border-blue-500': tab === 'history' }"
                         class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group"
                         aria-current="page">
                         History
@@ -51,8 +51,8 @@
         </div>
 
         {{-- Pending leave requests --}}
-        <div id="pending_leaves" x-show="tab === 'pending'">
-            @if ($pendingLeaves->isEmpty())
+        <div x-show="tab === 'pending'">
+            @if ($pendings->isEmpty())
                 <p class="text-gray-500">No pending leave requests.</p>
             @else
                 <div class="relative overflow-x-auto shadow-md">
@@ -75,27 +75,29 @@
                         </thead>
 
                         <tbody>
-                            @foreach ($pendingLeaves as $key => $pendingLeave)
+                            @foreach ($pendings as $key => $pending)
                                 <tr
                                     class="bg-gray-50 border-b border-gray-200 hover:bg-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {{ $pendingLeaves->firstItem() + $key }}
+                                        {{ $pendings->firstItem() + $key }}
                                     </th>
                                     <td class="px-4 py-3">
-                                        {{ $pendingLeave->requester->profile->fullname ?? $pendingLeave->created_by }}
+                                        {{ $pending->requester->profile->first_name && $pending->requester->profile->last_name
+                                            ? $pending->requester->profile->first_name . ' ' . $pending->requester->profile->last_name
+                                            : $pending->created_by }}
                                     </td>
                                     </td>
                                     <td class="px-4 py-3">
-                                        {{ $pendingLeave->requester->levels->first()->level_name ?? '' }}
+                                        {{ $pending->requester->levels->first()->name ?? '' }}
                                     </td>
-                                    <td class="px-4 py-3">{{ $pendingLeave->start_date }}</td>
-                                    <td class="px-4 py-3">{{ $pendingLeave->end_date }}</td>
-                                    <td class="px-4 py-3">{{ $pendingLeave->reason }}</td>
-                                    <td class="px-4 py-3">{{ $pendingLeave->file_path }}</td>
-                                    <td class="px-4 py-3">{{ $pendingLeave->created_at }}</td>
+                                    <td class="px-4 py-3">{{ $pending->start_date }}</td>
+                                    <td class="px-4 py-3">{{ $pending->end_date }}</td>
+                                    <td class="px-4 py-3">{{ $pending->reason }}</td>
+                                    <td class="px-4 py-3">{{ $pending->file_path }}</td>
+                                    <td class="px-4 py-3">{{ $pending->created_at }}</td>
                                     <td class="px-4 py-3">
-                                        <form action="{{ route('leaves.update', $pendingLeave->id) }}" method="POST"
+                                        <form action="{{ route('leave.update', $pending->id) }}" method="POST"
                                             class="flex gap-4">
                                             @csrf
                                             @method('PUT')
@@ -114,14 +116,14 @@
 
                 {{-- Pagination --}}
                 <div class="my-4">
-                    {{ $pendingLeaves->appends(['tab' => 'pending'])->onEachSide(2)->links() }}</div>
+                    {{ $pendings->appends(['tab' => 'pending'])->onEachSide(2)->links() }}</div>
             @endif
         </div>
 
-        {{-- Processed leave request --}}
-        <div id="processed_leaves" x-show="tab === 'processed'" x-cloak>
-            @if ($processedLeaves->isEmpty())
-                <p class="text-gray-500">No processed leave requests.</p>
+        {{-- Leave requests history --}}
+        <div x-show="tab === 'history'" x-cloak>
+            @if ($histories->isEmpty())
+                <p class="text-gray-500">No leave requests history.</p>
             @else
                 <div class="relative overflow-x-auto shadow-md">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -143,27 +145,31 @@
                         </thead>
 
                         <tbody>
-                            @foreach ($processedLeaves as $key => $processedLeave)
+                            @foreach ($histories as $key => $history)
                                 <tr
-                                    class="{{ $processedLeave->approve_status == 0 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                                    class="{{ $history->approve_status == 0 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {{ $processedLeaves->firstItem() + $key }}
+                                        {{ $histories->firstItem() + $key }}
                                     </th>
                                     <td class="px-4 py-3">
-                                        {{ $processedLeave->requester->profile->fullname ?? $processedLeave->created_by }}
+                                        {{ $history->requester->profile->first_name && $history->requester->profile->last_name
+                                            ? $history->requester->profile->first_name . ' ' . $history->requester->profile->last_name
+                                            : $history->created_by }}
                                     </td>
                                     <td class="px-4 py-3">
-                                        {{ $processedLeave->requester->levels->first()->level_name ?? '' }}</td>
-                                    <td class="px-4 py-3">{{ $processedLeave->start_date }}</td>
-                                    <td class="px-4 py-3">{{ $processedLeave->end_date }}</td>
-                                    <td class="px-4 py-3">{{ $processedLeave->reason }}</td>
-                                    <td class="px-4 py-3">{{ $processedLeave->file_path }}</td>
-                                    <td class="px-4 py-3">{{ $processedLeave->created_at }}</td>
-                                    <td class="px-4 py-3">{{ $status[$processedLeave->approve_status] }}</td>
-                                    <td class="px-4 py-3">{{ $processedLeave->approved_at }}</td>
+                                        {{ $history->requester->levels->first()->name ?? '' }}</td>
+                                    <td class="px-4 py-3">{{ $history->start_date }}</td>
+                                    <td class="px-4 py-3">{{ $history->end_date }}</td>
+                                    <td class="px-4 py-3">{{ $history->reason }}</td>
+                                    <td class="px-4 py-3">{{ $history->file_path }}</td>
+                                    <td class="px-4 py-3">{{ $history->created_at }}</td>
+                                    <td class="px-4 py-3">{{ $status[$history->approve_status] }}</td>
+                                    <td class="px-4 py-3">{{ $history->approved_at }}</td>
                                     <td class="px-4 py-3">
-                                        {{ $processedLeave->approver->profile->fullname ?? $processedLeave->approved_by }}
+                                        {{ $history->approver->profile->first_name && $history->approver->profile->last_name
+                                            ? $history->approver->profile->first_name . ' ' . $history->approver->profile->last_name
+                                            : $history->created_by }}
                                     </td>
                                 </tr>
                             @endforeach
@@ -173,7 +179,7 @@
 
                 {{-- Pagination --}}
                 <div class="my-4">
-                    {{ $processedLeaves->appends(['tab' => 'processed'])->onEachSide(2)->links() }}</div>
+                    {{ $histories->appends(['tab' => 'history'])->onEachSide(2)->links() }}</div>
             @endif
         </div>
     </div>

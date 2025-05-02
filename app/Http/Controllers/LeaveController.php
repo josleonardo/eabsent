@@ -16,17 +16,11 @@ class LeaveController extends Controller
         $user = Auth::user();
         $status = ['Rejected', 'Approved'];
         
-        $pending = Leave::getPending($user);
-        $processed = Leave::getProcessed($user);
+        $pendings = Leave::getPending($user);
+        $histories = Leave::getHistory($user);
         $activeTab = $request->query('tab', 'pending'); // default to 'pending'
 
-        return view('approvals.leaves.index', [
-            'pageName' => 'Leave Requests',
-            'activeTab' => $activeTab,
-            'pendingLeaves' => $pending,
-            'processedLeaves' => $processed,
-            'status' => $status,
-        ]);
+        return view('approvals.leaves.index', ['pageName' => 'Leave Requests'] + compact('pendings', 'histories', 'status', 'activeTab'));
     }
 
     /**
@@ -70,11 +64,11 @@ class LeaveController extends Controller
             return redirect()->back()->with('error', 'No leave request found.');
         }
         
-        $currentUserId = Auth::id();
-
         $validatedData = $request->validate([
             'approve_status' => 'required|in:0,1',
         ]);
+
+        $currentUserId = Auth::id();
 
         $leave->update([
             'approve_status' => $validatedData['approve_status'],
@@ -83,7 +77,7 @@ class LeaveController extends Controller
             'updated_by' => $currentUserId,
         ]);
 
-        return redirect()->back()->with('success', 'Leave request processed successfully.');
+        return redirect()->back()->with('success', 'Leave request updated successfully.');
     }
 
     /**
