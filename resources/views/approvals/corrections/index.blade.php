@@ -2,7 +2,8 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <x-page-caption>
-        Manage attendance correction requests. Review the reasons and details for each correction, take action to accept or deny, and access a record of all processed requests.
+        Manage attendance correction requests. Review the reasons and details for each correction, take action to accept
+        or deny, and access a record of all history requests.
     </x-page-caption>
 
     {{-- Toast notification --}}
@@ -14,7 +15,7 @@
     @endif
 
     {{-- Back button --}}
-    <a href="{{ route('approvals.index') }}"
+    <a href="{{ route('approval.index') }}"
         class="inline-flex items-center p-2.5 rounded-md bg-blue-600 font-semibold text-sm text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
         <svg class="size-5 text-white me-2" aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -40,8 +41,8 @@
                     </a>
                 </li>
                 <li class="me-2">
-                    <a @click="tab = 'processed'"
-                        :class="{ 'border-blue-600 text-blue-600 dark:text-blue-500 dark:border-blue-500': tab === 'processed' }"
+                    <a @click="tab = 'history'"
+                        :class="{ 'border-blue-600 text-blue-600 dark:text-blue-500 dark:border-blue-500': tab === 'history' }"
                         class="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group"
                         aria-current="page">
                         History
@@ -51,8 +52,8 @@
         </div>
 
         {{-- Pending correction requests --}}
-        <div id="pending_corrections" x-show="tab === 'pending'">
-            @if ($pendingCorrections->isEmpty())
+        <div x-show="tab === 'pending'">
+            @if ($pendings->isEmpty())
                 <p class="text-gray-500">No pending correction requests.</p>
             @else
                 <div class="relative overflow-x-auto shadow-md">
@@ -75,26 +76,28 @@
                         </thead>
 
                         <tbody>
-                            @foreach ($pendingCorrections as $key => $pendingCorrection)
+                            @foreach ($pendings as $key => $pending)
                                 <tr
                                     class="bg-gray-50 border-b border-gray-200 hover:bg-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {{ $pendingCorrections->firstItem() + $key }}
+                                        {{ $pendings->firstItem() + $key }}
                                     </th>
                                     <td class="px-4 py-3">
-                                        {{ $pendingCorrection->requester->profile->fullname ?? $pendingCorrection->created_by }}
+                                        {{ $pending->requester->profile->first_name && $pending->requester->profile->last_name
+                                            ? $pending->requester->profile->first_name . ' ' . $pending->requester->profile->last_name
+                                            : $pending->created_by }}
                                     </td>
                                     <td class="px-4 py-3">
-                                        {{ $pendingCorrection->requester->levels->first()->level_name ?? '' }}
+                                        {{ $pending->requester->levels->first()->name ?? '' }}
                                     </td>
-                                    <td class="px-4 py-3">{{ $pendingCorrection->correction_date }}</td>
-                                    <td class="px-4 py-3">{{ $pendingCorrection->correction_start_time }}</td>
-                                    <td class="px-4 py-3">{{ $pendingCorrection->correction_end_time }}</td>
-                                    <td class="px-4 py-3">{{ $pendingCorrection->reason }}</td>
-                                    <td class="px-4 py-3">{{ $pendingCorrection->created_at }}</td>
+                                    <td class="px-4 py-3">{{ $pending->correction_date }}</td>
+                                    <td class="px-4 py-3">{{ $pending->correction_start_time }}</td>
+                                    <td class="px-4 py-3">{{ $pending->correction_end_time }}</td>
+                                    <td class="px-4 py-3">{{ $pending->reason }}</td>
+                                    <td class="px-4 py-3">{{ $pending->created_at }}</td>
                                     <td class="px-4 py-3">
-                                        <form action="{{ route('corrections.update', $pendingCorrection->id) }}"
+                                        <form action="{{ route('correction.update', $pending->id) }}"
                                             method="POST" class="flex gap-4">
                                             @csrf
                                             @method('PUT')
@@ -112,15 +115,15 @@
                 </div>
 
                 {{-- Pagination --}}
-                <div class="my-4">{{ $pendingCorrections->appends(['tab' => 'pending'])->onEachSide(2)->links() }}
+                <div class="my-4">{{ $pendings->appends(['tab' => 'pending'])->onEachSide(2)->links() }}
                 </div>
             @endif
         </div>
 
-        {{-- Processed correction requests --}}
-        <div id="processed_corrections" x-show="tab === 'processed'" x-cloak>
-            @if ($processedCorrections->isEmpty())
-                <p class="text-gray-500">No processed correction requests.</p>
+        {{-- Correction requests history --}}
+        <div x-show="tab === 'history'" x-cloak>
+            @if ($histories->isEmpty())
+                <p class="text-gray-500">No correction requests history.</p>
             @else
                 <div class="relative overflow-x-auto shadow-md">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -142,28 +145,32 @@
                         </thead>
 
                         <tbody>
-                            @foreach ($processedCorrections as $key => $processedCorrection)
+                            @foreach ($histories as $key => $history)
                                 <tr
-                                    class="{{ $processedCorrection->approve_status == 0 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                                    class="{{ $history->approve_status == 0 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {{ $processedCorrections->firstItem() + $key }}
+                                        {{ $histories->firstItem() + $key }}
                                     </th>
                                     <td class="px-4 py-3">
-                                        {{ $processedCorrection->requester->profile->fullname ?? $processedCorrection->created_by }}
+                                        {{ $history->requester->profile->first_name && $history->requester->profile->last_name
+                                            ? $history->requester->profile->first_name . ' ' . $history->requester->profile->last_name
+                                            : $history->created_by }}
                                     </td>
                                     <td class="px-4 py-3">
-                                        {{ $processedCorrection->requester->levels->first()->level_name ?? '' }}
+                                        {{ $history->requester->levels->first()->name ?? '' }}
                                     </td>
-                                    <td class="px-4 py-3">{{ $processedCorrection->correction_date }}</td>
-                                    <td class="px-4 py-3">{{ $processedCorrection->correction_start_time }}</td>
-                                    <td class="px-4 py-3">{{ $processedCorrection->correction_end_time }}</td>
-                                    <td class="px-4 py-3">{{ $processedCorrection->reason }}</td>
-                                    <td class="px-4 py-3">{{ $processedCorrection->created_at }}</td>
-                                    <td class="px-4 py-3">{{ $status[$processedCorrection->approve_status] }}</td>
-                                    <td class="px-4 py-3">{{ $processedCorrection->approved_at }}</td>
+                                    <td class="px-4 py-3">{{ $history->correction_date }}</td>
+                                    <td class="px-4 py-3">{{ $history->correction_start_time }}</td>
+                                    <td class="px-4 py-3">{{ $history->correction_end_time }}</td>
+                                    <td class="px-4 py-3">{{ $history->reason }}</td>
+                                    <td class="px-4 py-3">{{ $history->created_at }}</td>
+                                    <td class="px-4 py-3">{{ $status[$history->approve_status] }}</td>
+                                    <td class="px-4 py-3">{{ $history->approved_at }}</td>
                                     <td class="px-4 py-3">
-                                        {{ $processedCorrection->approver->profile->fullname ?? $processedCorrection->approved_by }}
+                                        {{ $history->approver->profile->first_name && $history->approver->profile->last_name
+                                            ? $history->approver->profile->first_name . ' ' . $history->approver->profile->last_name
+                                            : $history->created_by }}
                                     </td>
                                 </tr>
                             @endforeach
@@ -173,7 +180,7 @@
 
                 {{-- Pagination --}}
                 <div class="my-4">
-                    {{ $processedCorrections->appends(['tab' => 'processed'])->onEachSide(2)->links() }}</div>
+                    {{ $histories->appends(['tab' => 'history'])->onEachSide(2)->links() }}</div>
             @endif
         </div>
     </div>

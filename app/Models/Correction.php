@@ -49,32 +49,32 @@ class Correction extends Model
      */
     public static function getPending($user)
     {
-        $currentUserRole = $user->role->first()->id ?? null;
-        $currentUserLevel = $user->levels->first()->id ?? null;
+        $userRole = $user->roles->first()->id ?? null;
+        $userLevel = $user->levels->first()->id ?? null;
 
         $query = self::select(['id', 'correction_date', 'correction_start_time', 'correction_end_time', 'reason', 'created_at', 'created_by']);
 
         // If the user role is a superadmin or admin
-        if (in_array($currentUserRole, [1, 2])) {
-            if ($currentUserLevel == 1) {
+        if (in_array($userRole, [1, 2])) {
+            if ($userLevel == 1) {
                 // If the user level is admin, get all corrections
                 return $query->where('approve_status', null)->latest()->paginate(10, ['*'], 'pending_page');
             } else {
                 // Otherwise, get corrections where level_id matches the user's level_id
-                return $query->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
-                    $q->where('level_id', $currentUserLevel)
+                return $query->whereHas('requester.levels', function (Builder $q) use ($userLevel) {
+                    $q->where('level_id', $userLevel)
                         ->where('approve_status', null);
                 })->latest()->paginate(10, ['*'], 'pending_page');
             }
         }
 
         // If the user role is headmaster, get attendances where role is teacher and level matches the user's level
-        if ($currentUserRole == 3) {
-            return $query->whereHas('requester.role', function (Builder $q) {
+        if ($userRole == 3) {
+            return $query->whereHas('requester.roles', function (Builder $q) {
                 $q->where('role_id', 4);
             })
-                ->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
-                    $q->where('level_id', $currentUserLevel)
+                ->whereHas('requester.levels', function (Builder $q) use ($userLevel) {
+                    $q->where('level_id', $userLevel)
                         ->where('approve_status', null);
                 })->latest()->paginate(10, ['*'], 'pending_page');
         }
@@ -89,36 +89,36 @@ class Correction extends Model
      * @param $user
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public static function getProcessed($user)
+    public static function getHistory($user)
     {
-        $currentUserRole = $user->role->first()->id ?? null;
-        $currentUserLevel = $user->levels->first()->id ?? null;
+        $userRole = $user->roles->first()->id ?? null;
+        $userLevel = $user->levels->first()->id ?? null;
 
         $query = self::select(['id', 'correction_date', 'correction_start_time', 'correction_end_time', 'reason', 'approve_status', 'approved_at', 'approved_by', 'created_at', 'created_by', 'updated_at']);
 
         // If the user role is a superadmin or admin
-        if (in_array($currentUserRole, [1, 2])) {
-            if ($currentUserLevel == 1) {
+        if (in_array($userRole, [1, 2])) {
+            if ($userLevel == 1) {
                 // If the user level is admin, get all processed corrections
                 return $query->where('approve_status', '!=', null)->latest('approved_at')->paginate(10, ['*'], 'processed_page');
             } else {
                 // Get processed corrections where level matches the current user level
-                return $query->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
-                    $q->where('level_id', $currentUserLevel)
+                return $query->whereHas('requester.levels', function (Builder $q) use ($userLevel) {
+                    $q->where('level_id', $userLevel)
                         ->where('approve_status', '!=', null);
                 })->latest('approved_at')->paginate(10, ['*'], 'processed_page');
             }
         }
 
         // If the user role is headmaster
-        if ($currentUserRole == 3) {
+        if ($userRole == 3) {
             // Get processed corrections where role is teacher
-            return $query->whereHas('requester.role', function (Builder $q) {
+            return $query->whereHas('requester.roles', function (Builder $q) {
                 $q->where('role_id', 4);
             })
                 // and level matches the current user level
-                ->whereHas('requester.levels', function (Builder $q) use ($currentUserLevel) {
-                    $q->where('level_id', $currentUserLevel)
+                ->whereHas('requester.levels', function (Builder $q) use ($userLevel) {
+                    $q->where('level_id', $userLevel)
                         ->where('approve_status', '!=', null);;
                 })->latest('approved_at')->paginate(10, ['*'], 'processed_page');
         }

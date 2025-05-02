@@ -16,17 +16,11 @@ class CorrectionController extends Controller
         $user = Auth::user();
         $status = ['Rejected', 'Approved'];
         
-        $pending = Correction::getPending($user);
-        $processed = Correction::getProcessed($user);
+        $pendings = Correction::getPending($user);
+        $histories = Correction::getHistory($user);
         $activeTab = $request->query('tab', 'pending'); // default to 'pending'
         
-        return view('approvals.corrections.index', [
-            'pageName' => 'Correction Requests',
-            'activeTab' => $activeTab,
-            'pendingCorrections' => $pending,
-            'processedCorrections' => $processed,
-            'status' => $status,
-        ]);
+        return view('approvals.corrections.index', ['pageName' => 'Correction Requests'] + compact('pendings', 'histories', 'status', 'activeTab'));
     }
 
     /**
@@ -70,11 +64,11 @@ class CorrectionController extends Controller
             return redirect()->back()->with('error', 'No correction request found.');
         }
         
-        $currentUserId = Auth::id();
-
         $validatedData = $request->validate([
             'approve_status' => 'required|in:0,1',
         ]);
+        
+        $currentUserId = Auth::id();
 
         $correction->update([
             'approve_status' => $validatedData['approve_status'],
@@ -83,7 +77,7 @@ class CorrectionController extends Controller
             'updated_by' => $currentUserId,
         ]);
 
-        return redirect()->back()->with('success', 'Correction request processed successfully.');
+        return redirect()->back()->with('success', 'Correction request updated successfully.');
     }
 
     /**
