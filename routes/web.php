@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CorrectionController;
@@ -31,14 +32,10 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role_check:1,2,3')->group(function () {
         // Approval pages
-        Route::get('/approval', function () {
-            return view('approvals.approvals', ['pageName' => 'Approval']);
-        })->name('approvals.index');
-
-        Route::resource('/leave', LeaveController::class)
-            ->parameters(['leaves' => 'leave'])
+        Route::get('/approval', [ApprovalController::class, 'index'])->name('approval.index');
+        Route::resource('/approval/leave', LeaveController::class)
             ->only(['index', 'update']);
-        Route::resource('/correction', CorrectionController::class)
+        Route::resource('/approval/correction', CorrectionController::class)
             ->only(['index', 'update']);
 
         // Report pages
