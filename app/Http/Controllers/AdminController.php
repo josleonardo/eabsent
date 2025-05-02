@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -11,10 +10,10 @@ class AdminController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
         $user = Auth::user();
-        $role = $user->role->first();
+        $role = $user->roles->first();
         $allowedRoles = in_array($role->id, [1, 2]);
 
         // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
@@ -22,11 +21,11 @@ class AdminController extends Controller
             return redirect()->route('home.index')->with('error', 'Unauthorized access');
         }
 
-        $menus = Menu::select('id', 'menu_name', 'menu_url')
+        $menus = Menu::select('id', 'name', 'url')
             ->where([
                 ['type', 'web'],
-                ['main_menu_id', 10],
-                ['menus.active', 1], 
+                ['menu_id', 10],
+                ['menus.active', 1],
             ])
             ->whereHas('roles', function ($query) use ($role) {
                 $query->where([
@@ -37,7 +36,6 @@ class AdminController extends Controller
             ->orderBy('order')
             ->get();
 
-        return view('administrators.admin', ['pageName' => 'Admin'] + compact('menus'));
-        
+        return view('administrators.index', ['pageName' => 'Admin'] + compact('menus'));
     }
 }
