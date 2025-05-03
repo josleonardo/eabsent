@@ -19,11 +19,14 @@
             @method('PUT')
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <x-forms.input-field label="Menu Name" name="menu_name" id="menu_name" placeholder="Menu Name"
-                    :isRequired="true" :value="$menu->menu_name" />
+                <x-forms.input-field label="Menu ID" name="menu_id" id="menu_id" type="number"
+                    placeholder="1" :isRequired="true" :value="$menu->menu_id" />
 
-                <x-forms.input-field label="Menu URL" name="menu_url" id="menu_url" placeholder="menu-name-url"
-                    :isRequired="true" :value="$menu->menu_url" />
+                <x-forms.input-field label="Menu Name" name="menu_name" id="menu_name" placeholder="Menu Name"
+                    :isRequired="true" :value="$menu->name" />
+
+                <x-forms.input-field label="URL" name="url" id="url" placeholder="menu-url"
+                    :isRequired="true" :value="$menu->url" />
 
                 <div>
                     <label for="type" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
@@ -42,9 +45,6 @@
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
                     @enderror
                 </div>
-
-                <x-forms.input-field label="Main Menu ID" name="main_menu_id" id="main_menu_id" type="number"
-                    placeholder="1" :isRequired="true" :value="$menu->main_menu_id" />
 
                 <x-forms.input-field label="Order" name="order" id="order" type="number" placeholder="1"
                     :value="$menu->order" />

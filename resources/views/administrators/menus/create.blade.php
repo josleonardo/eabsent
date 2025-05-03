@@ -12,16 +12,19 @@
             </svg>
             Back
         </a>
-
+        
         {{-- Create form --}}
         <form action="{{ route('menu.store') }}" method="POST" class="space-y-6 max-w-7xl">
             @csrf
-
+            
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                <x-forms.input-field label="Menu ID" name="menu_id" id="menu_id" type="number"
+                    placeholder="1" :isRequired="true" />
+
                 <x-forms.input-field label="Menu Name" name="menu_name" id="menu_name" placeholder="Menu Name"
                     :isRequired="true" />
 
-                <x-forms.input-field label="Menu URL" name="menu_url" id="menu_url" placeholder="menu-name-url"
+                <x-forms.input-field label="URL" name="url" id="url" placeholder="menu-url"
                     :isRequired="true" />
 
                 <div>
@@ -40,9 +43,6 @@
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
                     @enderror
                 </div>
-
-                <x-forms.input-field label="Main Menu ID" name="main_menu_id" id="main_menu_id" type="number"
-                    placeholder="1" :isRequired="true" />
 
                 <x-forms.input-field label="Order" name="order" id="order" type="number" placeholder="1" />
 
