@@ -19,8 +19,8 @@
             @method('PUT')
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <x-forms.input-field label="Level Name" name="level_name" id="level_name" :isRequired="true"
-                    :value="$level->level_name" />
+                <x-forms.input-field label="Level Name" name="level_name" id="level_name" placeholder="Staff"
+                    :isRequired="true" :value="$level->name" />
             </div>
 
             <x-forms.toggle name="active" :checked="$level->active" trueLabel="Active" falseLabel="Inactive" />

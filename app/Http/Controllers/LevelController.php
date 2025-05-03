@@ -14,7 +14,7 @@ class LevelController extends Controller
     public function index()
     {
         $levels = Level::paginate(10);
-        return view('administrators.levels.level', ['pageName' => 'Levels', 'singleName' => 'level'], compact('levels'));
+        return view('administrators.levels.index', ['pageName' => 'Levels', 'singleName' => 'level'] + compact('levels'));
     }
 
     /**
@@ -30,15 +30,15 @@ class LevelController extends Controller
      */
     public function store(Request $request)
     {
-        $currentUserId = Auth::id();
-
         $validatedData = $request->validate([
-            'level_name' => 'required|string|max:255|unique:levels',
+            'level_name' => 'required|string|max:255|unique:levels,name,',
             'active' => 'required|boolean',
         ]);
 
+        $currentUserId = Auth::id();
+
         Level::create([
-            'level_name' => $validatedData['level_name'],
+            'name' => $validatedData['level_name'],
             'active' => $validatedData['active'],
             'created_by' => $currentUserId,
             'updated_by' => $currentUserId,
@@ -60,7 +60,7 @@ class LevelController extends Controller
      */
     public function edit(Level $level)
     {
-        return view('administrators.levels.edit', ['pageName' => 'Edit level'], compact('level'));
+        return view('administrators.levels.edit', ['pageName' => 'Edit level'] + compact('level'));
     }
 
     /**
@@ -68,15 +68,15 @@ class LevelController extends Controller
      */
     public function update(Request $request, Level $level)
     {
-        $currentUserId = Auth::id();
-
         $validatedData = $request->validate([
-            'level_name' => 'required|string|max:255|unique:levels,level_name,' . $level->id,
+            'level_name' => 'required|string|max:255|unique:levels,name,' . $level->id,
             'active' => 'required|boolean',
         ]);
 
+        $currentUserId = Auth::id();
+
         $level->update([
-            'level_name' => $validatedData['level_name'],
+            'name' => $validatedData['level_name'],
             'active' => $validatedData['active'],
             'updated_by' => $currentUserId,
         ]);

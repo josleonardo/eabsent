@@ -20,7 +20,7 @@
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 <x-forms.input-field label="Schedule Name" name="schedule_name" id="schedule_name"
-                    placeholder="Middle School" :isRequired="true" :value="$schedule->schedule_name" />
+                    placeholder="Middle School" :isRequired="true" :value="$schedule->name" />
 
                 <div class="w-full">
                     <label for="day_of_week" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">

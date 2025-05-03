@@ -19,8 +19,8 @@
             @method('PUT')
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <x-forms.input-field label="Role Name" name="role_name" id="role_name" :isRequired="true"
-                    :value="$role->role_name" />
+                <x-forms.input-field label="Role Name" name="role_name" id="role_name" placeholder="Staff"
+                    :isRequired="true" :value="$role->name" />
             </div>
 
             <x-forms.toggle name="active" :checked="$role->active" trueLabel="Active" falseLabel="Inactive" />

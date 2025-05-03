@@ -17,7 +17,7 @@ class ScheduleController extends Controller
         $schedules = Schedule::paginate(10);
         $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        return view('administrators.schedules.schedule', ['pageName' => 'Schedule', 'singleName' => 'schedule'], compact('schedules', 'days'));
+        return view('administrators.schedules.index', ['pageName' => 'Schedule', 'singleName' => 'schedule'] + compact('schedules', 'days'));
     }
 
     /**
@@ -25,17 +25,9 @@ class ScheduleController extends Controller
      */
     public function create()
     {
-        $days = [
-            0 => 'Sunday',
-            1 => 'Monday',
-            2 => 'Tuesday',
-            3 => 'Wednesday',
-            4 => 'Thursday',
-            5 => 'Friday',
-            6 => 'Saturday',
-        ];
+        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        return view('administrators.schedules.create', ['pageName' => 'Add schedule'], compact('days'));
+        return view('administrators.schedules.create', ['pageName' => 'Add schedule'] + compact('days'));
     }
 
     /**
@@ -43,8 +35,6 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        $currentUserId = Auth::id();
-
         $validatedData = $request->validate([
             'schedule_name' => 'required|string|max:255',
             'day_of_week' => 'required|integer|max:7',
@@ -52,9 +42,11 @@ class ScheduleController extends Controller
             'check_out_time' => 'required|date_format:H:i',
             'active' => 'required|boolean',
         ]);
+        
+        $currentUserId = Auth::id();
 
         Schedule::create([
-            'schedule_name' => $validatedData['schedule_name'],
+            'name' => $validatedData['schedule_name'],
             'day_of_week' => $validatedData['day_of_week'],
             'check_in_time' => $validatedData['check_in_time'],
             'check_out_time' => $validatedData['check_out_time'],
@@ -79,17 +71,9 @@ class ScheduleController extends Controller
      */
     public function edit(Schedule $schedule)
     {
-        $days = [
-            0 => 'Sunday',
-            1 => 'Monday',
-            2 => 'Tuesday',
-            3 => 'Wednesday',
-            4 => 'Thursday',
-            5 => 'Friday',
-            6 => 'Saturday',
-        ];
+        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        return view('administrators.schedules.edit', ['pageName' => 'Edit schedule'], compact('schedule', 'days'));
+        return view('administrators.schedules.edit', ['pageName' => 'Edit schedule'] + compact('schedule', 'days'));
     }
 
     /**
@@ -97,14 +81,12 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, Schedule $schedule)
     {
-        $currentUserId = Auth::id();
-
         // Format the time fields to match H:i
         $request->merge([
             'check_in_time' => Carbon::parse($request->check_in_time)->format('H:i'),
             'check_out_time' => Carbon::parse($request->check_out_time)->format('H:i'),
         ]);
-
+        
         $validatedData = $request->validate([
             'schedule_name' => 'required|string|max:255',
             'day_of_week' => 'required|integer|max:7',
@@ -113,8 +95,10 @@ class ScheduleController extends Controller
             'active' => 'required|boolean',
         ]);
 
+        $currentUserId = Auth::id();
+
         $schedule->update([
-            'schedule_name' => $validatedData['schedule_name'],
+            'name' => $validatedData['schedule_name'],
             'day_of_week' => $validatedData['day_of_week'],
             'check_in_time' => $validatedData['check_in_time'],
             'check_out_time' => $validatedData['check_out_time'],

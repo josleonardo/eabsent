@@ -18,7 +18,8 @@
             @csrf
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <x-forms.input-field label="Role Name" name="role_name" id="role_name" :isRequired="true" />
+                <x-forms.input-field label="Role Name" name="role_name" id="role_name" placeholder="Staff"
+                    :isRequired="true" />
             </div>
 
             <x-forms.toggle name="active" :checked="true" trueLabel="Active" falseLabel="Inactive" />

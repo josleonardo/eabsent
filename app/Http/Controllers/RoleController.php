@@ -14,7 +14,7 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::paginate(10);
-        return view('administrators.roles.role', ['pageName' => 'Roles', 'singleName' => 'role'], compact('roles'));
+        return view('administrators.roles.index', ['pageName' => 'Roles', 'singleName' => 'role'] + compact('roles'));
     }
 
     /**
@@ -30,15 +30,15 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $currentUserId = Auth::id();
-
         $validatedData = $request->validate([
-            'role_name' => 'required|string|max:255|unique:roles',
+            'role_name' => 'required|string|max:255|unique:roles,name,',
             'active' => 'required|boolean',
         ]);
 
+        $currentUserId = Auth::id();
+
         Role::create([
-            'role_name' => $validatedData['role_name'],
+            'name' => $validatedData['role_name'],
             'active' => $validatedData['active'],
             'created_by' => $currentUserId,
             'updated_by' => $currentUserId,
@@ -60,7 +60,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        return view('administrators.roles.edit', ['pageName' => 'Edit role'], compact('role'));
+        return view('administrators.roles.edit', ['pageName' => 'Edit role'] + compact('role'));
     }
 
     /**
@@ -68,15 +68,15 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        $currentUserId = Auth::id();
-
         $validatedData = $request->validate([
-            'role_name' => 'required|string|max:255|unique:roles,role_name,' . $role->id,
+            'role_name' => 'required|string|max:255|unique:roles,name,' . $role->id,
             'active' => 'required|boolean',
         ]);
+        
+        $currentUserId = Auth::id();
 
         $role->update([
-            'role_name' => $validatedData['role_name'],
+            'name' => $validatedData['role_name'],
             'active' => $validatedData['active'],
             'updated_by' => $currentUserId,
         ]);
