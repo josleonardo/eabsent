@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Setting;
+use App\Models\AppSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class SettingController extends Controller
+class AppSettingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $settings = Setting::paginate(10);
-        return view('administrators.settings.setting', ['pageName' => 'Settings', 'singleName' => 'setting'], compact('settings'));
+        $appSettings = AppSetting::paginate(10);
+        return view('administrators.app-settings.index', ['pageName' => 'App Settings', 'singleName' => 'app setting'] + compact('appSettings'));
     }
 
     /**
@@ -22,7 +22,7 @@ class SettingController extends Controller
      */
     public function create()
     {
-        return view('administrators.settings.create', ['pageName' => 'Add setting']);
+        return view('administrators.app-settings.create', ['pageName' => 'Add app setting']);
     }
 
     /**
@@ -30,18 +30,18 @@ class SettingController extends Controller
      */
     public function store(Request $request)
     {
-        $currentUserId = Auth::id();
-
         $validatedData = $request->validate([
-            'setting_name' => 'required|string|max:255|unique:settings',
-            'key' => 'nullable|string|max:255|unique:settings',
+            'setting_name' => 'required|string|max:255|unique:app_settings,name',
+            'key' => 'nullable|string|max:255|unique:app_settings,key',
             'value_1' => 'nullable|string|max:255',
             'value_2' => 'nullable|string|max:255',
             'active' => 'required|boolean',
         ]);
+        
+        $currentUserId = Auth::id();
 
-        Setting::create([
-            'setting_name' => $validatedData['setting_name'],
+        AppSetting::create([
+            'name' => $validatedData['setting_name'],
             'key' => $validatedData['key'],
             'value_1' => $validatedData['value_1'],
             'value_2' => $validatedData['value_2'],
@@ -50,13 +50,13 @@ class SettingController extends Controller
             'updated_by' => $currentUserId,
         ]);
 
-        return redirect()->route('setting.index')->with('success', 'Setting added successfully.');
+        return redirect()->route('app-setting.index')->with('success', 'App setting added successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Setting $setting)
+    public function show(AppSetting $appSetting)
     {
         //
     }
@@ -64,28 +64,28 @@ class SettingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Setting $setting)
+    public function edit(AppSetting $appSetting)
     {
-        return view('administrators.settings.edit', ['pageName' => 'Edit Setting'], compact('setting'));
+        return view('administrators.app-settings.edit', ['pageName' => 'Edit app setting'] + compact('appSetting'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Setting $setting)
+    public function update(Request $request, AppSetting $appSetting)
     {
-        $currentUserId = Auth::id();
-
         $validatedData = $request->validate([
-            'setting_name' => 'required|string|max:255|unique:settings,setting_name,' . $setting->id,
-            'key' => 'nullable|string|max:255|unique:settings,key,' . $setting->id,
+            'setting_name' => 'required|string|max:255|unique:app_settings,name,' . $appSetting->id,
+            'key' => 'nullable|string|max:255|unique:app_settings,key,' . $appSetting->id,
             'value_1' => 'nullable|string|max:255',
             'value_2' => 'nullable|string|max:255',
             'active' => 'required|boolean',
         ]);
+        
+        $currentUserId = Auth::id();
 
-        $setting->update([
-            'setting_name' => $validatedData['setting_name'],
+        $appSetting->update([
+            'name' => $validatedData['setting_name'],
             'key' => $validatedData['key'],
             'value_1' => $validatedData['value_1'],
             'value_2' => $validatedData['value_2'],
@@ -93,13 +93,13 @@ class SettingController extends Controller
             'updated_by' => $currentUserId,
         ]);
 
-        return redirect()->route('setting.index')->with('success', 'Setting updated successfully.');
+        return redirect()->route('app-setting.index')->with('success', 'App setting updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Setting $setting)
+    public function destroy(AppSetting $appSetting)
     {
         //
     }

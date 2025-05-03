@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\AppSettingController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CorrectionController;
@@ -11,7 +12,6 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ScheduleController;
-use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserLevelController;
 use App\Http\Controllers\UserRoleController;
@@ -62,7 +62,7 @@ Route::middleware('auth')->group(function () {
             ->except(['show', 'destroy']);
         Route::resource('/admin/level', LevelController::class)
             ->except(['show', 'destroy']);
-        Route::resource('/admin/app-setting', SettingController::class)
+        Route::resource('/admin/app-setting', AppSettingController::class)
             ->except(['show', 'destroy']);
         Route::resource('/admin/user-role', UserRoleController::class)
             ->only(['index', 'edit', 'update']);
