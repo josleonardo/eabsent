@@ -12,6 +12,11 @@ class ScheduleSeeder extends Seeder
      */
     public function run(): void
     {
+        $groups = [
+            '1' => '15:00:00',
+            '2' => '16:00:00',
+        ];
+
         $schedules = [
             ['day_of_week' => 1],
             ['day_of_week' => 2],
@@ -20,14 +25,16 @@ class ScheduleSeeder extends Seeder
             ['day_of_week' => 5],
         ];
 
-        foreach ($schedules as $schedule) {
-            Schedule::factory()->create([
-                'name' => 'default',
-                'day_of_week' => $schedule['day_of_week'],
-                'check_in_time' => '06:45:00',
-                'check_out_time' => '15:00:00',
-                'active' => true,
-            ]);
+        foreach ($groups as $group => $checkOutTime) {
+            foreach ($schedules as $schedule) {
+                Schedule::factory()->create([
+                    'group' => $group,
+                    'day_of_week' => $schedule['day_of_week'],
+                    'check_in_time' => '06:45:00',
+                    'check_out_time' => $checkOutTime,
+                    'active' => true,
+                ]);
+            }
         }
     }
 }

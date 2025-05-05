@@ -29,7 +29,7 @@
                 <thead class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="p-4">#</th>
-                        <th scope="col" class="p-4">Schedule Name</th>
+                        <th scope="col" class="p-4">Group</th>
                         <th scope="col" class="p-4">Day of Week</th>
                         <th scope="col" class="p-4">Check In Time</th>
                         <th scope="col" class="p-4">Check Out Time</th>
@@ -52,7 +52,7 @@
                                 class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $schedules->firstItem() + $key }}
                             </th>
-                            <td class="px-4 py-3">{{ $schedule->name }}</td>
+                            <td class="px-4 py-3">{{ $schedule->group }}</td>
                             <td class="px-4 py-3 text-center">{{ $days[$schedule->day_of_week] }}</td>
                             <td class="px-4 py-3">{{ $schedule->check_in_time }}</td>
                             <td class="px-4 py-3">{{ $schedule->check_out_time }}</td>

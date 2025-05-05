@@ -36,7 +36,7 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'schedule_name' => 'required|string|max:255',
+            'group' => 'required|integer|max:20',
             'day_of_week' => 'required|integer|max:7',
             'check_in_time' => 'required|date_format:H:i',
             'check_out_time' => 'required|date_format:H:i',
@@ -46,7 +46,7 @@ class ScheduleController extends Controller
         $currentUserId = Auth::id();
 
         Schedule::create([
-            'name' => $validatedData['schedule_name'],
+            'group' => $validatedData['group'],
             'day_of_week' => $validatedData['day_of_week'],
             'check_in_time' => $validatedData['check_in_time'],
             'check_out_time' => $validatedData['check_out_time'],
@@ -88,7 +88,7 @@ class ScheduleController extends Controller
         ]);
         
         $validatedData = $request->validate([
-            'schedule_name' => 'required|string|max:255',
+            'group' => 'required|integer|max:20',
             'day_of_week' => 'required|integer|max:7',
             'check_in_time' => 'required|date_format:H:i',
             'check_out_time' => 'required|date_format:H:i',
@@ -98,7 +98,7 @@ class ScheduleController extends Controller
         $currentUserId = Auth::id();
 
         $schedule->update([
-            'name' => $validatedData['schedule_name'],
+            'group' => $validatedData['group'],
             'day_of_week' => $validatedData['day_of_week'],
             'check_in_time' => $validatedData['check_in_time'],
             'check_out_time' => $validatedData['check_out_time'],

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->smallInteger('group')->nullable();
             $table->tinyInteger('day_of_week');
             $table->time('check_in_time');
             $table->time('check_out_time');

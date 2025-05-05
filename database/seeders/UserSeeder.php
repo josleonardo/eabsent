@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
                 'position' => 'Super Admin',
                 'role_id' => 1,
                 'level_id' => 1,
-                'name' => 'default',
+                'schedule_group' => 1,
             ],
             [
                 'username' => 'kepsek1',
@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
                 'position' => 'Kepala Sekolah',
                 'role_id' => 2,
                 'level_id' => 3,
-                'name' => 'default',
+                'schedule_group' => 1,
             ],
             [
                 'username' => 'kepsek2',
@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
                 'position' => 'Kepala Sekolah',
                 'role_id' => 3,
                 'level_id' => 4,
-                'name' => 'default',
+                'schedule_group' => 1,
             ],
             [
                 'username' => 'kepsek3',
@@ -61,7 +61,7 @@ class UserSeeder extends Seeder
                 'position' => 'Kepala Sekolah',
                 'role_id' => 3,
                 'level_id' => 5,
-                'name' => 'default',
+                'schedule_group' => 2,
             ],
             [
                 'username' => 'guru1',
@@ -72,7 +72,7 @@ class UserSeeder extends Seeder
                 'position' => 'Guru',
                 'role_id' => 4,
                 'level_id' => 3,
-                'name' => 'default',
+                'schedule_group' => 1,
             ],
             [
                 'username' => 'guru2',
@@ -83,7 +83,7 @@ class UserSeeder extends Seeder
                 'position' => 'Guru',
                 'role_id' => 4,
                 'level_id' => 4,
-                'name' => 'default',
+                'schedule_group' => 1,
             ],
             [
                 'username' => 'guru3',
@@ -94,7 +94,7 @@ class UserSeeder extends Seeder
                 'position' => 'Guru',
                 'role_id' => 4,
                 'level_id' => 5,
-                'name' => 'default',
+                'schedule_group' => 2,
             ],
         ];
 
@@ -132,7 +132,7 @@ class UserSeeder extends Seeder
                 // Attach role
                 $role = Role::where('id', $userCred['role_id'])->first();
                 if ($role) {
-                    $user->role()->attach($role->id, [
+                    $user->roles()->attach($role->id, [
                         'active' => true,
                         'created_by' => 1,
                         'updated_by' => 1,
@@ -150,7 +150,7 @@ class UserSeeder extends Seeder
                 }
     
                 // Attach schedules
-                $schedules = Schedule::where('name', $userCred['name'])->get();
+                $schedules = Schedule::where('group', $userCred['schedule_group'])->get();
                 if ($schedules) {
                     foreach ($schedules as $schedule) {
                         $user->schedules()->attach($schedule->id, [
