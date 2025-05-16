@@ -16,7 +16,7 @@ class MenuController extends Controller
         $menus = Menu::paginate(10);
         $types = ['Web', 'Android',];
 
-        return view('administrators.menus.index', ['pageName' => 'Menus', 'singleName' => 'menu'] + compact('menus', 'types'));
+        return view('administrators.menus.index', ['pageName' => 'Menus'] + compact('menus', 'types'));
     }
 
     /**

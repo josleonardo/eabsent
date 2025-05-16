@@ -14,11 +14,10 @@
         <x-toast type="failed" :message="session('failed')" />
     @endif
 
-    {{-- Toolbar contain search bar, filter, action buttons --}}
-    {{-- <x-toolbar>
+    {{-- Toolbar --}}
+    <x-toolbar :search="true">
         <x-slot:pageName>{{ $pageName }}</x-slot>
-        <x-slot:singleName>{{ $singleName }}</x-slot>
-    </x-toolbar> --}}
+    </x-toolbar>
 
     {{-- Table --}}
     @if ($users->isEmpty())

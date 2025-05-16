@@ -14,10 +14,9 @@
         <x-toast type="failed" :message="session('failed')" />
     @endif
 
-    {{-- Toolbar contain search bar, filter, action buttons --}}
-    <x-toolbar>
+    {{-- Toolbar --}}
+    <x-toolbar :search="true" :create="true" :createRoute="'role.create'">
         <x-slot:pageName>{{ $pageName }}</x-slot>
-        <x-slot:singleName>{{ $singleName }}</x-slot>
     </x-toolbar>
 
     {{-- Table --}}

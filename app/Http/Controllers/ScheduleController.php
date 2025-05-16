@@ -17,7 +17,7 @@ class ScheduleController extends Controller
         $schedules = Schedule::paginate(10);
         $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        return view('administrators.schedules.index', ['pageName' => 'Schedule', 'singleName' => 'schedule'] + compact('schedules', 'days'));
+        return view('administrators.schedules.index', ['pageName' => 'Schedule'] + compact('schedules', 'days'));
     }
 
     /**

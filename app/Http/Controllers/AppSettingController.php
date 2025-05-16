@@ -14,7 +14,7 @@ class AppSettingController extends Controller
     public function index()
     {
         $appSettings = AppSetting::paginate(10);
-        return view('administrators.app-settings.index', ['pageName' => 'App Settings', 'singleName' => 'app setting'] + compact('appSettings'));
+        return view('administrators.app-settings.index', ['pageName' => 'App Settings'] + compact('appSettings'));
     }
 
     /**

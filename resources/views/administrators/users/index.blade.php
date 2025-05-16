@@ -14,7 +14,7 @@
         <x-toast type="failed" :message="session('failed')" />
     @endif
 
-    {{-- Toolbar contain search bar, filter, action buttons --}}
+    {{-- Toolbar --}}
     <x-toolbar :search="true" :create="true" :createRoute="'user.create'">
         <x-slot:pageName>{{ $pageName }}</x-slot>
     </x-toolbar>
@@ -73,7 +73,6 @@
             </table>
         </div>
 
-        {{-- Pagination --}}
         <div class="my-4">{{ $users->onEachSide(2)->links() }}</div>
     @endif
 </x-layout>
