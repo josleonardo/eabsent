@@ -19,8 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::paginate(10);
-        return view('administrators.users.user', ['pageName' => 'Users', 'singleName' => 'user'] + compact('users'));
+        $users = User::select('id', 'email', 'username', 'active', 'created_at', 'updated_at', 'created_by', 'updated_by')->paginate(10);
+        return view('administrators.users.index', ['pageName' => 'Users'] + compact('users'));
     }
 
     /**
@@ -28,17 +28,17 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::select('id', 'role_name')->get();
-        $levels = Level::select('id', 'level_name')->get();
+        $roles = Role::select('id', 'name')->where('active', 1)->get();
+        $levels = Level::select('id', 'name')->where('active', 1)->get();
 
-        $schedules = Schedule::select('id', 'schedule_name', 'check_in_time', 'check_out_time')->get();
+        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', 1)->get();
         $schedules = $schedules->map(function ($schedule) {
             // Format the schedule data
             $schedule->check_in_time = Carbon::parse($schedule->check_in_time)->format('H:i');
             $schedule->check_out_time = Carbon::parse($schedule->check_out_time)->format('H:i');
 
             return $schedule;
-        })->groupBy('schedule_name')->map(function ($group) {
+        })->groupBy('group')->map(function ($group) {
             $first = $group->first();
             return [
                 'ids' => $group->pluck('id')->toArray(),
@@ -56,7 +56,8 @@ class UserController extends Controller
     {
         $validatedData = $request->validate([
             'email' => 'required|email|unique:users',
-            'fullname' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
             'username' => 'nullable|string|max:255|unique:users',
             'password' => [
                 'required',
@@ -99,10 +100,11 @@ class UserController extends Controller
                 'username' => $validatedData['username'],
                 'password' => Hash::make($validatedData['password']),
             ], $defaultData));
-    
+
             // Create user profile
             $user->profile()->create(array_merge([
-                'fullname' => $validatedData['fullname'],
+                'first_name' => $validatedData['first_name'],
+                'last_name' => $validatedData['last_name'],
                 'nik' => $validatedData['nik'],
                 'nuptk' => $validatedData['nuptk'],
                 'position' => $validatedData['position'],
@@ -111,34 +113,34 @@ class UserController extends Controller
                 'employment_start' => $validatedData['employment_start'],
                 'employment_end' => $validatedData['employment_end'],
             ], $defaultData));
-    
+
             // Attach the role to the user
             if (!empty($validatedData['role'])) {
-                $user->role()->attach($validatedData['role'], $defaultData);
+                $user->roles()->attach($validatedData['role'], $defaultData);
             }
-    
+
             // Attach the level to the user
             if (!empty($validatedData['level'])) {
                 $user->levels()->attach($validatedData['level'], $defaultData);
             }
-    
+
             // Attach the schedules to the user
             $scheduleIds = [];
             if (!empty($validatedData['schedule'])) {
                 $scheduleIds = explode(',', $validatedData['schedule']);
-    
+
                 // Validate all IDs exist in DB
                 $validIds = Schedule::whereIn('id', $scheduleIds)->pluck('id')->toArray();
                 if (count($validIds) !== count($scheduleIds)) {
                     return back()->withErrors(['schedule' => 'One or more selected schedules are invalid.']);
                 }
-    
+
                 $user->schedules()->attach($scheduleIds, $defaultData);
             }
-            
+
             // Commit the transaction if everything is successful
             DB::commit();
-            
+
             return redirect()->route('user.index')->with('success', 'User added successfully');
         } catch (\Exception $e) {
             // Rollback the transaction if any error occurs
@@ -154,9 +156,9 @@ class UserController extends Controller
     public function show(string $id)
     {
         $user = User::findOrFail($id);
-        $roles = Role::select('id', 'role_name')->get();
-        $levels = Level::select('id', 'level_name')->get();
-        $schedules = Schedule::select('id', 'schedule_name', 'check_in_time', 'check_out_time')->get();
+        $roles = Role::select('id', 'name')->where('active', 1)->get();
+        $levels = Level::select('id', 'name')->where('active', 1)->get();
+        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', 1)->get();
 
         return view('administrators.users.show', ['pageName' => 'User Profile'] + compact('user', 'roles', 'levels', 'schedules'));
     }
@@ -167,17 +169,17 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::findOrFail($id);
-        $roles = Role::select('id', 'role_name')->get();
-        $levels = Level::select('id', 'level_name')->get();
+        $roles = Role::select('id', 'name')->where('active', 1)->get();
+        $levels = Level::select('id', 'name')->where('active', 1)->get();
 
-        $schedules = Schedule::select('id', 'schedule_name', 'check_in_time', 'check_out_time')->get();
+        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', 1)->get();
         $schedules = $schedules->map(function ($schedule) {
             // Format the schedule data
             $schedule->check_in_time = Carbon::parse($schedule->check_in_time)->format('H:i');
             $schedule->check_out_time = Carbon::parse($schedule->check_out_time)->format('H:i');
 
             return $schedule;
-        })->groupBy('schedule_name')->map(function ($group) {
+        })->groupBy('group')->map(function ($group) {
             $first = $group->first();
             return [
                 'ids' => $group->pluck('id')->toArray(),
@@ -195,7 +197,8 @@ class UserController extends Controller
     {
         $validatedData = $request->validate([
             'email' => 'required|email|unique:users,email,' . $id,
-            'fullname' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
             'username' => 'nullable|string|max:255|unique:users,username,' . $id,
             'nik' => 'required|integer|numeric|digits:16|unique:user_profiles,nik,' . $id . ',user_id',
             'nuptk' => 'nullable|integer|numeric|digits:16|unique:user_profiles,nuptk,' . $id . ',user_id',
@@ -205,14 +208,14 @@ class UserController extends Controller
             'role' => 'nullable|integer|exists:roles,id',
             'level' => 'nullable|integer|exists:levels,id',
             'schedule' => [
-                'nullable', 
+                'nullable',
                 'regex:/^(\d+(,\d+)*)?$/', // Comma-separated list of integers
             ],
             'employment_start' => 'required|date',
             'employment_end' => 'nullable|date',
             'active' => 'required|boolean',
         ]);
-        
+
         $user = User::findOrFail($id);
         $currentUserId = Auth::id();
         $defaultData = [
@@ -233,10 +236,11 @@ class UserController extends Controller
                 'email' => $validatedData['email'],
                 'username' => $validatedData['username'],
             ], $defaultData));
-    
+
             // Update user profile
             $user->profile()->update(array_merge([
-                'fullname' => $validatedData['fullname'],
+                'first_name' => $validatedData['first_name'],
+                'last_name' => $validatedData['last_name'],
                 'nik' => $validatedData['nik'],
                 'nuptk' => $validatedData['nuptk'],
                 'position' => $validatedData['position'],
@@ -245,14 +249,14 @@ class UserController extends Controller
                 'employment_start' => $validatedData['employment_start'],
                 'employment_end' => $validatedData['employment_end'],
             ], $defaultData));
-    
+
             // Sync the role to the user
             if (!empty($validatedData['role'])) {
-                $user->role()->syncWithPivotValues([$validatedData['role']], $defaultSync);
+                $user->roles()->syncWithPivotValues([$validatedData['role']], $defaultSync);
             } else {
-                $user->role()->detach();
+                $user->roles()->detach();
             }
-    
+
             // Sync the level to the user
             if (!empty($validatedData['level'])) {
                 $user->levels()->syncWithPivotValues([$validatedData['level']], $defaultSync);
@@ -264,13 +268,13 @@ class UserController extends Controller
             $scheduleIds = [];
             if (!empty($validatedData['schedule'])) {
                 $scheduleIds = explode(',', $validatedData['schedule']);
-    
+
                 // Validate all IDs exist in DB
                 $validIds = Schedule::whereIn('id', $scheduleIds)->pluck('id')->toArray();
                 if (count($validIds) !== count($scheduleIds)) {
                     return back()->withErrors(['schedule' => 'One or more selected schedules are invalid.']);
                 }
-    
+
                 $user->schedules()->syncWithPivotValues($scheduleIds, $defaultSync);
             } else {
                 $user->schedules()->detach();
@@ -278,7 +282,7 @@ class UserController extends Controller
 
             // Commit the transaction if everything is successful
             DB::commit();
-    
+
             return redirect()->route('user.index')->with('success', 'User updated successfully');
         } catch (\Exception $e) {
             // Rollback the transaction if any error occurs
