@@ -59,7 +59,7 @@
             <x-forms.toggle name="active" :checked="$user->active" trueLabel="Active" falseLabel="Inactive" />
 
             {{-- Submit button --}}
-            <x-forms.button type="submit" icon="icon-edit" btnSize="w-40">
+            <x-forms.button type="submit" icon="icon-edit" btnSize="w-full sm:w-40">
                 Update
             </x-forms.button>
         </form>

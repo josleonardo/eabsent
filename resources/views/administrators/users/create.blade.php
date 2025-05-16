@@ -53,7 +53,7 @@
             <x-forms.toggle name="active" :checked="true" trueLabel="Active" falseLabel="Inactive" />
 
             {{-- Submit button --}}
-            <x-forms.button type="submit" btnBg="bg-green-400 dark:bg-green-600" btnHover="hover:bg-green-500" icon="icon-square-plus" btnSize="w-40">
+            <x-forms.button type="submit" btnBg="bg-green-400 dark:bg-green-600" btnHover="hover:bg-green-500" icon="icon-square-plus" btnSize="w-full sm:w-40">
                 Create
             </x-forms.button>
         </form>
