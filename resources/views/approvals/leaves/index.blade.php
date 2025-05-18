@@ -97,9 +97,13 @@
                                             @method('PUT')
 
                                             <button type="submit" name="approve_status" value="1"
-                                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Approve</button>
+                                                class="p-0.5 rounded text-blue-500 transition hover:bg-blue-500 hover:text-white focus:text-white focus:bg-blue-500 focus:shadow-sm focus:outline-0">
+                                                <x-icon-check class="size-5" />
+                                            </button>
                                             <button type="submit" name="approve_status" value="0"
-                                                class="font-medium text-red-600 dark:text-red-500 hover:underline">Reject</button>
+                                                class="p-0.5 rounded text-red-500 transition hover:bg-red-500 hover:text-white focus:text-white focus:bg-red-500 focus:shadow-sm focus:outline-0">
+                                                <x-icon-x class="size-5" />
+                                            </button>
                                         </form>
                                     </td>
                                 </tr>
