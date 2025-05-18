@@ -10,7 +10,8 @@
         <ul class="space-y-2 font-medium">
             @foreach ($sideMenus as $sideMenu)
                 <li>
-                    <a href="{{ url($sideMenu->url) }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <a href="{{ url($sideMenu->url) }}" class="flex items-center p-2 text-gray-900 rounded-lg focus:bg-gray-100 focus:dark:bg-gray-700 focus:shadow-sm focus:outline-0 transition dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 hover:shadow-sm group">
+                        <x-dynamic-component :component="$sideMenu->icon" class="size-5 text-gray-500 transition dark:text-gray-400 group-hover:text-gray-900 group-focus:text-gray-900 dark:group-hover:text-white dark:group-focus:text-white" />
                         <span class="ms-3">{{ $sideMenu->name }}</span>
                     </a>
                 </li>

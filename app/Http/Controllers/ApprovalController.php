@@ -35,7 +35,27 @@ class ApprovalController extends Controller
                 ]);
             })
             ->orderBy('order')
-            ->get();
+            ->get()
+            ->map(function ($menu, $index) {
+                $colors = [
+                    'bg-green-400 dark:bg-green-600',
+                    'bg-blue-400 dark:bg-blue-600',
+                ];
+                $hovers = [
+                    'hover:bg-green-500',
+                    'hover:bg-blue-500',
+                ];
+                $icons = [
+                    'icon-plane',
+                    'icon-calendar-cog',
+                ];
+
+                // Assign color based on index, cycling if more items than available
+                $menu->color = $colors[$index % count($colors)];
+                $menu->hover = $hovers[$index % count($hovers)];
+                $menu->icon = $icons[$index % count($icons)];
+                return $menu;
+            });
 
         return view('approvals.index', ['pageName' => 'Approval'] + compact('menus'));
     }

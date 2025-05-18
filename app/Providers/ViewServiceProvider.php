@@ -26,7 +26,7 @@ class ViewServiceProvider extends ServiceProvider
             $user = Auth::user();
             $role = $user->roles->first();
             $allowedRoles = in_array($role->id, [1, 2, 3]);
-            
+
             // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
             if (!$user || !$user->active || !$role || !$allowedRoles || !$role->active || !$role->pivot->active) {
                 $view->with('sideMenus', collect());
@@ -46,7 +46,19 @@ class ViewServiceProvider extends ServiceProvider
                     ]);
                 })
                 ->orderBy('order')
-                ->get();
+                ->get()
+                ->map(function ($sideMenu, $index) {
+                    $icons = [
+                        'icon-home',
+                        'icon-file-text',
+                        'icon-clipboard-check',
+                        'icon-category',
+                    ];
+
+                    // Assign color based on index, cycling if more items than available
+                    $sideMenu->icon = $icons[$index % count($icons)];
+                    return $sideMenu;
+                });
 
             $view->with('sideMenus', $sideMenus);
         });

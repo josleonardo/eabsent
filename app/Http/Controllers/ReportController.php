@@ -26,7 +26,7 @@ class ReportController extends Controller
             ->where([
                 ['type', 'web'],
                 ['menu_id', 2],
-                ['menus.active', 1], 
+                ['menus.active', 1],
             ])
             ->whereHas('roles', function ($query) use ($role) {
                 $query->where([
@@ -35,7 +35,27 @@ class ReportController extends Controller
                 ]);
             })
             ->orderBy('order')
-            ->get();
+            ->get()
+            ->map(function ($menu, $index) {
+                $colors = [
+                    'bg-indigo-400 dark:bg-indigo-600',
+                    'bg-orange-400 dark:bg-orange-600',
+                ];
+                $hovers = [
+                    'hover:bg-indigo-500',
+                    'hover:bg-orange-500',
+                ];
+                $icons = [
+                    'icon-logs',
+                    'icon-calendar',
+                ];
+
+                // Assign color based on index, cycling if more items than available
+                $menu->color = $colors[$index % count($colors)];
+                $menu->hover = $hovers[$index % count($hovers)];
+                $menu->icon = $icons[$index % count($icons)];
+                return $menu;
+            });
 
         return view('reports.index', ['pageName' => 'Report'] + compact('menus'));
     }
