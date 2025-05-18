@@ -7,14 +7,14 @@
     'btnHover' => 'hover:bg-indigo-500',
     'icon' => null,
     'iconPosition' => 'left',
-    'textColor' => 'text-gray-700 dark:text-white',
+    'textColor' => 'text-gray-50 dark:text-white',
     'textSize' => 'text-base',
     'fontWeight' => 'font-semibold',
     'disabled' => false,
 ])
 
 @php
-    $baseClass = "$btnSize $btnBg $textColor $textSize $fontWeight p-2 flex items-center justify-center rounded-md shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600";
+    $baseClass = "$btnSize $btnBg $textColor $textSize $fontWeight p-2 flex items-center justify-center rounded-md shadow-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600";
     $disabledClass = $disabled ? 'opacity-50 cursor-not-allowed' : $btnHover;
     $hasSlot = trim($slot);
     $iconLeftClass = $hasSlot ? 'size-5 me-1' : 'size-5 m-0.5';

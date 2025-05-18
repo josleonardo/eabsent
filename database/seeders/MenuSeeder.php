@@ -51,18 +51,6 @@ class MenuSeeder extends Seeder
             ],
         ];
 
-        foreach ($androidMenus as $androidMenu) {
-            Menu::factory()->create([
-                'menu_id' => 0,
-                'name' => $androidMenu['name'],
-                'url' => $androidMenu['url'],
-                'type' => 1,
-                'order' => $androidMenu['order'],
-                'icon' => $androidMenu['icon'],
-                'active' => true
-            ]);
-        }
-
         $webMenus = [
             [
                 'menu_id' => 0,
@@ -156,30 +144,42 @@ class MenuSeeder extends Seeder
             ],
             [
                 'menu_id' => 10,
-                'name' => 'Role User',
+                'name' => 'User Role',
                 'url' => '/admin/user-role',
                 'order' => 7,
             ],
             [
                 'menu_id' => 10,
-                'name' => 'Role Menu',
-                'url' => '/admin/role-menu',
+                'name' => 'User Level',
+                'url' => '/admin/user-level',
                 'order' => 8,
             ],
             [
                 'menu_id' => 10,
-                'name' => 'Level User',
-                'url' => '/admin/user-level',
+                'name' => 'User Schedule',
+                'url' => '/admin/user-schedule',
                 'order' => 9,
             ],
             [
                 'menu_id' => 10,
-                'name' => 'Schedule User',
-                'url' => '/admin/user-schedule',
+                'name' => 'Role Menu',
+                'url' => '/admin/role-menu',
                 'order' => 10,
             ],
         ];
 
+        foreach ($androidMenus as $androidMenu) {
+            Menu::factory()->create([
+                'menu_id' => 0,
+                'name' => $androidMenu['name'],
+                'url' => $androidMenu['url'],
+                'type' => 1,
+                'order' => $androidMenu['order'],
+                'icon' => $androidMenu['icon'],
+                'active' => true
+            ]);
+        }
+        
         foreach ($webMenus as $webMenu) {
             Menu::factory()->create([
                 'menu_id' => $webMenu['menu_id'],
