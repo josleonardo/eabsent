@@ -32,27 +32,39 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role_check:1,2,3')->group(function () {
         // Approval pages
-        Route::get('/approval', [ApprovalController::class, 'index'])->name('approval.index');
+        Route::get('/approval', [ApprovalController::class, 'index'])
+            ->name('approval.index');
         Route::resource('/approval/leave', LeaveController::class)
             ->only(['index', 'update']);
         Route::resource('/approval/correction', CorrectionController::class)
             ->only(['index', 'update']);
 
         // Report pages
-        Route::get('/report', [ReportController::class, 'index'])->name('report.index');
+        Route::get('/report', [ReportController::class, 'index'])
+            ->name('report.index');
         Route::resource('/report/attendance', AttendanceController::class)
             ->only(['index', 'edit', 'update']);
     });
 
     Route::middleware('role_check:1,2')->group(function () {
-        Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+        Route::get('/admin', [AdminController::class, 'index'])
+            ->name('admin.index');
 
         Route::resource('/admin/user', UserController::class)
             ->except(['destroy']);
         Route::resource('/admin/schedule', ScheduleController::class)
             ->except(['show', 'destroy']);
-        Route::resource('/admin/user-schedule', UserScheduleController::class)
-            ->only(['index', 'edit', 'update']);
+
+        Route::get('/admin/user-schedule', [UserScheduleController::class, 'index'])
+            ->name('user-schedule.index');
+        Route::post('/admin/user-schedule', [UserScheduleController::class, 'store'])
+            ->name('user-schedule.store');
+        Route::get('/admin/user-schedule/create', [UserScheduleController::class, 'create'])
+            ->name('user-schedule.create');
+        Route::get('/admin/user-schedule/{user}/{schedule}/edit', [UserScheduleController::class, 'edit'])
+            ->name('user-schedule.edit');
+        Route::put('/admin/user-schedule/{user}/{schedule}', [UserScheduleController::class, 'update'])
+            ->name('user-schedule.update');
     });
 
     Route::middleware('role_check:1')->group(function () {
