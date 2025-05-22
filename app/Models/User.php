@@ -65,7 +65,7 @@ class User extends Authenticatable
             ->withTimestamps()
             ->withPivot('active', 'created_by', 'updated_by');
     }
-    
+
     public function levels(): BelongsToMany
     {
         return $this->belongsToMany(Level::class, 'user_level', 'user_id', 'level_id')
@@ -78,5 +78,18 @@ class User extends Authenticatable
         return $this->belongsToMany(Schedule::class, 'user_schedule', 'user_id', 'schedule_id')
             ->withTimestamps()
             ->withPivot('active', 'created_by', 'updated_by');
+    }
+
+    public function getFullNameAttribute()
+    {
+        if ($this->profile) {
+            $first = $this->profile->first_name;
+            $last = $this->profile->last_name;
+            $full = trim(($first ?? '') . ' ' . ($last ?? ''));
+            if ($full !== '') {
+                return $full;
+            }
+        }
+        return $this->id;
     }
 }
