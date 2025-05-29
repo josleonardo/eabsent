@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Attendance;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +14,19 @@ class AttendanceSeeder extends Seeder
      */
     public function run(): void
     {
-        Attendance::factory()->count(100)->create();
+        $users = User::all();
+
+        foreach ($users as $user) {
+            $dates = collect(range(0, 9))->map(function ($i) {
+                return now()->subDays($i)->toDateString();
+            });
+
+            foreach ($dates as $date) {
+                Attendance::factory()->create([
+                    'user_id' => $user->id,
+                    'date' => $date,
+                ]);
+            }
+        }
     }
 }

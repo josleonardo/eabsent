@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,10 +19,12 @@ class Attendance extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'real_check_in',
-        'real_check_out',
+        'actual_in',
+        'actual_out',
         'status',
-        'updated_by',
+        'active',
+        'create_by',
+        'update_by',
     ];
 
     /**
@@ -44,7 +47,7 @@ class Attendance extends Model
         $userRole = $user->roles->first()->id ?? null;
         $userLevel = $user->levels->first()->id ?? null;
 
-        $query = self::select(['id', 'user_id', 'day_of_week', 'date', 'sched_check_in', 'sched_check_out', 'real_check_in', 'real_check_out', 'status', 'updated_at', 'updated_by'])
+        $query = self::select(['id', 'user_id', 'date', 'sched_in', 'sched_out', 'actual_in', 'actual_out', 'status', 'updated_at', 'updated_by'])
             ->with(['users.profile:user_id,first_name,last_name', 'users.levels:id,name', 'users.roles:id,name']);
 
         // If the user role is a superadmin or admin
@@ -72,5 +75,20 @@ class Attendance extends Model
 
         // Default case: return an empty result if no conditions are met
         return $query->whereRaw('1 = 0')->paginate(25);
+    }
+
+    public function getDayNameAttribute()
+    {
+        return isset($this->date) ? Carbon::parse($this->date)->format('l') : null;
+    }
+
+    public function getFormattedActualInAttribute()
+    {
+        return isset($this->actual_in) ? Carbon::parse($this->actual_in)->format('H:i') : null;
+    }
+
+    public function getFormattedActualOutAttribute()
+    {
+        return isset($this->actual_out) ? Carbon::parse($this->actual_out)->format('H:i') : null;
     }
 }

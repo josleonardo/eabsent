@@ -13,19 +13,20 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->index();
-            $table->integer('schedule_id')->nullable();
-            $table->tinyInteger('day_of_week'); // 0 = Sunday, ..., 6 = Saturday
-            $table->date('date')->index();
-            $table->time('sched_check_in')->nullable();
-            $table->time('sched_check_out')->nullable();
-            $table->time('real_check_in')->nullable();
-            $table->time('real_check_out')->nullable();
-            $table->string('status');
+            $table->integer('user_id');
+            $table->date('date');
+            $table->time('sched_in')->nullable();
+            $table->time('sched_out')->nullable();
+            $table->time('actual_in')->nullable();
+            $table->time('actual_out')->nullable();
+            $table->smallInteger('status')->default(0);
             $table->boolean('active')->nullable();
             $table->datetimes();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
+
+            $table->unique(['user_id', 'date']); // ensure only one attendance per day per user
+            $table->index(['user_id', 'date', 'status']); // index for faster queries on user_id, date, and status
         });
     }
 

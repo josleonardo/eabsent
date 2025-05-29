@@ -16,9 +16,9 @@ class AttendanceController extends Controller
     {
         $user = Auth::user();
         $attendances = Attendance::getAttendances($user);
-        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $statusKey = config('constants.attendance_status');
 
-        return view('reports.attendances.index', ['pageName' => 'Attendance report'] + compact('attendances', 'days'));
+        return view('reports.attendances.index', ['pageName' => 'Attendance report'] + compact('attendances', 'statusKey'));
     }
 
     /**
@@ -50,12 +50,12 @@ class AttendanceController extends Controller
      */
     public function edit(Attendance $attendance)
     {
-        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-        $attendance->real_check_in = Carbon::parse($attendance->real_check_in)->format('H:i');
-        $attendance->real_check_out = Carbon::parse($attendance->real_check_out)->format('H:i');
-
-        return view('reports.attendances.edit', ['pageName' => 'Edit Attendance'] + compact('attendance', 'days'));
+        $statuses = collect(config('constants.attendance_status'))
+            ->mapWithKeys(function ($value, $key) {
+                return [$key => __($value['label'])];
+            })
+            ->toArray();
+        return view('reports.attendances.edit', ['pageName' => 'Edit Attendance'] + compact('attendance', 'statuses'));
     }
 
     /**
@@ -64,16 +64,16 @@ class AttendanceController extends Controller
     public function update(Request $request, Attendance $attendance)
     {
         $validatedData = $request->validate([
-            'real_check_in' => 'required|date_format:H:i',
-            'real_check_out' => 'required|date_format:H:i',
-            'status' => 'required|string',
+            'actual_in' => 'nullable|date_format:H:i',
+            'actual_out' => 'nullable|date_format:H:i',
+            'status' => 'required|integer|max:20',
         ]);
 
         $currentUserId = Auth::id();
 
         $attendance->update([
-            'real_check_in' => $validatedData['real_check_in'],
-            'real_check_out' => $validatedData['real_check_out'],
+            'actual_in' => $validatedData['actual_in'],
+            'actual_out' => $validatedData['actual_out'],
             'status' => $validatedData['status'],
             'updated_by' => $currentUserId,
         ]);

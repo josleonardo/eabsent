@@ -13,28 +13,40 @@
             @method('PUT')
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <x-forms.input-field label="User ID" name="user_id" id="user_id" :isDisabled="true"
-                    :value="$attendance->user_id" />
+                <x-forms.input-field label="User ID" name="user_id" id="user_id" :isDisabled="true" :value="$attendance->user_id" />
 
-                <x-forms.input-field label="Fullname" name="fullname" id="fullname" :isDisabled="true"
-                    :value=" $attendance->users->profile->first_name && $attendance->users->profile->last_name
-                    ? $attendance->users->profile->first_name . ' ' . $attendance->users->profile->last_name
-                    : ''" />
+                <x-forms.input-field label="Full Name" name="full_name" id="full_name" :isDisabled="true"
+                    :value="$attendance->users->full_name" />
 
                 <x-forms.input-field label="Day" name="day_of_week" id="day_of_week" :isDisabled="true"
-                    :value="$days[$attendance->day_of_week]" />
+                    :value="$attendance->day_name" />
 
                 <x-forms.input-field label="Date" name="date" id="date" type="date" :isDisabled="true"
                     :value="$attendance->date" />
 
-                <x-forms.input-field label="Check In Time" name="real_check_in" id="real_check_in" type="time"
-                    :isRequired="true" :value="$attendance->real_check_in" />
+                <x-forms.input-field label="Actual Check In" name="actual_in" id="actual_in" type="time"
+                    :value="$attendance->formatted_actual_in" />
 
-                <x-forms.input-field label="Check Out Time" name="real_check_out" id="real_check_out" type="time"
-                    :isRequired="true" :value="$attendance->real_check_out" />
+                <x-forms.input-field label="Actual Check Out" name="actual_out" id="actual_out" type="time"
+                    :value="$attendance->formatted_actual_out" />
 
-                <x-forms.input-field label="Status" name="status" id="status" :isRequired="true"
-                    :value="$attendance->status" />
+                <div>
+                    <label for="status" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
+                        Status
+                    </label>
+                    <select name="status" id="status" required
+                        class="block w-full rounded-md bg-white px-2 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white"">
+                        @foreach ($statuses as $key => $label)
+                            <option value="{{ $key }}"
+                                {{ old('status', $attendance->status) == $key ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('status')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
             {{-- Submit button --}}

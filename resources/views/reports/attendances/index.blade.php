@@ -34,8 +34,8 @@
                         <th scope="col" class="p-4">Date</th>
                         <th scope="col" class="p-4">Scheduled In</th>
                         <th scope="col" class="p-4">Scheduled Out</th>
-                        <th scope="col" class="p-4">Check In</th>
-                        <th scope="col" class="p-4">Check Out</th>
+                        <th scope="col" class="p-4">Actual In</th>
+                        <th scope="col" class="p-4">Actual Out</th>
                         <th scope="col" class="p-4">Status</th>
                         <th scope="col" class="p-4">Updated At</th>
                         <th scope="col" class="p-4">Updated By</th>
@@ -48,26 +48,19 @@
                 <tbody>
                     @foreach ($attendances as $key => $attendance)
                         <tr
-                            class="bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
+                            class="{{ $statusKey[$attendance->status]['color'] ?? 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                             <th scope="row"
                                 class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $attendances->firstItem() + $key }}
                             </th>
-                            <td class="px-4 py-3">
-                                {{ $attendance->users->profile->first_name && $attendance->users->profile->last_name
-                                    ? $attendance->users->profile->first_name . ' ' . $attendance->users->profile->last_name
-                                    : $attendance->user_id }}
-                            </td>
-                            <td class="px-4 py-3">{{ $days[$attendance->day_of_week] }}
-                            </td>
-                            <td class="px-4 py-3">
-                                {{ $attendance->date }}
-                            </td>
-                            <td class="px-4 py-3">{{ $attendance->sched_check_in }}</td>
-                            <td class="px-4 py-3">{{ $attendance->sched_check_out }}</td>
-                            <td class="px-4 py-3">{{ $attendance->real_check_in }}</td>
-                            <td class="px-4 py-3">{{ $attendance->real_check_out }}</td>
-                            <td class="px-4 py-3">{{ $attendance->status }}</td>
+                            <td class="px-4 py-3">{{ $attendance->users->full_name }}</td>
+                            <td class="px-4 py-3">{{ $attendance->day_name }}</td>
+                            <td class="px-4 py-3">{{ $attendance->date }}</td>
+                            <td class="px-4 py-3">{{ $attendance->sched_in }}</td>
+                            <td class="px-4 py-3">{{ $attendance->sched_out }}</td>
+                            <td class="px-4 py-3">{{ $attendance->actual_in }}</td>
+                            <td class="px-4 py-3">{{ $attendance->actual_out }}</td>
+                            <td class="px-4 py-3">{{ $statusKey[$attendance->status] ? __($statusKey[$attendance->status]['label']) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $attendance->updated_at }}</td>
                             <td class="px-4 py-3">{{ $attendance->updated_by }}</td>
                             <td class="px-4 py-3">
