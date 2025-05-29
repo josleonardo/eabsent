@@ -35,7 +35,7 @@ class ViewServiceProvider extends ServiceProvider
 
             $sideMenus = Menu::select('id', 'name', 'url')
                 ->where([
-                    ['type', 'web'],
+                    ['platform', 0],
                     ['menu_id', 0],
                     ['menus.active', 1],
                 ])

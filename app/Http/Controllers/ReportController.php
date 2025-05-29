@@ -24,7 +24,7 @@ class ReportController extends Controller
 
         $menus = Menu::select('id', 'name', 'url')
             ->where([
-                ['type', 'web'],
+                ['platform', 0],
                 ['menu_id', 2],
                 ['menus.active', 1],
             ])

@@ -24,7 +24,7 @@ class ApprovalController extends Controller
 
         $menus = Menu::select('id', 'name', 'url')
             ->where([
-                ['type', 'web'],
+                ['platform', 0],
                 ['menu_id', 3],
                 ['menus.active', 1],
             ])

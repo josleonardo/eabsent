@@ -23,7 +23,7 @@ class AdminController extends Controller
 
         $menus = Menu::select('id', 'name', 'url')
             ->where([
-                ['type', 'web'],
+                ['platform', 0],
                 ['menu_id', 10],
                 ['menus.active', 1],
             ])
