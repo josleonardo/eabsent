@@ -90,6 +90,6 @@ class User extends Authenticatable
                 return $full;
             }
         }
-        return $this->id;
+        return $this->id ? $this->id : 'Unknown User';
     }
 }
