@@ -19,7 +19,7 @@
             </div>
 
             {{-- Active toggle --}}
-            <x-forms.toggle name="active" :checked="true" :trueLabel="$active[1]" :falseLabel="$active[0]" />
+            <x-forms.toggle name="active" :checked="true" :trueLabel="__($activeKey[1]['active'])" :falseLabel="__($activeKey[0]['active'])" />
 
             {{-- Submit button --}}
             <x-forms.button type="submit" btnBg="bg-green-400 dark:bg-green-600" btnHover="hover:bg-green-500" icon="icon-square-plus" btnSize="w-full sm:w-40">

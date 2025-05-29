@@ -46,18 +46,18 @@
                 <tbody>
                     @foreach ($userSchedules as $key => $item)
                         <tr
-                            class="{{ !$item->active ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                            class="{{ $activeKey[$item->active]['color'] ?? 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                             <th scope="row"
                                 class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $userSchedules->firstItem() + $key }}
                             </th>
                             <td class="px-4 py-3 whitespace-nowrap">{{ $item->first_name }} {{ $item->last_name }}</td>
-                            <td class="px-4 py-3">{{ $days[$item->day_of_week] }}</td>
+                            <td class="px-4 py-3">{{ __($days[$item->day_of_week]) ?? null }}</td>
                             <td class="px-4 py-3 text-center">
-                                {{ \Carbon\Carbon::parse($item->check_in_time)->format('H:i') }}</td>
+                                {{ $item->check_in_time }}</td>
                             <td class="px-4 py-3 text-center">
-                                {{ \Carbon\Carbon::parse($item->check_out_time)->format('H:i') }}</td>
-                            <td class="px-4 py-3 text-center">{{ $options[$item->active] }}</td>
+                                {{ $item->check_out_time }}</td>
+                            <td class="px-4 py-3 text-center">{{ $yesNoKey[$item->active] ? __($yesNoKey[$item->active]) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $item->created_at }}</td>
                             <td class="px-4 py-3 text-center">{{ $item->created_by }}</td>
                             <td class="px-4 py-3">{{ $item->updated_at }}</td>

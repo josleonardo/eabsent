@@ -15,32 +15,33 @@ class UserScheduleController extends Controller
      */
     public function index()
     {
-        $userSchedules = DB::table('user_schedule')
-            ->join('users', 'user_schedule.user_id', '=', 'users.id')
-            ->join('user_profiles', 'user_profiles.user_id', '=', 'users.id')
-            ->join('schedules', 'user_schedule.schedule_id', '=', 'schedules.id')
+        $userSchedules = DB::table('user_schedule as us')
+            ->join('users as u', 'us.user_id', '=', 'u.id')
+            ->join('user_profiles as up', 'up.user_id', '=', 'u.id')
+            ->join('schedules as s', 'us.schedule_id', '=', 's.id')
             ->select(
-                'users.id as user_id',
-                'user_profiles.first_name',
-                'user_profiles.last_name',
-                'schedules.id as schedule_id',
-                'schedules.day_of_week',
-                'schedules.check_in_time',
-                'schedules.check_out_time',
-                'user_schedule.active',
-                'user_schedule.created_at',
-                'user_schedule.created_by',
-                'user_schedule.updated_at',
-                'user_schedule.updated_by'
+                'u.id as user_id',
+                'up.first_name',
+                'up.last_name',
+                's.id as schedule_id',
+                's.day_of_week',
+                's.check_in_time',
+                's.check_out_time',
+                'us.active',
+                'us.created_at',
+                'us.created_by',
+                'us.updated_at',
+                'us.updated_by'
             )
-            ->orderBy('users.id')
-            ->orderBy('schedules.day_of_week')
+            ->orderBy('u.id')
+            ->orderBy('s.day_of_week')
             ->paginate(10);
 
         $days= config('constants.days');
-        $options = config('constants.options');
+        $activeKey = config('constants.actives');
+        $yesNoKey = config('constants.yes_no');
 
-        return view('administrators.user-schedule.index', ['pageName' => 'User Schedule'] + compact('userSchedules', 'days', 'options'));
+        return view('administrators.user-schedule.index', ['pageName' => 'User Schedule'] + compact('userSchedules', 'days', 'activeKey', 'yesNoKey'));
     }
 
     /**
@@ -62,9 +63,9 @@ class UserScheduleController extends Controller
                 ];
             });
 
-        $active = config('constants.active');
+        $activeKey = config('constants.actives');
 
-        return view('administrators.user-schedule.create', ['pageName' => 'Add User Schedule'] + compact('users', 'schedules', 'active'));
+        return view('administrators.user-schedule.create', ['pageName' => 'Add User Schedule'] + compact('users', 'schedules', 'activeKey'));
     }
 
     /**
@@ -124,9 +125,9 @@ class UserScheduleController extends Controller
                 ];
             });
 
-        $active = config('constants.active');
+        $activeKey = config('constants.actives');
 
-        return view('administrators.user-schedule.edit', ['pageName' => 'Edit User Schedule'] + compact('user', 'currSchedule', 'pivotData', 'schedules', 'active'));
+        return view('administrators.user-schedule.edit', ['pageName' => 'Edit User Schedule'] + compact('user', 'currSchedule', 'pivotData', 'schedules', 'activeKey'));
     }
 
     /**
