@@ -6,7 +6,7 @@
         <x-forms.button as="link" href="{{ route('user.index') }}" icon="icon-chevron-left">
             Back
         </x-forms.button>
-        
+
         {{-- Create form --}}
         <form action="{{ route('user.store') }}" method="POST" class="space-y-6 max-w-7xl">
             @csrf
@@ -22,7 +22,8 @@
 
                 <x-forms.input-field label="Username" name="username" id="username" placeholder="JohnDoe123" />
 
-                <x-forms.input-field label="Password" name="password" id="password" type="password" :isRequired="true" />
+                <x-forms.input-field label="Password" name="password" id="password" type="password"
+                    :isRequired="true" />
 
                 <x-forms.input-field label="NIK" name="nik" id="nik" placeholder="1234567890123456"
                     :isRequired="true" />
@@ -50,10 +51,11 @@
             </div>
 
             {{-- Active toggle --}}
-            <x-forms.toggle name="active" :checked="true" trueLabel="Active" falseLabel="Inactive" />
+            <x-forms.toggle name="active" :checked="true" :trueLabel="__($activeKey[1]['active'])" :falseLabel="__($activeKey[0]['active'])" />
 
             {{-- Submit button --}}
-            <x-forms.button type="submit" btnBg="bg-green-400 dark:bg-green-600" btnHover="hover:bg-green-500" icon="icon-square-plus" btnSize="w-full sm:w-40">
+            <x-forms.button type="submit" btnBg="bg-green-400 dark:bg-green-600" btnHover="hover:bg-green-500"
+                icon="icon-square-plus" btnSize="w-full sm:w-40">
                 Create
             </x-forms.button>
         </form>

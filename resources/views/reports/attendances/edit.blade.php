@@ -36,7 +36,7 @@
                     </label>
                     <select name="status" id="status" required
                         class="block w-full rounded-md bg-white px-2 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white"">
-                        @foreach ($statuses as $key => $label)
+                        @foreach ($statusKey as $key => $label)
                             <option value="{{ $key }}"
                                 {{ old('status', $attendance->status) == $key ? 'selected' : '' }}>
                                 {{ $label }}

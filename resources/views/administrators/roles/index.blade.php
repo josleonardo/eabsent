@@ -43,13 +43,13 @@
                 <tbody>
                     @foreach ($roles as $key => $role)
                         <tr
-                            class="{{ !$role->active ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                            class="{{ $activeKey[$role->active]['color'] ?? 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                             <th scope="row"
                                 class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $roles->firstItem() + $key }}
                             </th>
                             <td class="px-4 py-3">{{ $role->name }}</td>
-                            <td class="px-4 py-3">{{ $role->active ? 'Yes' : 'No' }}</td>
+                            <td class="px-4 py-3">{{ $yesNoKey[$role->active] ? __($yesNoKey[$role->active]) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $role->created_at }}</td>
                             <td class="px-4 py-3 text-center">{{ $role->created_by }}</td>
                             <td class="px-4 py-3">{{ $role->updated_at }}</td>

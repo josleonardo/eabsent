@@ -60,7 +60,7 @@
                             <td class="px-4 py-3">{{ $attendance->sched_out }}</td>
                             <td class="px-4 py-3">{{ $attendance->actual_in }}</td>
                             <td class="px-4 py-3">{{ $attendance->actual_out }}</td>
-                            <td class="px-4 py-3">{{ $statusKey[$attendance->status] ? __($statusKey[$attendance->status]['label']) : __('Unknown') }}</td>
+                            <td class="px-4 py-3">{{ $statusKey[$attendance->status] ? __($statusKey[$attendance->status]['status']) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $attendance->updated_at }}</td>
                             <td class="px-4 py-3">{{ $attendance->updated_by }}</td>
                             <td class="px-4 py-3">

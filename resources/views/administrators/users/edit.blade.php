@@ -56,7 +56,7 @@
             </div>
 
             {{-- Active toggle --}}
-            <x-forms.toggle name="active" :checked="$user->active" trueLabel="Active" falseLabel="Inactive" />
+            <x-forms.toggle name="active" :checked="$user->active" :trueLabel="__($activeKey[1]['active'])" :falseLabel="__($activeKey[0]['active'])" />
 
             {{-- Submit button --}}
             <x-forms.button type="submit" icon="icon-edit" btnSize="w-full sm:w-40">

@@ -16,17 +16,15 @@
                 <x-forms.input-field label="User ID" name="user_id" id="user_id" :isRequired="true" :isDisabled="true"
                     :value="$user->id" />
 
-                <x-forms.input-field label="Fullname" name="fullname" id="fullname" :isRequired="true" :isDisabled="true"
-                    :value="$user->profile->first_name && $user->profile->last_name
-                        ? $user->profile->first_name . ' ' . $user->profile->last_name
-                        : ''" />
+                <x-forms.input-field label="Full Name" name="full_name" id="full_name" :isRequired="true"
+                    :isDisabled="true" :value="$user->full_name" />
 
                 <x-forms.select label="Role" name="role" id="role" :options="$roles" display="name"
                     :selected="$user->roles->first()->id ?? null" />
             </div>
 
             {{-- Active toggle --}}
-            <x-forms.toggle name="active" :checked="$user->roles->first()->pivot->active" trueLabel="Active" falseLabel="Inactive" />
+            <x-forms.toggle name="active" :checked="$user->roles->first()->pivot->active" :trueLabel="__($activeKey[1]['active'])" :falseLabel="__($activeKey[0]['active'])" />
 
             {{-- Submit button --}}
             <x-forms.button type="submit" icon="icon-edit" btnSize="w-full sm:w-40">

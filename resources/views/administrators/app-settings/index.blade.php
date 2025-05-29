@@ -46,7 +46,7 @@
                 <tbody>
                     @foreach ($appSettings as $key => $appSetting)
                         <tr
-                            class="{{ !$appSetting->active ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                            class="{{ $activeKey[$appSetting->active]['color'] ?? 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                             <th scope="row"
                                 class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $appSettings->firstItem() + $key }}
@@ -55,7 +55,9 @@
                             <td class="px-4 py-3">{{ $appSetting->key }}</td>
                             <td class="px-4 py-3">{{ $appSetting->value_1 }}</td>
                             <td class="px-4 py-3">{{ $appSetting->value_2 }}</td>
-                            <td class="px-4 py-3">{{ $appSetting->active ? 'Yes' : 'No' }}</td>
+                            <td class="px-4 py-3">
+                                {{ $yesNoKey[$appSetting->active] ? __($yesNoKey[$appSetting->active]) : __('Unknown') }}
+                            </td>
                             <td class="px-4 py-3">{{ $appSetting->created_at }}</td>
                             <td class="px-4 py-3 text-center">{{ $appSetting->created_by }}</td>
                             <td class="px-4 py-3">{{ $appSetting->updated_at }}</td>

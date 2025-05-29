@@ -77,9 +77,7 @@
                                         {{ $pendings->firstItem() + $key }}
                                     </th>
                                     <td class="px-4 py-3">
-                                        {{ $pending->requester->profile->first_name && $pending->requester->profile->last_name
-                                            ? $pending->requester->profile->first_name . ' ' . $pending->requester->profile->last_name
-                                            : $pending->created_by }}
+                                        {{ $pending->requester->full_name }}
                                     </td>
                                     </td>
                                     <td class="px-4 py-3">
@@ -145,15 +143,13 @@
                         <tbody>
                             @foreach ($histories as $key => $history)
                                 <tr
-                                    class="{{ $history->approve_status == 0 ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                                    class="{{ $statusKey[$history->approve_status]['color'] ?? 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ $histories->firstItem() + $key }}
                                     </th>
                                     <td class="px-4 py-3">
-                                        {{ $history->requester->profile->first_name && $history->requester->profile->last_name
-                                            ? $history->requester->profile->first_name . ' ' . $history->requester->profile->last_name
-                                            : $history->created_by }}
+                                        {{ $history->requester->full_name }}
                                     </td>
                                     <td class="px-4 py-3">
                                         {{ $history->requester->levels->first()->name ?? '' }}</td>
@@ -162,12 +158,10 @@
                                     <td class="px-4 py-3">{{ $history->reason }}</td>
                                     <td class="px-4 py-3">{{ $history->file_path }}</td>
                                     <td class="px-4 py-3">{{ $history->created_at }}</td>
-                                    <td class="px-4 py-3">{{ $status[$history->approve_status] }}</td>
+                                    <td class="px-4 py-3">{{ $statusKey[$history->approve_status] ? __($statusKey[$history->approve_status]['status']) : __('Unknown') }}</td>
                                     <td class="px-4 py-3">{{ $history->approved_at }}</td>
                                     <td class="px-4 py-3">
-                                        {{ $history->approver->profile->first_name && $history->approver->profile->last_name
-                                            ? $history->approver->profile->first_name . ' ' . $history->approver->profile->last_name
-                                            : $history->created_by }}
+                                        {{ $history->approver->full_name }}
                                     </td>
                                 </tr>
                             @endforeach
