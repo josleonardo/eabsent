@@ -14,7 +14,11 @@ class AppSettingController extends Controller
     public function index()
     {
         $appSettings = AppSetting::paginate(10);
-        return view('administrators.app-settings.index', ['pageName' => 'App Settings'] + compact('appSettings'));
+
+        $activeKey = config('constants.actives');
+        $yesNoKey = config('constants.yes_no');
+
+        return view('administrators.app-settings.index', ['pageName' => 'App Settings'] + compact('appSettings', 'activeKey', 'yesNoKey'));
     }
 
     /**
@@ -22,7 +26,9 @@ class AppSettingController extends Controller
      */
     public function create()
     {
-        return view('administrators.app-settings.create', ['pageName' => 'Add app setting']);
+        $activeKey = config('constants.actives');
+
+        return view('administrators.app-settings.create', ['pageName' => 'Add app setting'] + compact('activeKey'));
     }
 
     /**
@@ -66,7 +72,9 @@ class AppSettingController extends Controller
      */
     public function edit(AppSetting $appSetting)
     {
-        return view('administrators.app-settings.edit', ['pageName' => 'Edit app setting'] + compact('appSetting'));
+        $activeKey = config('constants.actives');
+
+        return view('administrators.app-settings.edit', ['pageName' => 'Edit app setting'] + compact('appSetting', 'activeKey'));
     }
 
     /**

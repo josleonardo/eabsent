@@ -14,7 +14,11 @@ class LevelController extends Controller
     public function index()
     {
         $levels = Level::paginate(10);
-        return view('administrators.levels.index', ['pageName' => 'Levels'] + compact('levels'));
+
+        $activeKey = config('constants.actives');
+        $yesNoKey = config('constants.yes_no');
+
+        return view('administrators.levels.index', ['pageName' => 'Levels'] + compact('levels', 'activeKey', 'yesNoKey'));
     }
 
     /**
@@ -22,7 +26,9 @@ class LevelController extends Controller
      */
     public function create()
     {
-        return view('administrators.levels.create', ['pageName' => 'Add level']);
+        $activeKey = config('constants.actives');
+
+        return view('administrators.levels.create', ['pageName' => 'Add level'] + compact('activeKey'));
     }
 
     /**
@@ -60,7 +66,9 @@ class LevelController extends Controller
      */
     public function edit(Level $level)
     {
-        return view('administrators.levels.edit', ['pageName' => 'Edit level'] + compact('level'));
+        $activeKey = config('constants.actives');
+
+        return view('administrators.levels.edit', ['pageName' => 'Edit level'] + compact('level', 'activeKey'));
     }
 
     /**

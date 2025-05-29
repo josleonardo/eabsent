@@ -14,7 +14,11 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::paginate(10);
-        return view('administrators.roles.index', ['pageName' => 'Roles'] + compact('roles'));
+
+        $activeKey = config('constants.actives');
+        $yesNoKey = config('constants.yes_no');
+
+        return view('administrators.roles.index', ['pageName' => 'Roles'] + compact('roles', 'activeKey', 'yesNoKey'));
     }
 
     /**
@@ -22,7 +26,9 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return view('administrators.roles.create', ['pageName' => 'Add role']);
+        $activeKey = config('constants.actives');
+
+        return view('administrators.roles.create', ['pageName' => 'Add role'] + compact('activeKey'));
     }
 
     /**
@@ -60,7 +66,9 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        return view('administrators.roles.edit', ['pageName' => 'Edit role'] + compact('role'));
+        $activeKey = config('constants.actives');
+
+        return view('administrators.roles.edit', ['pageName' => 'Edit role'] + compact('role', 'activeKey'));
     }
 
     /**

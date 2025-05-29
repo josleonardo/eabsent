@@ -16,7 +16,10 @@ class UserLevelController extends Controller
     {
         $users = User::select('id', 'email', 'username')->with('levels:id,name')->paginate(10);
 
-        return view('administrators.user-level.index', ['pageName' => 'User Level'] + compact('users'));
+        $activeKey = config('constants.actives');
+        $yesNoKey = config('constants.yes_no');
+
+        return view('administrators.user-level.index', ['pageName' => 'User Level'] + compact('users', 'activeKey', 'yesNoKey'));
     }
 
     /**
@@ -51,7 +54,9 @@ class UserLevelController extends Controller
         $user = User::select('id', 'email', 'username')->with('levels:id,name')->findOrFail($id);
         $levels = Level::select('id', 'name')->where('active', 1)->get();
 
-        return view('administrators.user-level.edit', ['pageName' => 'Edit User Level'] + compact('user', 'levels'));
+        $activeKey = config('constants.actives');
+
+        return view('administrators.user-level.edit', ['pageName' => 'Edit User Level'] + compact('user', 'levels', 'activeKey'));
     }
 
     /**

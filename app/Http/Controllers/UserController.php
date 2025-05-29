@@ -20,7 +20,11 @@ class UserController extends Controller
     public function index()
     {
         $users = User::select('id', 'email', 'username', 'active', 'created_at', 'updated_at', 'created_by', 'updated_by')->paginate(10);
-        return view('administrators.users.index', ['pageName' => 'Users'] + compact('users'));
+
+        $activeKey = config('constants.actives');
+        $yesNoKey = config('constants.yes_no');
+
+        return view('administrators.users.index', ['pageName' => 'Users'] + compact('users', 'activeKey', 'yesNoKey'));
     }
 
     /**
@@ -46,7 +50,9 @@ class UserController extends Controller
             ];
         })->values();
 
-        return view('administrators.users.create', ['pageName' => 'Add user'] + compact('roles', 'levels', 'schedules'));
+        $activeKey = config('constants.actives');
+
+        return view('administrators.users.create', ['pageName' => 'Add user'] + compact('roles', 'levels', 'schedules', 'activeKey'));
     }
 
     /**
@@ -187,7 +193,9 @@ class UserController extends Controller
             ];
         })->values();
 
-        return view('administrators.users.edit', ['pageName' => 'Edit user'] + compact('user', 'roles', 'levels', 'schedules'));
+        $activeKey = config('constants.actives');
+
+        return view('administrators.users.edit', ['pageName' => 'Edit user'] + compact('user', 'roles', 'levels', 'schedules', 'activeKey'));
     }
 
     /**

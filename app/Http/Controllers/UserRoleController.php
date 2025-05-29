@@ -16,7 +16,10 @@ class UserRoleController extends Controller
     {
         $users = User::select('id', 'email', 'username')->with('roles:id,name')->paginate(10);
 
-        return view('administrators.user-role.index', ['pageName' => 'User Role'] + compact('users'));
+        $activeKey = config('constants.actives');
+        $yesNoKey = config('constants.yes_no');
+
+        return view('administrators.user-role.index', ['pageName' => 'User Role'] + compact('users', 'activeKey', 'yesNoKey'));
     }
 
     /**
@@ -51,7 +54,9 @@ class UserRoleController extends Controller
         $user = User::select('id', 'email', 'username')->with('roles:id,name')->findOrFail($id);
         $roles = Role::select('id', 'name')->where('active', 1)->get();
 
-        return view('administrators.user-role.edit', ['pageName' => 'Edit User Role'] + compact('user', 'roles'));
+        $activeKey = config('constants.actives');
+
+        return view('administrators.user-role.edit', ['pageName' => 'Edit User Role'] + compact('user', 'roles', 'activeKey'));
     }
 
     /**

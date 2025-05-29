@@ -50,12 +50,12 @@ class AttendanceController extends Controller
      */
     public function edit(Attendance $attendance)
     {
-        $statuses = collect(config('constants.attendance_status'))
+        $statusKey = collect(config('constants.attendance_status'))
             ->mapWithKeys(function ($value, $key) {
-                return [$key => __($value['label'])];
+                return [$key => __($value['status'])];
             })
             ->toArray();
-        return view('reports.attendances.edit', ['pageName' => 'Edit Attendance'] + compact('attendance', 'statuses'));
+        return view('reports.attendances.edit', ['pageName' => 'Edit Attendance'] + compact('attendance', 'statusKey'));
     }
 
     /**

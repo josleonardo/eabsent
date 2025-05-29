@@ -14,13 +14,13 @@ class LeaveController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $status = ['Rejected', 'Approved'];
+        $statusKey = config('constants.approve_status');
         
         $pendings = Leave::getPending($user);
         $histories = Leave::getHistory($user);
         $activeTab = $request->query('tab', 'pending'); // default to 'pending'
 
-        return view('approvals.leaves.index', ['pageName' => 'Leave Requests'] + compact('pendings', 'histories', 'status', 'activeTab'));
+        return view('approvals.leaves.index', ['pageName' => 'Leave Requests'] + compact('pendings', 'histories', 'statusKey', 'activeTab'));
     }
 
     /**

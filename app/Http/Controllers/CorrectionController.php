@@ -14,13 +14,13 @@ class CorrectionController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $status = ['Rejected', 'Approved'];
+        $statusKey = config('constants.approve_status');
         
         $pendings = Correction::getPending($user);
         $histories = Correction::getHistory($user);
         $activeTab = $request->query('tab', 'pending'); // default to 'pending'
         
-        return view('approvals.corrections.index', ['pageName' => 'Correction Requests'] + compact('pendings', 'histories', 'status', 'activeTab'));
+        return view('approvals.corrections.index', ['pageName' => 'Correction Requests'] + compact('pendings', 'histories', 'statusKey', 'activeTab'));
     }
 
     /**
