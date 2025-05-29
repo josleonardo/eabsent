@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,9 +14,12 @@ class ScheduleController extends Controller
     public function index()
     {
         $schedules = Schedule::paginate(10);
-        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        return view('administrators.schedules.index', ['pageName' => 'Schedule'] + compact('schedules', 'days'));
+        $days = config('constants.days');
+        $activeKey = config('constants.actives');
+        $yesNoKey = config('constants.yes_no');
+
+        return view('administrators.schedules.index', ['pageName' => 'Schedule'] + compact('schedules', 'days', 'activeKey', 'yesNoKey'));
     }
 
     /**
@@ -25,9 +27,14 @@ class ScheduleController extends Controller
      */
     public function create()
     {
-        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $days = collect(config('constants.days'))
+            ->mapWithKeys(function ($value, $key) {
+                return [$key => __($value)];
+            })
+            ->toArray();
+        $activeKey = config('constants.actives');
 
-        return view('administrators.schedules.create', ['pageName' => 'Add schedule'] + compact('days'));
+        return view('administrators.schedules.create', ['pageName' => 'Add schedule'] + compact('days', 'activeKey'));
     }
 
     /**
@@ -71,9 +78,14 @@ class ScheduleController extends Controller
      */
     public function edit(Schedule $schedule)
     {
-        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $days = collect(config('constants.days'))
+            ->mapWithKeys(function ($value, $key) {
+                return [$key => __($value)];
+            })
+            ->toArray();
+        $activeKey = config('constants.actives');
 
-        return view('administrators.schedules.edit', ['pageName' => 'Edit schedule'] + compact('schedule', 'days'));
+        return view('administrators.schedules.edit', ['pageName' => 'Edit schedule'] + compact('schedule', 'days', 'activeKey'));
     }
 
     /**
@@ -81,12 +93,6 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, Schedule $schedule)
     {
-        // Format the time fields to match H:i
-        $request->merge([
-            'check_in_time' => Carbon::parse($request->check_in_time)->format('H:i'),
-            'check_out_time' => Carbon::parse($request->check_out_time)->format('H:i'),
-        ]);
-        
         $validatedData = $request->validate([
             'group' => 'required|integer|max:20',
             'day_of_week' => 'required|integer|max:7',

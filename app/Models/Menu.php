@@ -20,7 +20,7 @@ class Menu extends Model
         'menu_id',
         'name',
         'url',
-        'type',
+        'platform',
         'order',
         'icon',
         'active',

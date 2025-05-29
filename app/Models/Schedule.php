@@ -39,7 +39,7 @@ class Schedule extends Model
     public function getDayNameAttribute()
     {
         $days = config('constants.days');
-        return isset($this->day_of_week) ? $days[$this->day_of_week] : null;
+        return isset($this->day_of_week) ? __($days[$this->day_of_week]) : null;
     }
 
     public function getFormattedCheckInAttribute()

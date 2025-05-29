@@ -14,9 +14,12 @@ class MenuController extends Controller
     public function index()
     {
         $menus = Menu::paginate(10);
-        $types = ['Web', 'Android',];
 
-        return view('administrators.menus.index', ['pageName' => 'Menus'] + compact('menus', 'types'));
+        $platforms = config('constants.platforms');
+        $activeKey = config('constants.actives');
+        $yesNoKey = config('constants.yes_no');
+
+        return view('administrators.menus.index', ['pageName' => 'Menus'] + compact('menus', 'platforms', 'activeKey', 'yesNoKey'));
     }
 
     /**
@@ -24,9 +27,14 @@ class MenuController extends Controller
      */
     public function create()
     {
-        $types = ['Web', 'Android',];
+        $platforms = collect(config('constants.platforms'))
+            ->mapWithKeys(function ($value, $key) {
+                return [$key => __($value)];
+            })
+            ->toArray();
+        $activeKey = config('constants.actives');
 
-        return view('administrators.menus.create', ['pageName' => 'Add menu'] + compact('types'));
+        return view('administrators.menus.create', ['pageName' => 'Add menu'] + compact('platforms', 'activeKey'));
     }
 
     /**
@@ -38,19 +46,19 @@ class MenuController extends Controller
             'menu_id' => 'required|integer',
             'menu_name' => 'required|string|max:255',
             'url' => 'required|string|max:255|unique:menus,url',
-            'type' => 'required|integer|max:5',
+            'platform' => 'required|integer|max:5',
             'order' => 'nullable|integer',
             'icon' => 'nullable|string|max:255',
             'active' => 'required|boolean',
         ]);
-        
+
         $currentUserId = Auth::id();
 
         Menu::create([
             'menu_id' => $validatedData['menu_id'],
             'name' => $validatedData['menu_name'],
             'url' => $validatedData['url'],
-            'type' => $validatedData['type'],
+            'platform' => $validatedData['platform'],
             'order' => $validatedData['order'],
             'icon' => $validatedData['icon'],
             'active' => $validatedData['active'],
@@ -74,9 +82,14 @@ class MenuController extends Controller
      */
     public function edit(Menu $menu)
     {
-        $types = ['Web', 'Android',];
+        $platforms = collect(config('constants.platforms'))
+            ->mapWithKeys(function ($value, $key) {
+                return [$key => __($value)];
+            })
+            ->toArray();
+        $activeKey = config('constants.actives');
 
-        return view('administrators.menus.edit', ['pageName' => 'Edit menu'] + compact('menu', 'types'));
+        return view('administrators.menus.edit', ['pageName' => 'Edit menu'] + compact('menu', 'platforms', 'activeKey'));
     }
 
     /**
@@ -88,19 +101,19 @@ class MenuController extends Controller
             'menu_id' => 'required|integer',
             'menu_name' => 'required|string|max:255',
             'url' => 'required|string|max:255|unique:menus,url,' . $menu->id,
-            'type' => 'required|integer|max:5',
+            'platform' => 'required|integer|max:5',
             'order' => 'nullable|integer',
             'icon' => 'nullable|string|max:255',
             'active' => 'required|boolean',
         ]);
-        
+
         $currentUserId = Auth::id();
 
         $menu->update([
             'menu_id' => $validatedData['menu_id'],
             'name' => $validatedData['menu_name'],
             'url' => $validatedData['url'],
-            'type' => $validatedData['type'],
+            'platform' => $validatedData['platform'],
             'order' => $validatedData['order'],
             'icon' => $validatedData['icon'],
             'active' => $validatedData['active'],

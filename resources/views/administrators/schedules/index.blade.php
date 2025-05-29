@@ -46,16 +46,16 @@
                 <tbody>
                     @foreach ($schedules as $key => $schedule)
                         <tr
-                            class="{{ !$schedule->active ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                            class="{{ $activeKey[$schedule->active]['color'] ?? 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                             <th scope="row"
                                 class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $schedules->firstItem() + $key }}
                             </th>
                             <td class="px-4 py-3">{{ $schedule->group }}</td>
-                            <td class="px-4 py-3 text-center">{{ $days[$schedule->day_of_week] }}</td>
+                            <td class="px-4 py-3 text-center">{{ $schedule->day_name }}</td>
                             <td class="px-4 py-3">{{ $schedule->check_in_time }}</td>
                             <td class="px-4 py-3">{{ $schedule->check_out_time }}</td>
-                            <td class="px-4 py-3">{{ $schedule->active ? 'Yes' : 'No' }}</td>
+                            <td class="px-4 py-3">{{ $yesNoKey[$schedule->active] ? __($yesNoKey[$schedule->active]) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $schedule->created_at }}</td>
                             <td class="px-4 py-3 text-center">{{ $schedule->created_by }}</td>
                             <td class="px-4 py-3">{{ $schedule->updated_at }}</td>

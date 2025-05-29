@@ -22,18 +22,18 @@
                     :isRequired="true" />
 
                 <div>
-                    <label for="type" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
-                        Type
+                    <label for="platform" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
+                        Platform
                     </label>
-                    <select name="type" id="type" required
+                    <select name="platform" id="platform" required
                         class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        @foreach ($types as $key => $label)
-                            <option value="{{ $key }}" {{ old('type') == $key ? 'selected' : '' }}>
+                        @foreach ($platforms as $key => $label)
+                            <option value="{{ $key }}" {{ old('platform') == $key ? 'selected' : '' }}>
                                 {{ $label }}
                             </option>
                         @endforeach
                     </select>
-                    @error('type')
+                    @error('platform')
                         <p class="mt-2 text-sm text-red-600 dark:text-red-500"> {{ $message }}</p>
                     @enderror
                 </div>
@@ -44,7 +44,7 @@
             </div>
 
             {{-- Active toggle --}}
-            <x-forms.toggle name="active" :checked="true" trueLabel="Active" falseLabel="Inactive" />
+            <x-forms.toggle name="active" :checked="true" :trueLabel="__($activeKey[1]['active'])" :falseLabel="__($activeKey[0]['active'])" />
 
             {{-- Submit button --}}
             <x-forms.button type="submit" btnBg="bg-green-400 dark:bg-green-600" btnHover="hover:bg-green-500" icon="icon-square-plus" btnSize="w-full sm:w-40">

@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->integer('menu_id');
             $table->string('name');
-            $table->string('url');
-            $table->integer('type');
-            $table->integer('order')->nullable();
+            $table->string('url')->nullable();
+            $table->smallInteger('platform');
+            $table->smallInteger('order')->nullable();
             $table->string('icon')->nullable();
             $table->boolean('active')->nullable();
             $table->datetimes();

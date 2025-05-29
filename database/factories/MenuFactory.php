@@ -20,7 +20,7 @@ class MenuFactory extends Factory
             'menu_id' => fake()->numberBetween(1, 20),
             'name' => fake()->word(),
             'url' => fake()->url(),
-            'type' => fake()->randomElement(['Android', 'Web']),
+            'platform' => fake()->numberBetween(0, 1),
             'order' => fake()->numberBetween(1, 20),
             'icon' => fake()->words(rand(1, 3), true),
             'active' => fake()->boolean(90),

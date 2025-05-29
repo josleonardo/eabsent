@@ -31,7 +31,7 @@
                         <th scope="col" class="p-4">Menu ID</th>
                         <th scope="col" class="p-4">Menu Name</th>
                         <th scope="col" class="p-4">URL</th>
-                        <th scope="col" class="p-4">Type</th>
+                        <th scope="col" class="p-4">Platform</th>
                         <th scope="col" class="p-4">Order</th>
                         <th scope="col" class="p-4">Icon</th>
                         <th scope="col" class="p-4">Active</th>
@@ -48,7 +48,7 @@
                 <tbody>
                     @foreach ($menus as $key => $menu)
                         <tr
-                            class="{{ !$menu->active ? 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800' : 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                            class="{{ $activeKey[$menu->active]['color'] ?? 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                             <th scope="row"
                                 class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $menus->firstItem() + $key }}
@@ -56,10 +56,10 @@
                             <td class="px-4 py-3 text-center">{{ $menu->menu_id }}</td>
                             <td class="px-4 py-3">{{ $menu->name }}</td>
                             <td class="px-4 py-3">{{ $menu->url }}</td>
-                            <td class="px-4 py-3">{{ $types[$menu->type] }}</td>
+                            <td class="px-4 py-3">{{ $platforms[$menu->platform] ? __($platforms[$menu->platform]) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $menu->order }}</td>
                             <td class="px-4 py-3">{{ $menu->icon }}</td>
-                            <td class="px-4 py-3">{{ $menu->active ? 'Yes' : 'No' }}</td>
+                            <td class="px-4 py-3">{{ $yesNoKey[$menu->active] ? __($yesNoKey[$menu->active]) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $menu->created_at }}</td>
                             <td class="px-4 py-3 text-center">{{ $menu->created_by }}</td>
                             <td class="px-4 py-3">{{ $menu->updated_at }}</td>

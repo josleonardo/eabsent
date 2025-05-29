@@ -173,7 +173,7 @@ class MenuSeeder extends Seeder
                 'menu_id' => 0,
                 'name' => $androidMenu['name'],
                 'url' => $androidMenu['url'],
-                'type' => 1,
+                'platform' => 1,
                 'order' => $androidMenu['order'],
                 'icon' => $androidMenu['icon'],
                 'active' => true
@@ -185,7 +185,7 @@ class MenuSeeder extends Seeder
                 'menu_id' => $webMenu['menu_id'],
                 'name' => $webMenu['name'],
                 'url' => $webMenu['url'],
-                'type' => 0,
+                'platform' => 0,
                 'order' => $webMenu['order'],
                 'icon' => null,
                 'active' => true

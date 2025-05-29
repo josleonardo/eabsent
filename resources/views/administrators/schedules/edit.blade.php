@@ -21,7 +21,7 @@
                         Day of Week
                     </label>
                     <select name="day_of_week" id="day_of_week" required
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        class="block w-full rounded-md bg-white px-2 py-2 text-base text-gray-900 border border-gray-200 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         @foreach ($days as $key => $label)
                             <option value="{{ $key }}"
                                 {{ old('day_of_week', $schedule->day_of_week) == $key ? 'selected' : '' }}>
@@ -35,14 +35,14 @@
                 </div>
 
                 <x-forms.input-field label="Check In Time" name="check_in_time" id="check_in_time" type="time"
-                    :isRequired="true" :value="$schedule->check_in_time" />
+                    :isRequired="true" :value="$schedule->formatted_check_in" />
 
                 <x-forms.input-field label="Check Out Time" name="check_out_time" id="check_out_time" type="time"
-                    :isRequired="true" :value="$schedule->check_out_time" />
+                    :isRequired="true" :value="$schedule->formatted_check_out" />
             </div>
 
             {{-- Active toggle --}}
-            <x-forms.toggle name="active" :checked="$schedule->active" trueLabel="Active" falseLabel="Inactive" />
+            <x-forms.toggle name="active" :checked="$schedule->active" :trueLabel="__($activeKey[1]['active'])" :falseLabel="__($activeKey[0]['active'])" />
 
             {{-- Submit button --}}
             <x-forms.button type="submit" icon="icon-edit" btnSize="w-full sm:w-40">
