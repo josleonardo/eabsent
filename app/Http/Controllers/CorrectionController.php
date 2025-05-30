@@ -15,11 +15,11 @@ class CorrectionController extends Controller
     {
         $user = Auth::user();
         $statusKey = config('constants.approve_status');
-        
+
         $pendings = Correction::getPending($user);
         $histories = Correction::getHistory($user);
         $activeTab = $request->query('tab', 'pending'); // default to 'pending'
-        
+
         return view('approvals.corrections.index', ['pageName' => 'Correction Requests'] + compact('pendings', 'histories', 'statusKey', 'activeTab'));
     }
 
@@ -60,14 +60,14 @@ class CorrectionController extends Controller
      */
     public function update(Request $request, Correction $correction)
     {
-        if (!$correction) {
+        if (! $correction) {
             return redirect()->back()->with('error', 'No correction request found.');
         }
-        
+
         $validatedData = $request->validate([
             'approve_status' => 'required|in:0,1',
         ]);
-        
+
         $currentUserId = Auth::id();
 
         $correction->update([

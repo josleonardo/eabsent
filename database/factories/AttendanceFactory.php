@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Attendance;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,7 +19,7 @@ class AttendanceFactory extends Factory
     {
         $user = User::inRandomOrder()->first();
         $date = fake()->dateTimeBetween('-10 days', 'now')->format('Y-m-d');
-        
+
         $dayOfWeek = date('w', strtotime($date));  // 0 = Sunday, 6 = Saturday
 
         // Find the user's schedule for this day
@@ -28,7 +27,7 @@ class AttendanceFactory extends Factory
             ->where('day_of_week', $dayOfWeek)
             ->first();
 
-        if (!$schedule) {
+        if (! $schedule) {
             // If no schedule, skip by returning null times and marking as holiday
             return [
                 'user_id' => $user->id,
@@ -44,7 +43,6 @@ class AttendanceFactory extends Factory
             ];
         }
 
-       
         $schedIn = $schedule->check_in_time;
         $schedOut = $schedule->check_out_time;
 

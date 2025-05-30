@@ -16,8 +16,7 @@ class Toggle extends Component
         public bool $checked = false,
         public string $trueLabel = 'Yes',
         public string $falseLabel = 'No',
-    )
-    {
+    ) {
         //
     }
 

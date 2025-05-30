@@ -77,10 +77,10 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $validatedData = $request->validate([
-            'role_name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+            'role_name' => 'required|string|max:255|unique:roles,name,'.$role->id,
             'active' => 'required|boolean',
         ]);
-        
+
         $currentUserId = Auth::id();
 
         $role->update([

@@ -176,10 +176,10 @@ class MenuSeeder extends Seeder
                 'platform' => 1,
                 'order' => $androidMenu['order'],
                 'icon' => $androidMenu['icon'],
-                'active' => true
+                'active' => true,
             ]);
         }
-        
+
         foreach ($webMenus as $webMenu) {
             Menu::factory()->create([
                 'menu_id' => $webMenu['menu_id'],
@@ -188,7 +188,7 @@ class MenuSeeder extends Seeder
                 'platform' => 0,
                 'order' => $webMenu['order'],
                 'icon' => null,
-                'active' => true
+                'active' => true,
             ]);
         }
     }

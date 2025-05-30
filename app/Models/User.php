@@ -85,11 +85,12 @@ class User extends Authenticatable
         if ($this->profile) {
             $first = $this->profile->first_name;
             $last = $this->profile->last_name;
-            $full = trim(($first ?? '') . ' ' . ($last ?? ''));
+            $full = trim(($first ?? '').' '.($last ?? ''));
             if ($full !== '') {
                 return $full;
             }
         }
+
         return $this->id ? $this->id : 'Unknown User';
     }
 }

@@ -38,8 +38,8 @@ class Attendance extends Model
     /**
      * Get attendances based on the user's role and level.
      *
-     * @param int $userLevel
-     * @param int $userRole
+     * @param  int  $userLevel
+     * @param  int  $userRole
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public static function getAttendances($user)

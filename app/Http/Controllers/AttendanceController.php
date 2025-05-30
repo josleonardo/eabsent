@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,6 +54,7 @@ class AttendanceController extends Controller
                 return [$key => __($value['status'])];
             })
             ->toArray();
+
         return view('reports.attendances.edit', ['pageName' => 'Edit Attendance'] + compact('attendance', 'statusKey'));
     }
 

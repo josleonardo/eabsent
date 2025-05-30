@@ -18,7 +18,7 @@ class ApprovalController extends Controller
         $allowedRoles = in_array($role->id, [1, 2, 3]);
 
         // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
-        if (!$user || !$user->active || !$role || !$allowedRoles || !$role->active || !$role->pivot->active) {
+        if (! $user || ! $user->active || ! $role || ! $allowedRoles || ! $role->active || ! $role->pivot->active) {
             return redirect()->route('home.index')->with('error', 'Unauthorized access');
         }
 
@@ -54,6 +54,7 @@ class ApprovalController extends Controller
                 $menu->color = $colors[$index % count($colors)];
                 $menu->hover = $hovers[$index % count($hovers)];
                 $menu->icon = $icons[$index % count($icons)];
+
                 return $menu;
             });
 

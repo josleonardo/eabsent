@@ -44,7 +44,6 @@ class Correction extends Model
     /**
      * Get pending corrections.
      *
-     * @param $user
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public static function getPending($user)
@@ -86,7 +85,6 @@ class Correction extends Model
     /**
      * Get processed corrections.
      *
-     * @param $user
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public static function getHistory($user)
@@ -119,7 +117,7 @@ class Correction extends Model
                 // and level matches the current user level
                 ->whereHas('requester.levels', function (Builder $q) use ($userLevel) {
                     $q->where('level_id', $userLevel)
-                        ->where('approve_status', '!=', null);;
+                        ->where('approve_status', '!=', null);
                 })->latest('approved_at')->paginate(10, ['*'], 'processed_page');
         }
 

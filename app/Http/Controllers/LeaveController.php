@@ -15,7 +15,7 @@ class LeaveController extends Controller
     {
         $user = Auth::user();
         $statusKey = config('constants.approve_status');
-        
+
         $pendings = Leave::getPending($user);
         $histories = Leave::getHistory($user);
         $activeTab = $request->query('tab', 'pending'); // default to 'pending'
@@ -60,10 +60,10 @@ class LeaveController extends Controller
      */
     public function update(Request $request, Leave $leave)
     {
-        if (!$leave) {
+        if (! $leave) {
             return redirect()->back()->with('error', 'No leave request found.');
         }
-        
+
         $validatedData = $request->validate([
             'approve_status' => 'required|in:0,1',
         ]);

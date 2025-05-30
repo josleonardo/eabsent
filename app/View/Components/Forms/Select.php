@@ -21,8 +21,7 @@ class Select extends Component
         public bool $isRequired = false,
         public bool $isDisabled = false,
         public $selected = null,
-    )
-    {
+    ) {
         //
     }
 

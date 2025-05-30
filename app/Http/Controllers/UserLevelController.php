@@ -77,7 +77,7 @@ class UserLevelController extends Controller
             'updated_by' => $currentUserId,
         ];
 
-        if (!empty($validatedData['level'])) {
+        if (! empty($validatedData['level'])) {
             $user->levels()->syncWithPivotValues([$validatedData['level']], $defaultSync);
         } else {
             $user->levels()->detach();

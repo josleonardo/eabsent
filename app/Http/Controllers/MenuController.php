@@ -100,7 +100,7 @@ class MenuController extends Controller
         $validatedData = $request->validate([
             'menu_id' => 'required|integer',
             'menu_name' => 'required|string|max:255',
-            'url' => 'required|string|max:255|unique:menus,url,' . $menu->id,
+            'url' => 'required|string|max:255|unique:menus,url,'.$menu->id,
             'platform' => 'required|integer|max:5',
             'order' => 'nullable|integer',
             'icon' => 'nullable|string|max:255',

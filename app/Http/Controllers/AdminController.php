@@ -17,7 +17,7 @@ class AdminController extends Controller
         $allowedRoles = in_array($role->id, [1, 2]);
 
         // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
-        if (!$user || !$user->active || !$role || !$allowedRoles || !$role->active || !$role->pivot->active) {
+        if (! $user || ! $user->active || ! $role || ! $allowedRoles || ! $role->active || ! $role->pivot->active) {
             return redirect()->route('home.index')->with('error', 'Unauthorized access');
         }
 
@@ -54,6 +54,7 @@ class AdminController extends Controller
                 // Assign color based on index, cycling if more items than available
                 $menu->color = $colors[$index % count($colors)];
                 $menu->hover = $hovers[$index % count($hovers)];
+
                 return $menu;
             });
 

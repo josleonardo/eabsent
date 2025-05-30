@@ -77,7 +77,7 @@ class UserRoleController extends Controller
             'updated_by' => $currentUserId,
         ];
 
-        if (!empty($validatedData['role'])) {
+        if (! empty($validatedData['role'])) {
             $user->roles()->syncWithPivotValues([$validatedData['role']], $defaultSync);
         } else {
             $user->roles()->detach();

@@ -28,8 +28,9 @@ class ViewServiceProvider extends ServiceProvider
             $allowedRoles = in_array($role->id, [1, 2, 3]);
 
             // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
-            if (!$user || !$user->active || !$role || !$allowedRoles || !$role->active || !$role->pivot->active) {
+            if (! $user || ! $user->active || ! $role || ! $allowedRoles || ! $role->active || ! $role->pivot->active) {
                 $view->with('sideMenus', collect());
+
                 return;
             }
 
@@ -57,6 +58,7 @@ class ViewServiceProvider extends ServiceProvider
 
                     // Assign color based on index, cycling if more items than available
                     $sideMenu->icon = $icons[$index % count($icons)];
+
                     return $sideMenu;
                 });
 

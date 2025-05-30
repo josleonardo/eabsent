@@ -21,7 +21,7 @@ class RoleCheckMiddleware
         $allowedRoles = in_array($role->id, [1, 2, 3]);
 
         // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
-        if (!$user || !$user->active || !$role || !$allowedRoles || !$role->active || !$role->pivot->active) {
+        if (! $user || ! $user->active || ! $role || ! $allowedRoles || ! $role->active || ! $role->pivot->active) {
             abort(403, 'Unauthorized');
         }
 

@@ -43,7 +43,7 @@ class AppSettingController extends Controller
             'value_2' => 'nullable|string|max:255',
             'active' => 'required|boolean',
         ]);
-        
+
         $currentUserId = Auth::id();
 
         AppSetting::create([
@@ -83,13 +83,13 @@ class AppSettingController extends Controller
     public function update(Request $request, AppSetting $appSetting)
     {
         $validatedData = $request->validate([
-            'setting_name' => 'required|string|max:255|unique:app_settings,name,' . $appSetting->id,
-            'key' => 'nullable|string|max:255|unique:app_settings,key,' . $appSetting->id,
+            'setting_name' => 'required|string|max:255|unique:app_settings,name,'.$appSetting->id,
+            'key' => 'nullable|string|max:255|unique:app_settings,key,'.$appSetting->id,
             'value_1' => 'nullable|string|max:255',
             'value_2' => 'nullable|string|max:255',
             'active' => 'required|boolean',
         ]);
-        
+
         $currentUserId = Auth::id();
 
         $appSetting->update([

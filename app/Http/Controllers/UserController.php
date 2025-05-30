@@ -44,9 +44,10 @@ class UserController extends Controller
             return $schedule;
         })->groupBy('group')->map(function ($group) {
             $first = $group->first();
+
             return [
                 'ids' => $group->pluck('id')->toArray(),
-                'display' => "{$first->check_in_time} - {$first->check_out_time}"
+                'display' => "{$first->check_in_time} - {$first->check_out_time}",
             ];
         })->values();
 
@@ -80,7 +81,7 @@ class UserController extends Controller
             'role' => 'nullable|integer|exists:roles,id',
             'level' => 'nullable|integer|exists:levels,id',
             'schedule' => [
-                'nullable', 
+                'nullable',
                 'regex:/^(\d+(,\d+)*)?$/', // Comma-separated list of integers
             ],
             'employment_start' => 'required|date',
@@ -121,18 +122,18 @@ class UserController extends Controller
             ], $defaultData));
 
             // Attach the role to the user
-            if (!empty($validatedData['role'])) {
+            if (! empty($validatedData['role'])) {
                 $user->roles()->attach($validatedData['role'], $defaultData);
             }
 
             // Attach the level to the user
-            if (!empty($validatedData['level'])) {
+            if (! empty($validatedData['level'])) {
                 $user->levels()->attach($validatedData['level'], $defaultData);
             }
 
             // Attach the schedules to the user
             $scheduleIds = [];
-            if (!empty($validatedData['schedule'])) {
+            if (! empty($validatedData['schedule'])) {
                 $scheduleIds = explode(',', $validatedData['schedule']);
 
                 // Validate all IDs exist in DB
@@ -187,9 +188,10 @@ class UserController extends Controller
             return $schedule;
         })->groupBy('group')->map(function ($group) {
             $first = $group->first();
+
             return [
                 'ids' => $group->pluck('id')->toArray(),
-                'display' => "{$first->check_in_time} - {$first->check_out_time}"
+                'display' => "{$first->check_in_time} - {$first->check_out_time}",
             ];
         })->values();
 
@@ -204,12 +206,12 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $validatedData = $request->validate([
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required|email|unique:users,email,'.$id,
             'first_name' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
-            'username' => 'nullable|string|max:255|unique:users,username,' . $id,
-            'nik' => 'required|integer|numeric|digits:16|unique:user_profiles,nik,' . $id . ',user_id',
-            'nuptk' => 'nullable|integer|numeric|digits:16|unique:user_profiles,nuptk,' . $id . ',user_id',
+            'username' => 'nullable|string|max:255|unique:users,username,'.$id,
+            'nik' => 'required|integer|numeric|digits:16|unique:user_profiles,nik,'.$id.',user_id',
+            'nuptk' => 'nullable|integer|numeric|digits:16|unique:user_profiles,nuptk,'.$id.',user_id',
             'position' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
             'phone_number' => 'nullable|string|max:20',
@@ -259,14 +261,14 @@ class UserController extends Controller
             ], $defaultData));
 
             // Sync the role to the user
-            if (!empty($validatedData['role'])) {
+            if (! empty($validatedData['role'])) {
                 $user->roles()->syncWithPivotValues([$validatedData['role']], $defaultSync);
             } else {
                 $user->roles()->detach();
             }
 
             // Sync the level to the user
-            if (!empty($validatedData['level'])) {
+            if (! empty($validatedData['level'])) {
                 $user->levels()->syncWithPivotValues([$validatedData['level']], $defaultSync);
             } else {
                 $user->levels()->detach();
@@ -274,7 +276,7 @@ class UserController extends Controller
 
             // Sync the schedules to the user
             $scheduleIds = [];
-            if (!empty($validatedData['schedule'])) {
+            if (! empty($validatedData['schedule'])) {
                 $scheduleIds = explode(',', $validatedData['schedule']);
 
                 // Validate all IDs exist in DB

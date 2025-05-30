@@ -20,8 +20,7 @@ class InputField extends Component
         public bool $isRequired = false,
         public bool $isDisabled = false,
         public $value = null,
-    )
-    {
+    ) {
         $this->value = $type == 'password' ? null : ($value !== null ? old($name, $value) : old($name));
     }
 

@@ -37,7 +37,7 @@ class UserScheduleController extends Controller
             ->orderBy('s.day_of_week')
             ->paginate(10);
 
-        $days= config('constants.days');
+        $days = config('constants.days');
         $activeKey = config('constants.actives');
         $yesNoKey = config('constants.yes_no');
 
@@ -59,7 +59,7 @@ class UserScheduleController extends Controller
             ->map(function ($schedule) {
                 return [
                     'id' => $schedule->id,
-                    'display' => $schedule->day_name . ' (' . $schedule->formatted_check_in . ' - ' . $schedule->formatted_check_out . ')',
+                    'display' => $schedule->day_name.' ('.$schedule->formatted_check_in.' - '.$schedule->formatted_check_out.')',
                 ];
             });
 
@@ -121,7 +121,7 @@ class UserScheduleController extends Controller
             ->map(function ($schedule) {
                 return [
                     'id' => $schedule->id,
-                    'display' => $schedule->formatted_check_in . ' - ' . $schedule->formatted_check_out,
+                    'display' => $schedule->formatted_check_in.' - '.$schedule->formatted_check_out,
                 ];
             });
 
@@ -143,7 +143,7 @@ class UserScheduleController extends Controller
         $user = User::findOrFail($userId);
         $currentUserId = Auth::id();
 
-        if (!empty($validatedData['schedule'])) {
+        if (! empty($validatedData['schedule'])) {
             DB::table('user_schedule')
                 ->where('user_id', $userId)
                 ->where('schedule_id', $scheduleId)

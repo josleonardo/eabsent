@@ -49,7 +49,7 @@ class ScheduleController extends Controller
             'check_out_time' => 'required|date_format:H:i',
             'active' => 'required|boolean',
         ]);
-        
+
         $currentUserId = Auth::id();
 
         Schedule::create([

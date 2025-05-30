@@ -110,7 +110,7 @@ class UserSeeder extends Seeder
                     'active' => true,
                 ]);
                 $user->save();
-    
+
                 // Create user profile
                 UserProfile::factory()->create([
                     'user_id' => $user->id,
@@ -128,7 +128,7 @@ class UserSeeder extends Seeder
                     'created_by' => 1,
                     'updated_by' => 1,
                 ]);
-    
+
                 // Attach role
                 $role = Role::where('id', $userCred['role_id'])->first();
                 if ($role) {
@@ -138,7 +138,7 @@ class UserSeeder extends Seeder
                         'updated_by' => 1,
                     ]);
                 }
-    
+
                 // Attach level
                 $level = Level::where('id', $userCred['level_id'])->first();
                 if ($level) {
@@ -148,7 +148,7 @@ class UserSeeder extends Seeder
                         'updated_by' => 1,
                     ]);
                 }
-    
+
                 // Attach schedules
                 $schedules = Schedule::where('group', $userCred['schedule_group'])->get();
                 if ($schedules) {
@@ -165,10 +165,9 @@ class UserSeeder extends Seeder
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            
-            throw $th; 
+
+            throw $th;
         }
-        
 
         // User::factory()->count(50)->create();
     }
