@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -73,6 +74,7 @@ class UserController extends Controller
                 'regex:/[0-9]/', // Must contain a number
                 'regex:/[!-\/:-@[-`{-~]/', // Must contain a special character
             ],
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'nik' => 'required|integer|numeric|digits:16|unique:user_profiles,nik',
             'nuptk' => 'nullable|integer|numeric|digits:16|unique:user_profiles,nuptk',
             'position' => 'nullable|string|max:255',
@@ -120,6 +122,16 @@ class UserController extends Controller
                 'employment_start' => $validatedData['employment_start'],
                 'employment_end' => $validatedData['employment_end'],
             ], $defaultData));
+
+            // If avatar uploaded, store and update only the avatar
+            if ($request->hasFile('avatar')) {
+                $file = $request->file('avatar');
+                $avatarName = 'avatar_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs("users/{$user->id}/avatars", $avatarName, 'public');
+                
+                $validatedData['avatar'] = $path;
+                $user->profile()->update(['avatar' => $validatedData['avatar']]);
+            }
 
             // Attach the role to the user
             if (! empty($validatedData['role'])) {
@@ -206,12 +218,13 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $validatedData = $request->validate([
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'first_name' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
-            'username' => 'nullable|string|max:255|unique:users,username,'.$id,
-            'nik' => 'required|integer|numeric|digits:16|unique:user_profiles,nik,'.$id.',user_id',
-            'nuptk' => 'nullable|integer|numeric|digits:16|unique:user_profiles,nuptk,'.$id.',user_id',
+            'username' => 'nullable|string|max:255|unique:users,username,' . $id,
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'nik' => 'required|integer|numeric|digits:16|unique:user_profiles,nik,' . $id . ',user_id',
+            'nuptk' => 'nullable|integer|numeric|digits:16|unique:user_profiles,nuptk,' . $id . ',user_id',
             'position' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
             'phone_number' => 'nullable|string|max:20',
@@ -241,6 +254,22 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
+            if ($request->hasFile('avatar')) {
+                $file = $request->file('avatar');
+
+                $avatarName = 'avatar_' . time() . '.' . $file->getClientOriginalExtension();
+                
+                // stores in storage/app/public/users/user_id/avatars
+                $path = $request->file('avatar')->storeAs("users/{$user->id}/avatars", $avatarName, 'public');
+
+                // Delete old avatar if it exists
+                if ($user->profile->avatar && Storage::disk('public')->exists($user->profile->avatar)) {
+                    Storage::disk('public')->delete($user->profile->avatar);
+                }
+
+                $validatedData['avatar'] = $path;
+            }
+
             // Update user credentials
             $user->update(array_merge([
                 'email' => $validatedData['email'],
@@ -258,6 +287,7 @@ class UserController extends Controller
                 'phone_number' => $validatedData['phone_number'],
                 'employment_start' => $validatedData['employment_start'],
                 'employment_end' => $validatedData['employment_end'],
+                'avatar' => $validatedData['avatar'] ?? $user->profile->avatar,
             ], $defaultData));
 
             // Sync the role to the user

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('phone_number')->nullable();
             $table->date('employment_start')->nullable();
             $table->date('employment_end')->nullable();
-            $table->string('display_picture')->nullable();
+            $table->string('avatar')->nullable();
             $table->boolean('active')->nullable();
             $table->datetimes();
             $table->integer('created_by')->nullable();

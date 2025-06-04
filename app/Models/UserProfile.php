@@ -28,7 +28,7 @@ class UserProfile extends Model
         'phone_number',
         'employment_start',
         'employment_end',
-        'display_picture',
+        'avatar',
         'active',
         'created_at',
         'updated_at',
