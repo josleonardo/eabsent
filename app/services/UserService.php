@@ -6,7 +6,6 @@ use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 
 class UserService
 {
@@ -86,12 +85,7 @@ class UserService
         return DB::transaction(function () use ($user, $validatedData, $defaultData, $defaultSync) {
             // If avatar uploaded, update the avatar
             if (isset($validatedData['avatar']) && $validatedData['avatar']->isValid()) {
-                // Delete old avatar if it exists
-                if ($user->profile->avatar && Storage::disk('public')->exists($user->profile->avatar)) {
-                    Storage::disk('public')->delete($user->profile->avatar);
-                }
-
-                $path = $this->avatarService->upload($validatedData['avatar'], $user->id);
+                $path = $this->avatarService->upload($validatedData['avatar'], $user->id, $user->profile->avatar);
 
                 $validatedData['avatar'] = $path;
             }

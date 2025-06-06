@@ -42,7 +42,14 @@
                                     id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                                     <span class="absolute -inset-1.5"></span>
                                     <span class="sr-only">Open user menu</span>
-                                    <x-icon-user-circle class="size-6" />
+                                    @php
+                                        $avatar = Auth::user()->profile->avatar;
+                                    @endphp
+                                    @if ($avatar && Storage::disk('public')->exists($avatar))
+                                        <img src="{{ asset('storage/' . $avatar) }}" alt="User Avatar" class="size-6 rounded-full object-cover border-2 border-gray-500 dark:border-gray-400" />
+                                    @else
+                                        <x-icon-user-circle class="size-6" />
+                                    @endif
                                 </button>
                             </div>
 
@@ -64,17 +71,20 @@
                                 </div>
                                 <ul class="py-1" role="none">
                                     <li>
-                                        <!-- Active: "bg-gray-100 outline-hidden", Not Active: "" -->
-                                        <a href="#"
+                                        <a href="{{ route('settings.profile') }}"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                            role="menuitem" tabindex="-1" id="profileBtn">Your Profile</a>
+                                            role="menuitem" tabindex="-1" id="settings-btn">
+                                            <x-icon-settings-2 class="inline-block mr-2 size-4" />
+                                            Settings
+                                        </a>
                                     </li>
                                     <li>
                                         <form action="{{ route('signout') }}" method="POST">
                                             @csrf
                                             <button type="submit"
                                                 class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                role="menuitem" tabindex="-1" id="signoutBtn">
+                                                role="menuitem" tabindex="-1" id="signout-btn">
+                                                <x-icon-logout class="inline-block mr-2 size-4" />
                                                 Sign out
                                             </button>
                                         </form>
