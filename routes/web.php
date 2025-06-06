@@ -12,6 +12,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserLevelController;
 use App\Http\Controllers\UserRoleController;
@@ -29,6 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/home', function () {
         return view('home', ['pageName' => 'Home']);
     })->name('home.index');
+
+    Route::get('/settings/profile', [ProfileController::class, 'index'])->name('settings.profile');
+    Route::put('/settings/profile', [ProfileController::class, 'update'])->name('settings.profile.update');
 
     Route::middleware('role_check:1,2,3')->group(function () {
         // Approval pages
