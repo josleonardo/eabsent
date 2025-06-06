@@ -175,8 +175,11 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'password' => [
+            'regex' => 'The password field must contain at least one number and one special character.',
+        ],
+        'schedule' => [
+            'regex' => 'The schedule field must be a comma-separated list of integers.',
         ],
     ],
 

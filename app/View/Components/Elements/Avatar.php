@@ -29,7 +29,9 @@ class Avatar extends Component
     // Resolve avatar URL
     protected function getAvatar()
     {
-        if (!$this->user) return null;
+        if (! $this->user) {
+            return null;
+        }
 
         // If avatar is a URL
         if (filter_var($this->user?->profile->avatar, FILTER_VALIDATE_URL)) {
@@ -40,7 +42,6 @@ class Avatar extends Component
         if ($this->user?->profile->avatar && Storage::disk('public')->exists($this->user->profile->avatar)) {
             return Storage::url($this->user->profile->avatar);
         }
-        
 
         return null; // No avatar found
     }
@@ -48,14 +49,18 @@ class Avatar extends Component
     // Generate initials (e.g., "John Doe" → "JD")
     protected function getInitials()
     {
-        if (!$this->user || !$this->user?->full_name) return null;
+        if (! $this->user || ! $this->user?->full_name) {
+            return null;
+        }
 
         $initials = '';
         $names = preg_split('/\s+/', trim($this->user->full_name));
 
         foreach ($names as $name) {
             $initials .= strtoupper(substr($name, 0, 1));
-            if (mb_strlen($initials) >= 2) break;
+            if (mb_strlen($initials) >= 2) {
+                break;
+            }
         }
 
         if (mb_strlen($initials) < 2 && count($names) === 1) {

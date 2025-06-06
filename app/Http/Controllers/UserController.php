@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\Level;
 use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\User;
+use App\Services\UserService;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -60,38 +59,9 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request, UserService $userService)
     {
-        $validatedData = $request->validate([
-            'email' => 'required|email|unique:users',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'username' => 'nullable|string|max:255|unique:users',
-            'password' => [
-                'required',
-                'string',
-                'min:8', // Minimum 8 characters
-                'regex:/[0-9]/', // Must contain a number
-                'regex:/[!-\/:-@[-`{-~]/', // Must contain a special character
-            ],
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'nik' => 'required|integer|numeric|digits:16|unique:user_profiles,nik',
-            'nuptk' => 'nullable|integer|numeric|digits:16|unique:user_profiles,nuptk',
-            'position' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:255',
-            'phone_number' => 'nullable|string|max:20',
-            'role' => 'nullable|integer|exists:roles,id',
-            'level' => 'nullable|integer|exists:levels,id',
-            'schedule' => [
-                'nullable',
-                'regex:/^(\d+(,\d+)*)?$/', // Comma-separated list of integers
-            ],
-            'employment_start' => 'required|date',
-            'employment_end' => 'nullable|date',
-            'active' => 'required|boolean',
-        ], [
-            'password.regex' => 'The password must contain at least one number and one special character.',
-        ]);
+        $validatedData = $request->validated();
 
         $currentUserId = Auth::id();
         $defaultData = [
@@ -100,72 +70,16 @@ class UserController extends Controller
             'updated_by' => $currentUserId,
         ];
 
-        DB::beginTransaction();
+        if ($request->hasFile('avatar')) {
+            $validatedData['avatar'] = $request->file('avatar');
+        }
 
         try {
-            // Create user credentials
-            $user = User::create(array_merge([
-                'email' => $validatedData['email'],
-                'username' => $validatedData['username'],
-                'password' => Hash::make($validatedData['password']),
-            ], $defaultData));
-
-            // Create user profile
-            $user->profile()->create(array_merge([
-                'first_name' => $validatedData['first_name'],
-                'last_name' => $validatedData['last_name'],
-                'nik' => $validatedData['nik'],
-                'nuptk' => $validatedData['nuptk'],
-                'position' => $validatedData['position'],
-                'address' => $validatedData['address'],
-                'phone_number' => $validatedData['phone_number'],
-                'employment_start' => $validatedData['employment_start'],
-                'employment_end' => $validatedData['employment_end'],
-            ], $defaultData));
-
-            // If avatar uploaded, store and update only the avatar
-            if ($request->hasFile('avatar')) {
-                $file = $request->file('avatar');
-                $avatarName = 'avatar_' . time() . '.' . $file->getClientOriginalExtension();
-                $path = $file->storeAs("users/{$user->id}/avatars", $avatarName, 'public');
-                
-                $validatedData['avatar'] = $path;
-                $user->profile()->update(['avatar' => $validatedData['avatar']]);
-            }
-
-            // Attach the role to the user
-            if (! empty($validatedData['role'])) {
-                $user->roles()->attach($validatedData['role'], $defaultData);
-            }
-
-            // Attach the level to the user
-            if (! empty($validatedData['level'])) {
-                $user->levels()->attach($validatedData['level'], $defaultData);
-            }
-
-            // Attach the schedules to the user
-            $scheduleIds = [];
-            if (! empty($validatedData['schedule'])) {
-                $scheduleIds = explode(',', $validatedData['schedule']);
-
-                // Validate all IDs exist in DB
-                $validIds = Schedule::whereIn('id', $scheduleIds)->pluck('id')->toArray();
-                if (count($validIds) !== count($scheduleIds)) {
-                    return back()->withErrors(['schedule' => 'One or more selected schedules are invalid.']);
-                }
-
-                $user->schedules()->attach($scheduleIds, $defaultData);
-            }
-
-            // Commit the transaction if everything is successful
-            DB::commit();
+            $userService->createUser($validatedData, $defaultData);
 
             return redirect()->route('user.index')->with('success', 'User added successfully');
         } catch (\Exception $e) {
-            // Rollback the transaction if any error occurs
-            DB::rollBack();
-
-            return back()->withInput()->withErrors(['error' => 'An error occurred while creating the user.']);
+            return back()->withInput()->withErrors(['error' => $e->getMessage() ?: 'An error occurred while creating the user.']);
         }
     }
 
@@ -215,32 +129,13 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, string $id, UserService $userService)
     {
-        $validatedData = $request->validate([
-            'email' => 'required|email|unique:users,email,' . $id,
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'username' => 'nullable|string|max:255|unique:users,username,' . $id,
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'nik' => 'required|integer|numeric|digits:16|unique:user_profiles,nik,' . $id . ',user_id',
-            'nuptk' => 'nullable|integer|numeric|digits:16|unique:user_profiles,nuptk,' . $id . ',user_id',
-            'position' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:255',
-            'phone_number' => 'nullable|string|max:20',
-            'role' => 'nullable|integer|exists:roles,id',
-            'level' => 'nullable|integer|exists:levels,id',
-            'schedule' => [
-                'nullable',
-                'regex:/^(\d+(,\d+)*)?$/', // Comma-separated list of integers
-            ],
-            'employment_start' => 'required|date',
-            'employment_end' => 'nullable|date',
-            'active' => 'required|boolean',
-        ]);
+        $validatedData = $request->validated();
 
         $user = User::findOrFail($id);
         $currentUserId = Auth::id();
+
         $defaultData = [
             'active' => $validatedData['active'],
             'updated_by' => $currentUserId,
@@ -251,84 +146,16 @@ class UserController extends Controller
             'updated_by' => $currentUserId,
         ];
 
-        DB::beginTransaction();
+        if ($request->hasFile('avatar')) {
+            $validatedData['avatar'] = $request->file('avatar');
+        }
 
         try {
-            if ($request->hasFile('avatar')) {
-                $file = $request->file('avatar');
-
-                $avatarName = 'avatar_' . time() . '.' . $file->getClientOriginalExtension();
-                
-                // stores in storage/app/public/users/user_id/avatars
-                $path = $request->file('avatar')->storeAs("users/{$user->id}/avatars", $avatarName, 'public');
-
-                // Delete old avatar if it exists
-                if ($user->profile->avatar && Storage::disk('public')->exists($user->profile->avatar)) {
-                    Storage::disk('public')->delete($user->profile->avatar);
-                }
-
-                $validatedData['avatar'] = $path;
-            }
-
-            // Update user credentials
-            $user->update(array_merge([
-                'email' => $validatedData['email'],
-                'username' => $validatedData['username'],
-            ], $defaultData));
-
-            // Update user profile
-            $user->profile()->update(array_merge([
-                'first_name' => $validatedData['first_name'],
-                'last_name' => $validatedData['last_name'],
-                'nik' => $validatedData['nik'],
-                'nuptk' => $validatedData['nuptk'],
-                'position' => $validatedData['position'],
-                'address' => $validatedData['address'],
-                'phone_number' => $validatedData['phone_number'],
-                'employment_start' => $validatedData['employment_start'],
-                'employment_end' => $validatedData['employment_end'],
-                'avatar' => $validatedData['avatar'] ?? $user->profile->avatar,
-            ], $defaultData));
-
-            // Sync the role to the user
-            if (! empty($validatedData['role'])) {
-                $user->roles()->syncWithPivotValues([$validatedData['role']], $defaultSync);
-            } else {
-                $user->roles()->detach();
-            }
-
-            // Sync the level to the user
-            if (! empty($validatedData['level'])) {
-                $user->levels()->syncWithPivotValues([$validatedData['level']], $defaultSync);
-            } else {
-                $user->levels()->detach();
-            }
-
-            // Sync the schedules to the user
-            $scheduleIds = [];
-            if (! empty($validatedData['schedule'])) {
-                $scheduleIds = explode(',', $validatedData['schedule']);
-
-                // Validate all IDs exist in DB
-                $validIds = Schedule::whereIn('id', $scheduleIds)->pluck('id')->toArray();
-                if (count($validIds) !== count($scheduleIds)) {
-                    return back()->withErrors(['schedule' => 'One or more selected schedules are invalid.']);
-                }
-
-                $user->schedules()->syncWithPivotValues($scheduleIds, $defaultSync);
-            } else {
-                $user->schedules()->detach();
-            }
-
-            // Commit the transaction if everything is successful
-            DB::commit();
+            $userService->updateUser($user, $validatedData, $defaultData, $defaultSync);
 
             return redirect()->route('user.index')->with('success', 'User updated successfully');
         } catch (\Exception $e) {
-            // Rollback the transaction if any error occurs
-            DB::rollBack();
-
-            return back()->withInput()->withErrors(['error' => 'An error occurred while updating the user.']);
+            return back()->withInput()->withErrors(['error' => $e->getMessage() ?: 'An error occurred while updating the user.']);
         }
     }
 
