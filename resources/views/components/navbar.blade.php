@@ -72,9 +72,9 @@
                                 <ul class="py-1" role="none">
                                     <li>
                                         <a href="{{ route('settings.profile') }}"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                            class="flex items-center justify-start px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                                             role="menuitem" tabindex="-1" id="settings-btn">
-                                            <x-icon-settings-2 class="inline-block mr-2 size-4" />
+                                            <x-icon-settings-2 class="inline-flex mr-2 size-4" />
                                             Settings
                                         </a>
                                     </li>
@@ -82,9 +82,9 @@
                                         <form action="{{ route('signout') }}" method="POST">
                                             @csrf
                                             <button type="submit"
-                                                class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                class="flex items-center justify-start w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                                                 role="menuitem" tabindex="-1" id="signout-btn">
-                                                <x-icon-logout class="inline-block mr-2 size-4" />
+                                                <x-icon-logout class="inline-flex mr-2 size-4" />
                                                 Sign out
                                             </button>
                                         </form>

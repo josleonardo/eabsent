@@ -16,7 +16,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        return view('settings.profile', ['pageName' => 'Profile Setting'] + compact('user'));
+        return view('settings.profile', ['pageName' => 'Your Profile'] + compact('user'));
     }
 
     /**
