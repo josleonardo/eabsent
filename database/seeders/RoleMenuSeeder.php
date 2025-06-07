@@ -19,7 +19,7 @@ class RoleMenuSeeder extends Seeder
         $roleMenus = [
             1 => $menus->toArray(), // Superadmin gets all menus
             2 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 19, 24, 25],
-            3 => [1, 2, 5, 6, 7, 8, 9, 11, 12, 13, 14, 25],
+            3 => [1, 2, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 25],
             4 => [1, 2, 3, 4, 6],
         ];
 

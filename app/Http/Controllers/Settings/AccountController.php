@@ -16,7 +16,7 @@ class AccountController extends Controller
         $user = $request->user();
         $role = $user->roles->first();
         $hasChangePassword = $role->menus->where('id', 15)->first();
-        
+
         return view('settings.account', ['pageName' => 'Account Settings'] + compact('user', 'hasChangePassword'));
     }
 
@@ -26,7 +26,7 @@ class AccountController extends Controller
     public function updateEmail(Request $request)
     {
         $validatedData = $request->validate([
-            'email' => 'required|email|max:255|unique:users,email,' . $request->user()->id,
+            'email' => 'required|email|max:255|unique:users,email,'.$request->user()->id,
         ]);
 
         $user = $request->user();
@@ -43,7 +43,7 @@ class AccountController extends Controller
     public function updateUsername(Request $request)
     {
         $validatedData = $request->validate([
-            'username' => 'required|string|max:255|unique:users,username,' . $request->user()->id,
+            'username' => 'required|string|max:255|unique:users,username,'.$request->user()->id,
         ]);
 
         $user = $request->user();
@@ -80,7 +80,7 @@ class AccountController extends Controller
         }
 
         // Verify current password
-        if (!Hash::check($validatedData['current_password'], $user->password)) {
+        if (! Hash::check($validatedData['current_password'], $user->password)) {
             return back()->withErrors(['current_password' => 'Current password is incorrect.']);
         }
 
