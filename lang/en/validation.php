@@ -178,6 +178,9 @@ return [
         'password' => [
             'regex' => 'The password field must contain at least one number and one special character.',
         ],
+        'new_password' => [
+            'regex' => 'The password field must contain at least one number and one special character.',
+        ],
         'schedule' => [
             'regex' => 'The schedule field must be a comma-separated list of integers.',
         ],

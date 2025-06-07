@@ -12,6 +12,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\Settings\AccountController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserLevelController;
@@ -33,6 +34,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/settings/profile', [ProfileController::class, 'index'])->name('settings.profile');
     Route::put('/settings/profile', [ProfileController::class, 'update'])->name('settings.profile.update');
+
+    Route::get('/settings/account', [AccountController::class, 'index'])->name('settings.account');
+    Route::put('/settings/account/email', [AccountController::class, 'updateEmail'])->name('settings.account.update.email');
+    Route::put('/settings/account/username', [AccountController::class, 'updateUsername'])->name('settings.account.update.username');
+    Route::put('/settings/account/password', [AccountController::class, 'updatePassword'])->name('settings.account.update.password');
 
     Route::middleware('role_check:1,2,3')->group(function () {
         // Approval pages
