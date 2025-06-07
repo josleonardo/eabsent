@@ -53,115 +53,115 @@ class MenuSeeder extends Seeder
 
         $webMenus = [
             [
-                'menu_id' => 0,
+                'menu_group' => 0,
                 'name' => 'Home',
                 'url' => '/home',
                 'order' => 1,
             ],
             [
-                'menu_id' => 0,
+                'menu_group' => 0,
                 'name' => 'Report',
                 'url' => '/report',
                 'order' => 2,
             ],
             [
-                'menu_id' => 0,
+                'menu_group' => 0,
                 'name' => 'Approval',
                 'url' => '/approval',
                 'order' => 3,
             ],
             [
-                'menu_id' => 0,
+                'menu_group' => 0,
                 'name' => 'Administration',
                 'url' => '/admin',
                 'order' => 4,
             ],
             [
-                'menu_id' => 2,
+                'menu_group' => 2,
                 'name' => 'History',
                 'url' => '/report/history',
                 'order' => 1,
             ],
             [
-                'menu_id' => 2,
+                'menu_group' => 2,
                 'name' => 'Attendance',
                 'url' => '/report/attendance',
                 'order' => 2,
             ],
             [
-                'menu_id' => 3,
+                'menu_group' => 3,
                 'name' => 'Leave',
                 'url' => '/approval/leave',
                 'order' => 1,
             ],
             [
-                'menu_id' => 3,
+                'menu_group' => 3,
                 'name' => 'Correction',
                 'url' => '/approval/correction',
                 'order' => 2,
             ],
             [
-                'menu_id' => 6,
+                'menu_group' => 6,
                 'name' => 'Change Password',
                 'url' => '/change-password',
                 'order' => 1,
             ],
             [
-                'menu_id' => 10,
+                'menu_group' => 10,
                 'name' => 'User',
                 'url' => '/admin/user',
                 'order' => 1,
             ],
             [
-                'menu_id' => 10,
+                'menu_group' => 10,
                 'name' => 'Role',
                 'url' => '/admin/role',
                 'order' => 2,
             ],
             [
-                'menu_id' => 10,
+                'menu_group' => 10,
                 'name' => 'Menu',
                 'url' => '/admin/menu',
                 'order' => 3,
             ],
             [
-                'menu_id' => 10,
+                'menu_group' => 10,
                 'name' => 'Level',
                 'url' => '/admin/level',
                 'order' => 4,
             ],
             [
-                'menu_id' => 10,
+                'menu_group' => 10,
                 'name' => 'Schedule',
                 'url' => '/admin/schedule',
                 'order' => 5,
             ],
             [
-                'menu_id' => 10,
+                'menu_group' => 10,
                 'name' => 'App Setting',
                 'url' => '/admin/app-setting',
                 'order' => 6,
             ],
             [
-                'menu_id' => 10,
+                'menu_group' => 10,
                 'name' => 'User Role',
                 'url' => '/admin/user-role',
                 'order' => 7,
             ],
             [
-                'menu_id' => 10,
+                'menu_group' => 10,
                 'name' => 'User Level',
                 'url' => '/admin/user-level',
                 'order' => 8,
             ],
             [
-                'menu_id' => 10,
+                'menu_group' => 10,
                 'name' => 'User Schedule',
                 'url' => '/admin/user-schedule',
                 'order' => 9,
             ],
             [
-                'menu_id' => 10,
+                'menu_group' => 10,
                 'name' => 'Role Menu',
                 'url' => '/admin/role-menu',
                 'order' => 10,
@@ -170,7 +170,7 @@ class MenuSeeder extends Seeder
 
         foreach ($androidMenus as $androidMenu) {
             Menu::factory()->create([
-                'menu_id' => 0,
+                'menu_group' => 0,
                 'name' => $androidMenu['name'],
                 'url' => $androidMenu['url'],
                 'platform' => 1,
@@ -182,7 +182,7 @@ class MenuSeeder extends Seeder
 
         foreach ($webMenus as $webMenu) {
             Menu::factory()->create([
-                'menu_id' => $webMenu['menu_id'],
+                'menu_group' => $webMenu['menu_group'],
                 'name' => $webMenu['name'],
                 'url' => $webMenu['url'],
                 'platform' => 0,

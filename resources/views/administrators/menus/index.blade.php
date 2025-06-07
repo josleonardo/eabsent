@@ -28,7 +28,7 @@
                 <thead class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="p-4">#</th>
-                        <th scope="col" class="p-4">Menu ID</th>
+                        <th scope="col" class="p-4">Menu Group</th>
                         <th scope="col" class="p-4">Menu Name</th>
                         <th scope="col" class="p-4">URL</th>
                         <th scope="col" class="p-4">Platform</th>
@@ -53,7 +53,7 @@
                                 class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $menus->firstItem() + $key }}
                             </th>
-                            <td class="px-4 py-3 text-center">{{ $menu->menu_id }}</td>
+                            <td class="px-4 py-3 text-center">{{ $menu->menu_group }}</td>
                             <td class="px-4 py-3">{{ $menu->name }}</td>
                             <td class="px-4 py-3">{{ $menu->url }}</td>
                             <td class="px-4 py-3">{{ $platforms[$menu->platform] ? __($platforms[$menu->platform]) : __('Unknown') }}</td>

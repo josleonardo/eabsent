@@ -13,8 +13,8 @@
             @method('PUT')
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <x-forms.input-field label="Menu ID" name="menu_id" id="menu_id" type="number" placeholder="1"
-                    :isRequired="true" :value="$menu->menu_id" />
+                <x-forms.input-field label="Menu Group" name="menu_group" id="menu_group" type="number" placeholder="1"
+                    :isRequired="true" :value="$menu->menu_group" />
 
                 <x-forms.input-field label="Menu Name" name="menu_name" id="menu_name" placeholder="Menu Name"
                     :isRequired="true" :value="$menu->name" />

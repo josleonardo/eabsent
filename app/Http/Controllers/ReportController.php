@@ -25,7 +25,7 @@ class ReportController extends Controller
         $menus = Menu::select('id', 'name', 'url')
             ->where([
                 ['platform', 0],
-                ['menu_id', 2],
+                ['menu_group', 2],
                 ['menus.active', 1],
             ])
             ->whereHas('roles', function ($query) use ($role) {

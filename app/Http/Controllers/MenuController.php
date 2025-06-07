@@ -43,7 +43,7 @@ class MenuController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'menu_id' => 'required|integer',
+            'menu_group' => 'required|integer',
             'menu_name' => 'required|string|max:255',
             'url' => 'required|string|max:255|unique:menus,url',
             'platform' => 'required|integer|max:5',
@@ -55,7 +55,7 @@ class MenuController extends Controller
         $currentUserId = Auth::id();
 
         Menu::create([
-            'menu_id' => $validatedData['menu_id'],
+            'menu_group' => $validatedData['menu_group'],
             'name' => $validatedData['menu_name'],
             'url' => $validatedData['url'],
             'platform' => $validatedData['platform'],
@@ -98,7 +98,7 @@ class MenuController extends Controller
     public function update(Request $request, Menu $menu)
     {
         $validatedData = $request->validate([
-            'menu_id' => 'required|integer',
+            'menu_group' => 'required|integer',
             'menu_name' => 'required|string|max:255',
             'url' => 'required|string|max:255|unique:menus,url,'.$menu->id,
             'platform' => 'required|integer|max:5',
@@ -110,7 +110,7 @@ class MenuController extends Controller
         $currentUserId = Auth::id();
 
         $menu->update([
-            'menu_id' => $validatedData['menu_id'],
+            'menu_group' => $validatedData['menu_group'],
             'name' => $validatedData['menu_name'],
             'url' => $validatedData['url'],
             'platform' => $validatedData['platform'],

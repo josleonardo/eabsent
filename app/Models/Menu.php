@@ -17,7 +17,7 @@ class Menu extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'menu_id',
+        'menu_group',
         'name',
         'url',
         'platform',

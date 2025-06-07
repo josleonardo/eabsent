@@ -25,7 +25,7 @@ class ApprovalController extends Controller
         $menus = Menu::select('id', 'name', 'url')
             ->where([
                 ['platform', 0],
-                ['menu_id', 3],
+                ['menu_group', 3],
                 ['menus.active', 1],
             ])
             ->whereHas('roles', function ($query) use ($role) {

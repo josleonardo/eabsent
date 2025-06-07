@@ -37,7 +37,7 @@ class ViewServiceProvider extends ServiceProvider
             $sideMenus = Menu::select('id', 'name', 'url')
                 ->where([
                     ['platform', 0],
-                    ['menu_id', 0],
+                    ['menu_group', 0],
                     ['menus.active', 1],
                 ])
                 ->whereHas('roles', function ($query) use ($role) {
