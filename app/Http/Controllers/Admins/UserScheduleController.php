@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admins;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admins\StoreUserScheduleRequest;
+use App\Http\Requests\Admins\UpdateUserScheduleRequest;
 use App\Models\Schedule;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UserScheduleController extends Controller
 {
@@ -71,30 +73,32 @@ class UserScheduleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserScheduleRequest $request)
     {
-        $validatedData = $request->validate([
-            'user' => 'required|exists:users,id',
-            'schedule' => 'required|exists:schedules,id',
-            'active' => 'required|boolean',
-        ]);
+        $validatedData = $request->validated();
 
-        $user = User::findOrFail($validatedData['user']);
-        $currentUserId = Auth::id();
+        try {
+            $user = User::findOrFail($validatedData['user']);
+            $currentUserId = $request->user()->id;
 
-        if ($user->schedules()->where('schedule_id', $validatedData['schedule'])->exists()) {
-            return back()->withErrors(['schedule' => 'This user already has the selected schedule.']);
-        } else {
-            $user->schedules()->attach($validatedData['schedule'], [
-                'active' => $validatedData['active'],
-                'created_by' => $currentUserId,
-                'updated_by' => $currentUserId,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            if ($user->schedules()->where('schedule_id', $validatedData['schedule'])->exists()) {
+                return back()->withErrors(['schedule' => 'This user already has the selected schedule.']);
+            } else {
+                $user->schedules()->attach($validatedData['schedule'], [
+                    'active' => $validatedData['active'],
+                    'created_by' => $currentUserId,
+                    'updated_by' => $currentUserId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            return redirect()->route('user-schedule.index')->with('success', 'User schedule created successfully.');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while creating the user schedule.');
         }
-
-        return redirect()->route('user-schedule.index')->with('success', 'User schedule created successfully.');
     }
 
     /**
@@ -133,31 +137,34 @@ class UserScheduleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $userId, string $scheduleId)
+    public function update(UpdateUserScheduleRequest $request, string $userId, string $scheduleId)
     {
-        $validatedData = $request->validate([
-            'schedule' => 'nullable|exists:schedules,id',
-            'active' => 'required|boolean',
-        ]);
+        $validatedData = $request->validated();
 
-        $user = User::findOrFail($userId);
-        $currentUserId = Auth::id();
+        try {
+            $user = User::findOrFail($userId);
+            $currentUserId = $request->user()->id;
 
-        if (! empty($validatedData['schedule'])) {
-            DB::table('user_schedule')
-                ->where('user_id', $userId)
-                ->where('schedule_id', $scheduleId)
-                ->update([
-                    'schedule_id' => $validatedData['schedule'],
-                    'active' => $validatedData['active'],
-                    'updated_by' => $currentUserId,
-                    'updated_at' => now(),
-                ]);
-        } else {
-            $user->schedules()->detach($scheduleId);
+            if (! empty($validatedData['schedule'])) {
+                DB::table('user_schedule')
+                    ->where('user_id', $userId)
+                    ->where('schedule_id', $scheduleId)
+                    ->update([
+                        'schedule_id' => $validatedData['schedule'],
+                        'active' => $validatedData['active'],
+                        'updated_by' => $currentUserId,
+                        'updated_at' => now(),
+                    ]);
+            } else {
+                $user->schedules()->detach($scheduleId);
+            }
+
+            return redirect()->route('user-schedule.index')->with('success', 'User schedule updated successfully.');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while updating the user schedule.');
         }
-
-        return redirect()->route('user-schedule.index')->with('success', 'User schedule updated successfully.');
     }
 
     /**

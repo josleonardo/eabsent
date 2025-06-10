@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admins;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admins\UpdateUserLevelRequest;
 use App\Models\Level;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserLevelController extends Controller
 {
@@ -62,28 +64,32 @@ class UserLevelController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserLevelRequest $request, string $id)
     {
-        $validatedData = $request->validate([
-            'level' => 'nullable|exists:levels,id',
-            'active' => 'required|boolean',
-        ]);
+        $validatedData = $request->validated();
 
-        $user = User::findOrFail($id);
-        $currentUserId = Auth::id();
-        $defaultSync = [
-            'active' => $validatedData['active'],
-            'created_by' => $currentUserId,
-            'updated_by' => $currentUserId,
-        ];
+        try {
+            $user = User::findOrFail($id);
+            $currentUserId = $request->user()->id;
+            $defaultSync = [
+                'active' => $validatedData['active'],
+                'created_by' => $currentUserId,
+                'updated_by' => $currentUserId,
+            ];
 
-        if (! empty($validatedData['level'])) {
-            $user->levels()->syncWithPivotValues([$validatedData['level']], $defaultSync);
-        } else {
-            $user->levels()->detach();
+            if (! empty($validatedData['level'])) {
+                $user->levels()->syncWithPivotValues([$validatedData['level']], $defaultSync);
+            } else {
+                $user->levels()->detach();
+            }
+
+            return redirect()->route('user-level.index')->with('success', 'User level updated successfully.');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while updating the user level.');
         }
 
-        return redirect()->route('user-level.index')->with('success', 'User level updated successfully.');
     }
 
     /**

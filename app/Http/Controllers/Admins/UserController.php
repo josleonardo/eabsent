@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admins;
 
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admins\StoreUserRequest;
+use App\Http\Requests\Admins\UpdateUserRequest;
 use App\Models\Level;
 use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Services\UserService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -63,23 +64,25 @@ class UserController extends Controller
     {
         $validatedData = $request->validated();
 
-        $currentUserId = Auth::id();
-        $defaultData = [
-            'active' => $validatedData['active'],
-            'created_by' => $currentUserId,
-            'updated_by' => $currentUserId,
-        ];
-
-        if ($request->hasFile('avatar')) {
-            $validatedData['avatar'] = $request->file('avatar');
-        }
-
         try {
+            $currentUserId = $request->user()->id;
+            $defaultData = [
+                'active' => $validatedData['active'],
+                'created_by' => $currentUserId,
+                'updated_by' => $currentUserId,
+            ];
+
+            if ($request->hasFile('avatar')) {
+                $validatedData['avatar'] = $request->file('avatar');
+            }
+
             $userService->createUser($validatedData, $defaultData);
 
-            return redirect()->route('user.index')->with('success', 'User added successfully');
-        } catch (\Exception $e) {
-            return back()->withInput()->withErrors(['error' => $e->getMessage() ?: 'An error occurred while creating the user.']);
+            return redirect()->route('user.index')->with('success', 'User created successfully');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while creating the user.');
         }
     }
 
@@ -133,29 +136,31 @@ class UserController extends Controller
     {
         $validatedData = $request->validated();
 
-        $user = User::findOrFail($id);
-        $currentUserId = Auth::id();
-
-        $defaultData = [
-            'active' => $validatedData['active'],
-            'updated_by' => $currentUserId,
-        ];
-        $defaultSync = [
-            'active' => $validatedData['active'],
-            'created_by' => $currentUserId,
-            'updated_by' => $currentUserId,
-        ];
-
-        if ($request->hasFile('avatar')) {
-            $validatedData['avatar'] = $request->file('avatar');
-        }
-
         try {
+            $user = User::findOrFail($id);
+            $currentUserId = $request->user()->id;
+
+            $defaultData = [
+                'active' => $validatedData['active'],
+                'updated_by' => $currentUserId,
+            ];
+            $defaultSync = [
+                'active' => $validatedData['active'],
+                'created_by' => $currentUserId,
+                'updated_by' => $currentUserId,
+            ];
+
+            if ($request->hasFile('avatar')) {
+                $validatedData['avatar'] = $request->file('avatar');
+            }
+
             $userService->updateUser($user, $validatedData, $defaultData, $defaultSync);
 
             return redirect()->route('user.index')->with('success', 'User updated successfully');
-        } catch (\Exception $e) {
-            return back()->withInput()->withErrors(['error' => $e->getMessage() ?: 'An error occurred while updating the user.']);
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while updating the user.');
         }
     }
 

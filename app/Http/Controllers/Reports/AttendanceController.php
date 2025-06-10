@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Reports;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Reports\UpdateAttendanceRequest;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AttendanceController extends Controller
 {
@@ -61,24 +64,26 @@ class AttendanceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Attendance $attendance)
+    public function update(UpdateAttendanceRequest $request, Attendance $attendance)
     {
-        $validatedData = $request->validate([
-            'actual_in' => 'nullable|date_format:H:i',
-            'actual_out' => 'nullable|date_format:H:i',
-            'status' => 'required|integer|max:20',
-        ]);
+        $validatedData = $request->validated();
 
-        $currentUserId = Auth::id();
+        try {
+            $currentUserId = $request->user()->id;
 
-        $attendance->update([
-            'actual_in' => $validatedData['actual_in'],
-            'actual_out' => $validatedData['actual_out'],
-            'status' => $validatedData['status'],
-            'updated_by' => $currentUserId,
-        ]);
+            $attendance->update([
+                'actual_in' => $validatedData['actual_in'],
+                'actual_out' => $validatedData['actual_out'],
+                'status' => $validatedData['status'],
+                'updated_by' => $currentUserId,
+            ]);
 
-        return redirect()->route('attendance.index')->with('success', 'Attendance updated successfully.');
+            return redirect()->route('attendance.index')->with('success', 'Attendance updated successfully.');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while updating the attendance.');
+        }
     }
 
     /**

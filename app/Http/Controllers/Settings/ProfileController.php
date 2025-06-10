@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\Settings\UpdateProfileRequest;
 use App\Services\AvatarService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
@@ -25,17 +26,25 @@ class ProfileController extends Controller
     public function update(UpdateProfileRequest $request, AvatarService $avatarService)
     {
         $validatedData = $request->validated();
-        $user = $request->user();
 
-        if ($request->hasFile('avatar')) {
-            $file = $request->file('avatar');
-            $path = $avatarService->upload($file, $user->id, $user->profile->avatar);
-            $validatedData['avatar'] = $path;
+        try {
+            $user = $request->user();
+            $currentUserId = $user->id;
+
+            if ($request->hasFile('avatar')) {
+                $file = $request->file('avatar');
+                $path = $avatarService->upload($file, $currentUserId, $user->profile->avatar);
+                $validatedData['avatar'] = $path;
+            }
+
+            $validatedData['updated_by'] = $currentUserId;
+            $user->profile()->update($validatedData);
+
+            return back()->with('success', 'Your profile updated successfully');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while updating your profile.');
         }
-
-        $validatedData['updated_by'] = $user->id;
-        $user->profile()->update($validatedData);
-
-        return back()->with('success', 'Your profile updated successfully');
     }
 }

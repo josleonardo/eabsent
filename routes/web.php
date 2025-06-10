@@ -1,23 +1,23 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ApprovalController;
-use App\Http\Controllers\AppSettingController;
-use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Admins\AdminController;
+use App\Http\Controllers\Admins\AppSettingController;
+use App\Http\Controllers\Admins\LevelController;
+use App\Http\Controllers\Admins\MenuController;
+use App\Http\Controllers\Admins\RoleController;
+use App\Http\Controllers\Admins\ScheduleController;
+use App\Http\Controllers\Admins\UserController;
+use App\Http\Controllers\Admins\UserLevelController;
+use App\Http\Controllers\Admins\UserRoleController;
+use App\Http\Controllers\Admins\UserScheduleController;
+use App\Http\Controllers\Approvals\ApprovalController;
+use App\Http\Controllers\Approvals\CorrectionController;
+use App\Http\Controllers\Approvals\LeaveController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CorrectionController;
-use App\Http\Controllers\LeaveController;
-use App\Http\Controllers\LevelController;
-use App\Http\Controllers\MenuController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\Reports\AttendanceController;
+use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Settings\AccountController;
 use App\Http\Controllers\Settings\ProfileController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserLevelController;
-use App\Http\Controllers\UserRoleController;
-use App\Http\Controllers\UserScheduleController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->controller(AuthController::class)->group(function () {

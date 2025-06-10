@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Settings\UpdateEmailRequest;
+use App\Http\Requests\Settings\UpdatePasswordRequest;
+use App\Http\Requests\Settings\UpdateUsernameRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AccountController extends Controller
 {
@@ -23,72 +27,76 @@ class AccountController extends Controller
     /**
      * Update the current user's email.
      */
-    public function updateEmail(Request $request)
+    public function updateEmail(UpdateEmailRequest $request)
     {
-        $validatedData = $request->validate([
-            'email' => 'required|email|max:255|unique:users,email,'.$request->user()->id,
-        ]);
+        $validatedData = $request->validated();
 
-        $user = $request->user();
-        $validatedData['updated_by'] = $user->id;
+        try {
+            $user = $request->user();
+            $validatedData['updated_by'] = $user->id;
 
-        $user->update($validatedData);
+            $user->update($validatedData);
 
-        return back()->with('success', 'Your email updated successfully');
+            return back()->with('success', 'Your email updated successfully');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while updating your email. Please try again later.');
+        }
     }
 
     /**
      * Update the current user's username.
      */
-    public function updateUsername(Request $request)
+    public function updateUsername(UpdateUsernameRequest $request)
     {
-        $validatedData = $request->validate([
-            'username' => 'required|string|max:255|unique:users,username,'.$request->user()->id,
-        ]);
+        $validatedData = $request->validated();
 
-        $user = $request->user();
-        $validatedData['updated_by'] = $user->id;
+        try {
+            $user = $request->user();
+            $validatedData['updated_by'] = $user->id;
 
-        $user->update($validatedData);
+            $user->update($validatedData);
 
-        return back()->with('success', 'Your username updated successfully');
+            return back()->with('success', 'Your username updated successfully');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while updating your username. Please try again later.');
+        }
     }
 
     /**
      * Update the current user's password.
      */
-    public function updatePassword(Request $request)
+    public function updatePassword(UpdatePasswordRequest $request)
     {
-        $validatedData = $request->validate([
-            'current_password' => 'required|string|min:8|max:255',
-            'new_password' => [
-                'required',
-                'string',
-                'min:8', // Minimum 8 characters
-                'max:255',
-                'confirmed', // Must match the confirmation field
-                'regex:/[0-9]/', // Must contain a number
-                'regex:/[!-\/:-@[-`{-~]/', // Must contain a special character
-            ],
-        ]);
+        $validatedData = $request->validated();
 
-        $user = $request->user();
-        $role = $user->roles->first();
-        $hasChangePassword = $role->menus->where('id', 15)->first();
-        if (! $hasChangePassword) {
-            abort(403, 'You do not have permission to change the password.');
+        try {
+            $user = $request->user();
+            $role = $user->roles->first();
+            $hasChangePassword = $role->menus->where('id', 15)->first();
+
+            if (! $hasChangePassword) {
+                abort(403, 'You do not have permission to change the password.');
+            }
+
+            // Verify current password
+            if (! Hash::check($validatedData['current_password'], $user->password)) {
+                return back()->withErrors(['current_password' => 'Current password is incorrect.']);
+            }
+
+            // Hash the new password
+            $user->password = Hash::make($validatedData['new_password']);
+            $user->updated_by = $user->id;
+            $user->save();
+
+            return back()->with('success', 'Your password updated successfully');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while updating your password. Please try again later.');
         }
-
-        // Verify current password
-        if (! Hash::check($validatedData['current_password'], $user->password)) {
-            return back()->withErrors(['current_password' => 'Current password is incorrect.']);
-        }
-
-        // Hash the new password
-        $user->password = Hash::make($validatedData['new_password']);
-        $user->updated_by = $user->id;
-        $user->save();
-
-        return back()->with('success', 'Your password updated successfully');
     }
 }

@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Approvals;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Approvals\UpdateCorrectionRequest;
 use App\Models\Correction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CorrectionController extends Controller
 {
@@ -58,26 +61,31 @@ class CorrectionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Correction $correction)
+    public function update(UpdateCorrectionRequest $request, Correction $correction)
     {
         if (! $correction) {
             return redirect()->back()->with('error', 'No correction request found.');
         }
 
-        $validatedData = $request->validate([
-            'approve_status' => 'required|in:0,1',
-        ]);
+        $validatedData = $request->validated();
 
-        $currentUserId = Auth::id();
+        try {
+            $currentUserId = $request->user()->id;
 
-        $correction->update([
-            'approve_status' => $validatedData['approve_status'],
-            'approved_at' => now(),
-            'approved_by' => $currentUserId,
-            'updated_by' => $currentUserId,
-        ]);
+            $correction->update([
+                'approve_status' => $validatedData['approve_status'],
+                'approved_at' => now(),
+                'approved_by' => $currentUserId,
+                'updated_by' => $currentUserId,
+            ]);
 
-        return redirect()->back()->with('success', 'Correction request updated successfully.');
+            return redirect()->back()->with('success', 'Correction request updated successfully.');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return redirect()->back()->with('error', 'An error occurred while updating the correction request.');
+        }
+
     }
 
     /**

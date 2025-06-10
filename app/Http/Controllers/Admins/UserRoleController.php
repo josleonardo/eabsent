@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admins;
 
+use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserRoleController extends Controller
 {
@@ -64,26 +65,29 @@ class UserRoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validatedData = $request->validate([
-            'role' => 'nullable|exists:roles,id',
-            'active' => 'required|boolean',
-        ]);
+        $validatedData = $request->validated();
 
-        $user = User::findOrFail($id);
-        $currentUserId = Auth::id();
-        $defaultSync = [
-            'active' => $validatedData['active'],
-            'created_by' => $currentUserId,
-            'updated_by' => $currentUserId,
-        ];
+        try {
+            $user = User::findOrFail($id);
+            $currentUserId = $request->user()->id;
+            $defaultSync = [
+                'active' => $validatedData['active'],
+                'created_by' => $currentUserId,
+                'updated_by' => $currentUserId,
+            ];
 
-        if (! empty($validatedData['role'])) {
-            $user->roles()->syncWithPivotValues([$validatedData['role']], $defaultSync);
-        } else {
-            $user->roles()->detach();
+            if (! empty($validatedData['role'])) {
+                $user->roles()->syncWithPivotValues([$validatedData['role']], $defaultSync);
+            } else {
+                $user->roles()->detach();
+            }
+
+            return redirect()->route('user-role.index')->with('success', 'User role updated successfully.');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while updating the user role.');
         }
-
-        return redirect()->route('user-role.index')->with('success', 'User role updated successfully.');
     }
 
     /**

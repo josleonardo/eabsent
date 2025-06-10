@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Approvals;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Approvals\UpdateLeaveRequest;
 use App\Models\Leave;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LeaveController extends Controller
 {
@@ -58,26 +61,30 @@ class LeaveController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Leave $leave)
+    public function update(UpdateLeaveRequest $request, Leave $leave)
     {
         if (! $leave) {
             return redirect()->back()->with('error', 'No leave request found.');
         }
 
-        $validatedData = $request->validate([
-            'approve_status' => 'required|in:0,1',
-        ]);
+        $validatedData = $request->validated();
 
-        $currentUserId = Auth::id();
+        try {
+            $currentUserId = $request->user()->id;
 
-        $leave->update([
-            'approve_status' => $validatedData['approve_status'],
-            'approved_at' => now(),
-            'approved_by' => $currentUserId,
-            'updated_by' => $currentUserId,
-        ]);
+            $leave->update([
+                'approve_status' => $validatedData['approve_status'],
+                'approved_at' => now(),
+                'approved_by' => $currentUserId,
+                'updated_by' => $currentUserId,
+            ]);
 
-        return redirect()->back()->with('success', 'Leave request updated successfully.');
+            return redirect()->back()->with('success', 'Leave request updated successfully.');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return redirect()->back()->with('error', 'An error occurred while updating the leave request.');
+        }
     }
 
     /**
