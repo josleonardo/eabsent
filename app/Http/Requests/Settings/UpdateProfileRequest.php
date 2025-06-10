@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Settings;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +12,6 @@ class UpdateProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Check if the user is authenticated
         return Auth::check();
     }
 
