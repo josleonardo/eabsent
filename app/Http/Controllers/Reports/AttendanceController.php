@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Reports;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Reports\UpdateAttendanceRequest;
 use App\Models\Attendance;
+use App\Services\Reports\AttendanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -14,10 +15,10 @@ class AttendanceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(AttendanceService $attendanceService)
     {
         $user = Auth::user();
-        $attendances = Attendance::getAttendances($user);
+        $attendances = $attendanceService->getAttendances($user);
         $statusKey = config('constants.attendance_status');
 
         return view('reports.attendances.index', ['pageName' => 'Attendance report'] + compact('attendances', 'statusKey'));
