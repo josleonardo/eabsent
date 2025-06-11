@@ -26,6 +26,18 @@ class StoreRoleRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        if ($this->has('role_name')) {
+            $this->merge([
+                'role_name' => strtolower($this->input('role_name')),
+            ]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -33,8 +45,7 @@ class StoreRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'role' => 'required|exists:roles,id',
-            'menu' => 'required|exists:menus,id',
+            'role_name' => 'required|string|max:255|lowercase|unique:roles,name,',
             'active' => 'required|boolean',
         ];
     }

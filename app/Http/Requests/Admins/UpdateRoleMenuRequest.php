@@ -32,11 +32,8 @@ class UpdateRoleMenuRequest extends FormRequest
      */
     public function rules(): array
     {
-        $role = $this->route('role');
-        $id = $role ? $role->id : null;
-
         return [
-            'role_name' => 'required|string|max:255|unique:roles,name,'.$id,
+            'menu' => 'nullable|exists:menus,id',
             'active' => 'required|boolean',
         ];
     }

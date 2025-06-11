@@ -26,6 +26,18 @@ class UpdateLevelRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        if ($this->has('level_name')) {
+            $this->merge([
+                'level_name' => strtolower($this->input('level_name')),
+            ]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -36,7 +48,7 @@ class UpdateLevelRequest extends FormRequest
         $id = $level ? $level->id : null;
 
         return [
-            'level_name' => 'required|string|max:255|unique:levels,name,'.$id,
+            'level_name' => 'required|string|max:255|lowercase|unique:levels,name,'.$id,
             'active' => 'required|boolean',
         ];
     }
