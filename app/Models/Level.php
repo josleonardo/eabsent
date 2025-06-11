@@ -12,6 +12,19 @@ class Level extends Model
     use HasFactory;
 
     /**
+     * The level constants.
+     */
+    const LEVEL_ADMIN = 'admin';
+
+    const LEVEL_KINDERGARTEN = 'kindergarten';
+
+    const LEVEL_ELEMENTARY = 'elementary';
+
+    const LEVEL_MIDDLESCHOOL = 'middle school';
+
+    const LEVEL_HIGHSCHOOL = 'high school';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>

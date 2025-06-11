@@ -13,11 +13,11 @@ class LevelSeeder extends Seeder
     public function run(): void
     {
         $levels = [
-            ['name' => 'Admin'],
-            ['name' => 'K'],
-            ['name' => 'Elem'],
-            ['name' => 'JHS'],
-            ['name' => 'SHS'],
+            ['name' => 'admin'],
+            ['name' => 'kindergarten'],
+            ['name' => 'elementary'],
+            ['name' => 'middle school'],
+            ['name' => 'high school'],
         ];
 
         foreach ($levels as $level) {

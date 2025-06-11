@@ -12,6 +12,17 @@ class Role extends Model
     use HasFactory;
 
     /**
+     * The role constants.
+     */
+    const ROLE_SUPERADMIN = 'superadmin';
+
+    const ROLE_ADMIN = 'admin';
+
+    const ROLE_HEADMASTER = 'headmaster';
+
+    const ROLE_TEACHER = 'teacher';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
