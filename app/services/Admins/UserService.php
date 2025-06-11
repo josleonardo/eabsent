@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Admins;
 
 use App\Models\Schedule;
 use App\Models\User;
+use App\Services\Settings\AvatarService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 

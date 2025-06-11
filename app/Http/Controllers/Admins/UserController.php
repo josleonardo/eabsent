@@ -9,7 +9,7 @@ use App\Models\Level;
 use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\User;
-use App\Services\UserService;
+use App\Services\Admins\UserService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
