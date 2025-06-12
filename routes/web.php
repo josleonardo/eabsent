@@ -5,6 +5,7 @@ use App\Http\Controllers\Admins\AppSettingController;
 use App\Http\Controllers\Admins\LevelController;
 use App\Http\Controllers\Admins\MenuController;
 use App\Http\Controllers\Admins\RoleController;
+use App\Http\Controllers\Admins\RoleMenuController;
 use App\Http\Controllers\Admins\ScheduleController;
 use App\Http\Controllers\Admins\UserController;
 use App\Http\Controllers\Admins\UserLevelController;
@@ -75,6 +76,17 @@ Route::middleware('auth')->group(function () {
             ->name('user-schedule.edit');
         Route::put('/admin/user-schedule/{user}/{schedule}', [UserScheduleController::class, 'update'])
             ->name('user-schedule.update');
+
+        Route::get('/admin/role-menu', [RoleMenuController::class, 'index'])
+            ->name('role-menu.index');
+        Route::post('/admin/role-menu', [RoleMenuController::class, 'store'])
+            ->name('role-menu.store');
+        Route::get('/admin/role-menu/create', [RoleMenuController::class, 'create'])
+            ->name('role-menu.create');
+        Route::get('/admin/role-menu/{role}/{menu}/edit', [RoleMenuController::class, 'edit'])
+            ->name('role-menu.edit');
+        Route::put('/admin/role-menu/{role}/{menu}', [RoleMenuController::class, 'update'])
+            ->name('role-menu.update');
     });
 
     Route::middleware('role_check:1')->group(function () {
