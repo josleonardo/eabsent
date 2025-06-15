@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Approvals;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Approvals\UpdateLeaveRequest;
 use App\Models\Leave;
+use App\Services\Approvals\LeaveService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class LeaveController extends Controller
@@ -14,16 +14,19 @@ class LeaveController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, LeaveService $leaveService)
     {
-        $user = Auth::user();
-        $statusKey = config('constants.approve_status');
+        $user = $request->user();
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
 
-        $pendings = Leave::getPending($user);
-        $histories = Leave::getHistory($user);
+        $pendings = $leaveService->getPending($role, $level);
+        $histories = $leaveService->getHistory($role, $level);
         $activeTab = $request->query('tab', 'pending'); // default to 'pending'
 
-        return view('approvals.leaves.index', ['pageName' => 'Leave Requests'] + compact('pendings', 'histories', 'statusKey', 'activeTab'));
+        $statusKey = config('constants.approve_status');
+
+        return view('approvals.leaves.index', ['pageName' => 'Leave Requests'] + compact('pendings', 'histories', 'activeTab', 'statusKey'));
     }
 
     /**
@@ -73,7 +76,7 @@ class LeaveController extends Controller
             $currentUserId = $request->user()->id;
 
             $leave->update([
-                'approve_status' => $validatedData['approve_status'],
+                'status' => $validatedData['status'],
                 'approved_at' => now(),
                 'approved_by' => $currentUserId,
                 'updated_by' => $currentUserId,

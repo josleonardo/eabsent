@@ -17,17 +17,17 @@ class LeaveFactory extends Factory
     public function definition(): array
     {
         return [
-            'start_date' => fake()->date(),
-            'end_date' => fake()->date(),
+            'start_date' => fake()->dateTimeBetween('-10 days', 'now')->format('Y-m-d'),
+            'end_date' => fake()->dateTimeBetween('now', '+2 days')->format('Y-m-d'),
             'reason' => fake()->sentence(3),
-            'approve_status' => fake()->randomElement([null, 0, 1]),
-            'approved_at' => fake()->dateTime(),
+            'status' => fake()->randomElement([null, 0, 1]),
+            'approved_at' => fake()->dateTimeBetween('-10 days', 'now'),
             'approved_by' => fake()->numberBetween(1, 4),
             'active' => true,
             'created_at' => now(),
             'updated_at' => now(),
             'created_by' => fake()->numberBetween(2, 7),
-            'updated_by' => 1,
+            'updated_by' => fake()->numberBetween(1, 3),
         ];
     }
 }
