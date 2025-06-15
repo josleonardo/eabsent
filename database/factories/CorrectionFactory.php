@@ -17,11 +17,11 @@ class CorrectionFactory extends Factory
     public function definition(): array
     {
         return [
-            'correction_date' => fake()->date(),
-            'correction_start_time' => fake()->time(),
-            'correction_end_time' => fake()->time(),
+            'date' => fake()->date(),
+            'actual_in' => fake()->time(),
+            'actual_out' => fake()->time(),
             'reason' => fake()->sentence(3),
-            'approve_status' => fake()->randomElement([null, 0, 1]),
+            'status' => fake()->randomElement([null, 0, 1]),
             'approved_at' => fake()->dateTime(),
             'approved_by' => fake()->numberBetween(1, 4),
             'active' => true,

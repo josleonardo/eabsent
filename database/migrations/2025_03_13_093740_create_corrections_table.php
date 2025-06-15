@@ -13,17 +13,19 @@ return new class extends Migration
     {
         Schema::create('corrections', function (Blueprint $table) {
             $table->id();
-            $table->date('correction_date');
-            $table->time('correction_start_time')->nullable();
-            $table->time('correction_end_time')->nullable();
+            $table->date('date');
+            $table->time('actual_in')->nullable();
+            $table->time('actual_out')->nullable();
             $table->string('reason');
-            $table->tinyInteger('approve_status')->nullable();
+            $table->tinyInteger('status')->nullable();
             $table->dateTime('approved_at')->nullable();
             $table->integer('approved_by')->nullable();
             $table->boolean('active')->nullable();
             $table->datetimes();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
+
+            $table->index(['date', 'status', 'approved_at', 'approved_by', 'created_by']);
         });
     }
 

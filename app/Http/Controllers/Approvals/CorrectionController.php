@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Approvals;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Approvals\UpdateCorrectionRequest;
 use App\Models\Correction;
+use App\Services\Approvals\CorrectionService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class CorrectionController extends Controller
@@ -14,16 +14,19 @@ class CorrectionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, CorrectionService $correctionService)
     {
-        $user = Auth::user();
-        $statusKey = config('constants.approve_status');
+        $user = $request->user();
+        $role = $user->roles->first()->name;
+        $level = $user->levels->first()->name;
 
-        $pendings = Correction::getPending($user);
-        $histories = Correction::getHistory($user);
+        $pendings = $correctionService->getPending($role, $level);
+        $histories = $correctionService->getHistory($role, $level);
         $activeTab = $request->query('tab', 'pending'); // default to 'pending'
 
-        return view('approvals.corrections.index', ['pageName' => 'Correction Requests'] + compact('pendings', 'histories', 'statusKey', 'activeTab'));
+        $statusKey = config('constants.approve_status');
+
+        return view('approvals.corrections.index', ['pageName' => 'Correction Requests'] + compact('pendings', 'histories', 'activeTab', 'statusKey'));
     }
 
     /**
@@ -73,7 +76,7 @@ class CorrectionController extends Controller
             $currentUserId = $request->user()->id;
 
             $correction->update([
-                'approve_status' => $validatedData['approve_status'],
+                'status' => $validatedData['status'],
                 'approved_at' => now(),
                 'approved_by' => $currentUserId,
                 'updated_by' => $currentUserId,
