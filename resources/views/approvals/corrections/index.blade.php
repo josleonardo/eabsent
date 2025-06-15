@@ -77,15 +77,11 @@
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ $pendings->firstItem() + $key }}
                                     </th>
-                                    <td class="px-4 py-3">
-                                        {{ $pending->requester->full_name }}
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        {{ $pending->requester->levels->first()->name ?? '' }}
-                                    </td>
-                                    <td class="px-4 py-3">{{ $pending->correction_date }}</td>
-                                    <td class="px-4 py-3">{{ $pending->correction_start_time }}</td>
-                                    <td class="px-4 py-3">{{ $pending->correction_end_time }}</td>
+                                    <td class="px-4 py-3">{{ $pending->requester->full_name }}</td>
+                                    <td class="px-4 py-3">{{ $pending->requester->levels->first()->name ?? '' }}</td>
+                                    <td class="px-4 py-3">{{ $pending->date }}</td>
+                                    <td class="px-4 py-3">{{ $pending->actual_in }}</td>
+                                    <td class="px-4 py-3">{{ $pending->actual_out }}</td>
                                     <td class="px-4 py-3">{{ $pending->reason }}</td>
                                     <td class="px-4 py-3">{{ $pending->created_at }}</td>
                                     <td class="px-4 py-3">
@@ -94,11 +90,11 @@
                                             @csrf
                                             @method('PUT')
 
-                                            <button type="submit" name="approve_status" value="1"
+                                            <button type="submit" name="status" value="1"
                                                 class="p-0.5 rounded text-blue-500 transition hover:bg-blue-500 hover:text-white focus:text-white focus:bg-blue-500 focus:shadow-sm focus:outline-0">
                                                 <x-icon-check class="size-5" />
                                             </button>
-                                            <button type="submit" name="approve_status" value="0"
+                                            <button type="submit" name="status" value="0"
                                                 class="p-0.5 rounded text-red-500 transition hover:bg-red-500 hover:text-white focus:text-white focus:bg-red-500 focus:shadow-sm focus:outline-0">
                                                 <x-icon-x class="size-5" />
                                             </button>
@@ -111,8 +107,7 @@
                 </div>
 
                 {{-- Pagination --}}
-                <div class="my-4">{{ $pendings->appends(['tab' => 'pending'])->onEachSide(2)->links() }}
-                </div>
+                <div class="my-4">{{ $pendings->appends(['tab' => 'pending'])->onEachSide(2)->links() }}</div>
             @endif
         </div>
 
@@ -143,27 +138,23 @@
                         <tbody>
                             @foreach ($histories as $key => $history)
                                 <tr
-                                    class="{{ $statusKey[$history->approve_status]['color'] ?? 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
+                                    class="{{ $statusKey[$history->status]['color'] ?? 'bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700' }} border-b border-gray-200 dark:border-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ $histories->firstItem() + $key }}
                                     </th>
-                                    <td class="px-4 py-3">
-                                        {{ $history->requester->full_name }}
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        {{ $history->requester->levels->first()->name ?? '' }}
-                                    </td>
-                                    <td class="px-4 py-3">{{ $history->correction_date }}</td>
-                                    <td class="px-4 py-3">{{ $history->correction_start_time }}</td>
-                                    <td class="px-4 py-3">{{ $history->correction_end_time }}</td>
+                                    <td class="px-4 py-3">{{ $history->requester->full_name }}</td>
+                                    <td class="px-4 py-3">{{ $history->requester->levels->first()->name ?? '' }}</td>
+                                    <td class="px-4 py-3">{{ $history->date }}</td>
+                                    <td class="px-4 py-3">{{ $history->actual_in }}</td>
+                                    <td class="px-4 py-3">{{ $history->actual_out }}</td>
                                     <td class="px-4 py-3">{{ $history->reason }}</td>
                                     <td class="px-4 py-3">{{ $history->created_at }}</td>
-                                    <td class="px-4 py-3">{{ $statusKey[$history->approve_status] ? __($statusKey[$history->approve_status]['status']) : __('Unknown') }}</td>
-                                    <td class="px-4 py-3">{{ $history->approved_at }}</td>
                                     <td class="px-4 py-3">
-                                        {{ $history->approver->full_name }}
+                                        {{ $statusKey[$history->status] ? __($statusKey[$history->status]['status']) : __('Unknown') }}
                                     </td>
+                                    <td class="px-4 py-3">{{ $history->approved_at }}</td>
+                                    <td class="px-4 py-3">{{ $history->approver->full_name }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -171,8 +162,7 @@
                 </div>
 
                 {{-- Pagination --}}
-                <div class="my-4">
-                    {{ $histories->appends(['tab' => 'history'])->onEachSide(2)->links() }}</div>
+                <div class="my-4">{{ $histories->appends(['tab' => 'history'])->onEachSide(2)->links() }}</div>
             @endif
         </div>
     </div>
