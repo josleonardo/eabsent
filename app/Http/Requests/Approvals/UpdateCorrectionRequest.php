@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Approvals;
 
+use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +19,7 @@ class UpdateCorrectionRequest extends FormRequest
         }
 
         $role = $user->roles->first();
-        if (! $role || ! in_array($role->id, [1, 2, 3]) || ! $role->active || ! optional($role->pivot)->active) {
+        if (! $role || ! in_array($role->name, [Role::ROLE_SUPERADMIN, Role::ROLE_ADMIN, Role::ROLE_HEADMASTER]) || ! $role->active || ! optional($role->pivot)->active) {
             return false;
         }
 
@@ -33,7 +34,7 @@ class UpdateCorrectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'approve_status' => 'required|in:0,1',
+            'status' => 'required|in:0,1',
         ];
     }
 }

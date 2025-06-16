@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Reports;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Reports\UpdateAttendanceRequest;
 use App\Models\Attendance;
+use App\Models\Leave;
 use App\Services\Reports\AttendanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,24 @@ class AttendanceController extends Controller
     {
         $user = Auth::user();
         $attendances = $attendanceService->getAttendances($user);
+        $leaves = Leave::select('id', 'start_date', 'end_date', 'reason', 'status', 'created_by')->where('status', 1)->get();
+
+        $leavesByUser = $leaves->groupBy('created_by');
+
+        // Update attendance status if user is on leave for that date
+        foreach ($attendances as $attendance) {
+            $userLeaves = $leavesByUser->get($attendance->user_id, collect());
+            foreach ($userLeaves as $leave) {
+                if (
+                    $attendance->date >= $leave->start_date &&
+                    $attendance->date <= $leave->end_date
+                ) {
+                    $attendance->status = 3;
+                    break; // No need to check other leaves for this attendance
+                }
+            }
+        }
+
         $statusKey = config('constants.attendance_status');
 
         return view('reports.attendances.index', ['pageName' => 'Attendance report'] + compact('attendances', 'statusKey'));
@@ -65,19 +84,14 @@ class AttendanceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAttendanceRequest $request, Attendance $attendance)
+    public function update(UpdateAttendanceRequest $request, Attendance $attendance, AttendanceService $attendanceService)
     {
         $validatedData = $request->validated();
 
         try {
             $currentUserId = $request->user()->id;
 
-            $attendance->update([
-                'actual_in' => $validatedData['actual_in'],
-                'actual_out' => $validatedData['actual_out'],
-                'status' => $validatedData['status'],
-                'updated_by' => $currentUserId,
-            ]);
+            $attendanceService->updateAttendance($attendance, $validatedData, $currentUserId);
 
             return redirect()->route('attendance.index')->with('success', 'Attendance updated successfully.');
         } catch (\Throwable $th) {

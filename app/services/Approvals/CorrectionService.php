@@ -87,4 +87,19 @@ class CorrectionService
         // Default: return empty result
         return $query->whereRaw('1 = 0');
     }
+
+    /**
+     * Update correction request.
+     */
+    public function updateCorrection(Correction $correction, array $validatedData, int $currentUserId): Correction
+    {
+        $correction->update([
+            'status' => $validatedData['status'],
+            'approved_at' => now(),
+            'approved_by' => $currentUserId,
+            'updated_by' => $currentUserId,
+        ]);
+
+        return $correction;
+    }
 }

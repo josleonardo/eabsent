@@ -64,7 +64,7 @@ class LeaveController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLeaveRequest $request, Leave $leave)
+    public function update(UpdateLeaveRequest $request, Leave $leave, LeaveService $leaveService)
     {
         if (! $leave) {
             return redirect()->back()->with('error', 'No leave request found.');
@@ -75,12 +75,7 @@ class LeaveController extends Controller
         try {
             $currentUserId = $request->user()->id;
 
-            $leave->update([
-                'status' => $validatedData['status'],
-                'approved_at' => now(),
-                'approved_by' => $currentUserId,
-                'updated_by' => $currentUserId,
-            ]);
+            $leaveService->updateLeave($leave, $validatedData, $currentUserId);
 
             return redirect()->back()->with('success', 'Leave request updated successfully.');
         } catch (\Throwable $th) {

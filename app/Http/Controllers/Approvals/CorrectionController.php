@@ -64,7 +64,7 @@ class CorrectionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCorrectionRequest $request, Correction $correction)
+    public function update(UpdateCorrectionRequest $request, Correction $correction, CorrectionService $correctionService)
     {
         if (! $correction) {
             return redirect()->back()->with('error', 'No correction request found.');
@@ -75,12 +75,7 @@ class CorrectionController extends Controller
         try {
             $currentUserId = $request->user()->id;
 
-            $correction->update([
-                'status' => $validatedData['status'],
-                'approved_at' => now(),
-                'approved_by' => $currentUserId,
-                'updated_by' => $currentUserId,
-            ]);
+            $correctionService->updateCorrection($correction, $validatedData, $currentUserId);
 
             return redirect()->back()->with('success', 'Correction request updated successfully.');
         } catch (\Throwable $th) {

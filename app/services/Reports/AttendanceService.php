@@ -44,4 +44,19 @@ class AttendanceService
         // Default case: return an empty result if no conditions are met
         return $query->collect([])->paginate(0);
     }
+
+    /**
+     * Update attendance record.
+     */
+    public function updateAttendance(Attendance $attendance, array $validatedData, int $currentUserId): Attendance
+    {
+        $attendance->update([
+            'actual_in' => $validatedData['actual_in'],
+            'actual_out' => $validatedData['actual_out'],
+            'status' => $validatedData['status'],
+            'updated_by' => $currentUserId,
+        ]);
+
+        return $attendance;
+    }
 }

@@ -87,4 +87,19 @@ class LeaveService
         // Default: return empty result
         return $query->whereRaw('1 = 0');
     }
+
+    /**
+     * Update leave request.
+     */
+    public function updateLeave(Leave $leave, array $validatedData, int $currentUserId): Leave
+    {
+        $leave->update([
+            'status' => $validatedData['status'],
+            'approved_at' => now(),
+            'approved_by' => $currentUserId,
+            'updated_by' => $currentUserId,
+        ]);
+
+        return $leave;
+    }
 }

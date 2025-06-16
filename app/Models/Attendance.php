@@ -22,8 +22,8 @@ class Attendance extends Model
         'actual_out',
         'status',
         'active',
-        'create_by',
-        'update_by',
+        'created_by',
+        'updated_by',
     ];
 
     /**
