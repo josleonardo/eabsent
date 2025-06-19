@@ -14,13 +14,13 @@ class AppSettingSeeder extends Seeder
     {
         $appSettings = [
             [
-                'name' => 'AbsenTitik1',
+                'name' => 'absentpoint1',
                 'key' => 'koordinat',
                 'value_1' => '-6.456011',
                 'value_2' => '107.041969',
             ],
             [
-                'name' => 'RadiusTitikAbsen',
+                'name' => 'absentradius1',
                 'key' => 'radius',
                 'value_1' => '100',
                 'value_2' => 'meter',
