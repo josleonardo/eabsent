@@ -2,27 +2,34 @@
 
 namespace App\Http\Requests\Admins;
 
+use App\Traits\MenuAuthorizationTrait;
+use App\Traits\NormalizeFieldTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class StoreAppSettingRequest extends FormRequest
 {
+    use MenuAuthorizationTrait, NormalizeFieldTrait;
+
+    protected string $menuName = 'app setting';
+
+    protected array $fields = ['setting_name', 'key', 'value_1', 'value_2'];
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $user = Auth::user();
-        if (! $user || ! $user->active) {
-            return false;
-        }
+        return $this->checkMenuAuthorization($this->menuName);
+    }
 
-        $role = $user->roles->first();
-        if (! $role || ! $role->id == 1 || ! $role->active || ! optional($role->pivot)->active) {
-            return false;
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        foreach ($this->fields as $field) {
+            $this->normalizeFieldToLowercase($field);
         }
-
-        return true;
     }
 
     /**
@@ -33,10 +40,10 @@ class StoreAppSettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'setting_name' => 'required|string|max:255|unique:app_settings,name',
-            'key' => 'nullable|string|max:255|unique:app_settings,key',
-            'value_1' => 'nullable|string|max:255',
-            'value_2' => 'nullable|string|max:255',
+            'setting_name' => 'required|string|max:255|lowercase|unique:app_settings,name',
+            'key' => 'nullable|string|max:255|lowercase|unique:app_settings,key',
+            'value_1' => 'nullable|string|max:255|lowercase',
+            'value_2' => 'nullable|string|max:255|lowercase',
             'active' => 'required|boolean',
         ];
     }

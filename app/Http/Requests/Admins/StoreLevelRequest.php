@@ -2,27 +2,24 @@
 
 namespace App\Http\Requests\Admins;
 
+use App\Traits\MenuAuthorizationTrait;
+use App\Traits\NormalizeFieldTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class StoreLevelRequest extends FormRequest
 {
+    use MenuAuthorizationTrait, NormalizeFieldTrait;
+
+    protected string $menuName = 'level';
+
+    protected string $field = 'level_name';
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $user = Auth::user();
-        if (! $user || ! $user->active) {
-            return false;
-        }
-
-        $role = $user->roles->first();
-        if (! $role || ! $role->id == 1 || ! $role->active || ! optional($role->pivot)->active) {
-            return false;
-        }
-
-        return true;
+        return $this->checkMenuAuthorization($this->menuName);
     }
 
     /**
@@ -30,11 +27,7 @@ class StoreLevelRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        if ($this->has('level_name')) {
-            $this->merge([
-                'level_name' => strtolower($this->input('level_name')),
-            ]);
-        }
+        $this->normalizeFieldToLowercase($this->field);
     }
 
     /**

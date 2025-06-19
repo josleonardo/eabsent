@@ -2,27 +2,21 @@
 
 namespace App\Http\Requests\Admins;
 
+use App\Traits\MenuAuthorizationTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class StoreScheduleRequest extends FormRequest
 {
+    use MenuAuthorizationTrait;
+
+    protected string $menuName = 'schedule';
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $user = Auth::user();
-        if (! $user || ! $user->active) {
-            return false;
-        }
-
-        $role = $user->roles->first();
-        if (! $role || ! in_array($role->id, [1, 2]) || ! $role->active || ! optional($role->pivot)->active) {
-            return false;
-        }
-
-        return true;
+        return $this->checkMenuAuthorization($this->menuName);
     }
 
     /**

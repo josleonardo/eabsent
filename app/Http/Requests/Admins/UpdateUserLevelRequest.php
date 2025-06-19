@@ -2,27 +2,21 @@
 
 namespace App\Http\Requests\Admins;
 
+use App\Traits\MenuAuthorizationTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class UpdateUserLevelRequest extends FormRequest
 {
+    use MenuAuthorizationTrait;
+
+    protected string $menuName = 'user level';
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $user = Auth::user();
-        if (! $user || ! $user->active) {
-            return false;
-        }
-
-        $role = $user->roles->first();
-        if (! $role || ! $role->id == 1 || ! $role->active || ! optional($role->pivot)->active) {
-            return false;
-        }
-
-        return true;
+        return $this->checkMenuAuthorization($this->menuName);
     }
 
     /**

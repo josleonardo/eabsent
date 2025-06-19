@@ -2,17 +2,21 @@
 
 namespace App\Http\Requests\Settings;
 
+use App\Traits\MenuAuthorizationTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class UpdatePasswordRequest extends FormRequest
 {
+    use MenuAuthorizationTrait;
+
+    protected string $menuName = 'change password';
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return $this->checkMenuAuthorization($this->menuName);
     }
 
     /**
