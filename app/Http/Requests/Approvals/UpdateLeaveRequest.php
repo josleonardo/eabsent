@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests\Approvals;
 
-use App\Traits\MenuAuthorizationTrait;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class UpdateLeaveRequest extends FormRequest
 {
-    use MenuAuthorizationTrait;
-
     protected string $menuName = 'leave';
 
     /**
@@ -16,7 +14,7 @@ class UpdateLeaveRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->checkMenuAuthorization($this->menuName);
+        return Gate::allows('access-menu', $this->menuName);
     }
 
     /**

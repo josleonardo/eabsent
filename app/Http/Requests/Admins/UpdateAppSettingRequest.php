@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests\Admins;
 
-use App\Traits\MenuAuthorizationTrait;
 use App\Traits\NormalizeFieldTrait;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class UpdateAppSettingRequest extends FormRequest
 {
-    use MenuAuthorizationTrait, NormalizeFieldTrait;
+    use NormalizeFieldTrait;
 
     protected string $menuName = 'app setting';
 
@@ -19,7 +19,7 @@ class UpdateAppSettingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->checkMenuAuthorization($this->menuName);
+        return Gate::allows('access-menu', $this->menuName);
     }
 
     /**
@@ -39,7 +39,7 @@ class UpdateAppSettingRequest extends FormRequest
      */
     public function rules(): array
     {
-        $appSetting = $this->route('appSetting');
+        $appSetting = $this->route('app_setting');
         $id = $appSetting ? $appSetting->id : null;
 
         return [

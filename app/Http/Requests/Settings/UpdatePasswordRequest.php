@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests\Settings;
 
-use App\Traits\MenuAuthorizationTrait;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class UpdatePasswordRequest extends FormRequest
 {
-    use MenuAuthorizationTrait;
-
     protected string $menuName = 'change password';
 
     /**
@@ -16,7 +14,7 @@ class UpdatePasswordRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->checkMenuAuthorization($this->menuName);
+        return Gate::allows('access-menu', $this->menuName);
     }
 
     /**
@@ -27,7 +25,7 @@ class UpdatePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'current_password' => 'required|string|min:8|max:255',
+            'current_password' => 'required|string',
             'new_password' => [
                 'required',
                 'string',

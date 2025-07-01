@@ -22,8 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('access-menu', function (User $user, $menuName) {
-            if (! $user->active) {
+        Gate::define('access-menu', function (User $user, string $menuName) {
+            if (! $user || ! $user->active) {
                 return false;
             }
 
@@ -32,14 +32,18 @@ class AppServiceProvider extends ServiceProvider
                 return false;
             }
 
-            return DB::table('menus as m')
+            $menu = DB::table('menus as m')
                 ->join('role_menu as rm', 'm.id', '=', 'rm.menu_id')
-                ->where('rm.role_id', $role->id)
-                ->where('rm.active', true)
-                ->where('m.active', true)
-                ->where('m.platform', 0)
-                ->where('m.name', $menuName)
+                ->where([
+                    ['rm.role_id', $role->id],
+                    ['rm.active', true],
+                    ['m.active', true],
+                    ['m.platform', 0],
+                    ['m.name', $menuName],
+                ])
                 ->exists();
+
+            return $menu;
         });
     }
 }

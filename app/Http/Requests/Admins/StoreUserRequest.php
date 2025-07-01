@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests\Admins;
 
-use App\Traits\MenuAuthorizationTrait;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class StoreUserRequest extends FormRequest
 {
-    use MenuAuthorizationTrait;
-
     protected string $menuName = 'user';
 
     /**
@@ -16,7 +14,7 @@ class StoreUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->checkMenuAuthorization($this->menuName);
+        return Gate::allows('access-menu', $this->menuName);
     }
 
     /**
