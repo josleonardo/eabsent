@@ -103,7 +103,7 @@ class MenuSeeder extends Seeder
             [
                 'menu_group' => 6,
                 'name' => 'change password',
-                'url' => '/change-password',
+                'url' => '/settings/account/password',
                 'order' => 1,
             ],
             [

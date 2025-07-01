@@ -11,7 +11,7 @@
 
     <section class="space-y-6">
         {{-- Edit email form --}}
-        <form action="{{ route('settings.account.update.email') }}" method="POST"
+        <form action="{{ route('settings.account.email.update') }}" method="POST"
             class="p-3 max-w-7xl border border-gray-200 shadow-sm sm:p-4 dark:bg-gray-800 dark:border-gray-700">
             @csrf
             @method('PUT')
@@ -32,7 +32,7 @@
         </form>
 
         {{-- Update username form --}}
-        <form action="{{ route('settings.account.update.username') }}" method="POST"
+        <form action="{{ route('settings.account.username.update') }}" method="POST"
             class="p-3 max-w-7xl border border-gray-200 shadow-sm sm:p-4 dark:bg-gray-800 dark:border-gray-700">
             @csrf
             @method('PUT')
@@ -54,7 +54,7 @@
 
         @if ($hasChangePassword)
             {{-- Change password form --}}
-            <form action="{{ route('settings.account.update.password') }}" method="POST"
+            <form action="{{ route('change-password.update') }}" method="POST"
                 class="p-3 max-w-7xl border border-gray-200 shadow-sm sm:p-4 dark:bg-gray-800 dark:border-gray-700">
                 @csrf
                 @method('PUT')

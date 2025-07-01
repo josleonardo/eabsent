@@ -33,8 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/settings/profile', [ProfileController::class, 'update'])->name('settings.profile.update');
 
     Route::get('/settings/account', [AccountController::class, 'index'])->name('settings.account');
-    Route::put('/settings/account/email', [AccountController::class, 'updateEmail'])->name('settings.account.update.email');
-    Route::put('/settings/account/username', [AccountController::class, 'updateUsername'])->name('settings.account.update.username');
+    Route::put('/settings/account/email', [AccountController::class, 'updateEmail'])->name('settings.account.email.update');
+    Route::put('/settings/account/username', [AccountController::class, 'updateUsername'])->name('settings.account.username.update');
 
     Route::middleware('menu.access.check')->group(function () {
         // Dashboard
@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
         })->name('home.index');
 
         // Settings change password
-        Route::put('/settings/account/password', [AccountController::class, 'updatePassword'])->name('settings.account.update.password');
+        Route::put('/settings/account/password', [AccountController::class, 'updatePassword'])->name('change-password.update');
 
         // Approval pages
         Route::get('/approval', [ApprovalController::class, 'index'])
