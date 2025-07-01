@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\UpdateProfileRequest;
-use App\Services\AvatarService;
+use App\Services\Settings\AvatarService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
