@@ -29,19 +29,22 @@ Route::middleware('guest')->controller(AuthController::class)->group(function ()
 Route::post('/signout', [AuthController::class, 'signout'])->name('signout');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/home', function () {
-        return view('home', ['pageName' => 'Home']);
-    })->name('home.index');
-
     Route::get('/settings/profile', [ProfileController::class, 'index'])->name('settings.profile');
     Route::put('/settings/profile', [ProfileController::class, 'update'])->name('settings.profile.update');
 
     Route::get('/settings/account', [AccountController::class, 'index'])->name('settings.account');
     Route::put('/settings/account/email', [AccountController::class, 'updateEmail'])->name('settings.account.update.email');
     Route::put('/settings/account/username', [AccountController::class, 'updateUsername'])->name('settings.account.update.username');
-    Route::put('/settings/account/password', [AccountController::class, 'updatePassword'])->name('settings.account.update.password');
 
-    Route::middleware('role_check:1,2,3')->group(function () {
+    Route::middleware('menu.access.check')->group(function () {
+        // Dashboard
+        Route::get('/home', function () {
+            return view('home', ['pageName' => 'Home']);
+        })->name('home.index');
+
+        // Settings change password
+        Route::put('/settings/account/password', [AccountController::class, 'updatePassword'])->name('settings.account.update.password');
+
         // Approval pages
         Route::get('/approval', [ApprovalController::class, 'index'])
             ->name('approval.index');
@@ -55,16 +58,28 @@ Route::middleware('auth')->group(function () {
             ->name('report.index');
         Route::resource('/report/attendance', AttendanceController::class)
             ->only(['index', 'edit', 'update']);
-    });
 
-    Route::middleware('role_check:1,2')->group(function () {
+        // Admin pages
         Route::get('/admin', [AdminController::class, 'index'])
-            ->name('admin.index');
+            ->name('administration.index');
 
         Route::resource('/admin/user', UserController::class)
             ->except(['destroy']);
+        Route::resource('/admin/role', RoleController::class)
+            ->except(['show', 'destroy']);
+        Route::resource('/admin/level', LevelController::class)
+            ->except(['show', 'destroy']);
+        Route::resource('/admin/menu', MenuController::class)
+            ->except(['show', 'destroy']);
         Route::resource('/admin/schedule', ScheduleController::class)
             ->except(['show', 'destroy']);
+        Route::resource('/admin/app-setting', AppSettingController::class)
+            ->except(['show', 'destroy']);
+
+        Route::resource('/admin/user-role', UserRoleController::class)
+            ->only(['index', 'edit', 'update']);
+        Route::resource('/admin/user-level', UserLevelController::class)
+            ->only(['index', 'edit', 'update']);
 
         Route::get('/admin/user-schedule', [UserScheduleController::class, 'index'])
             ->name('user-schedule.index');
@@ -87,20 +102,5 @@ Route::middleware('auth')->group(function () {
             ->name('role-menu.edit');
         Route::put('/admin/role-menu/{role}/{menu}', [RoleMenuController::class, 'update'])
             ->name('role-menu.update');
-    });
-
-    Route::middleware('role_check:1')->group(function () {
-        Route::resource('/admin/menu', MenuController::class)
-            ->except(['show', 'destroy']);
-        Route::resource('/admin/role', RoleController::class)
-            ->except(['show', 'destroy']);
-        Route::resource('/admin/level', LevelController::class)
-            ->except(['show', 'destroy']);
-        Route::resource('/admin/app-setting', AppSettingController::class)
-            ->except(['show', 'destroy']);
-        Route::resource('/admin/user-role', UserRoleController::class)
-            ->only(['index', 'edit', 'update']);
-        Route::resource('/admin/user-level', UserLevelController::class)
-            ->only(['index', 'edit', 'update']);
     });
 });
