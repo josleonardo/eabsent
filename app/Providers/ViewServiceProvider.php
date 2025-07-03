@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-use App\Models\Menu;
+use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,46 +25,62 @@ class ViewServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('components.sidebar', function ($view) {
-            $user = Auth::user();
-            $role = $user->roles->first();
-            $allowedRoles = in_array($role->id, [1, 2, 3]);
+            $currentRoute = Route::currentRouteName();
 
-            // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
-            if (! $user || ! $user->active || ! $role || ! $allowedRoles || ! $role->active || ! $role->pivot->active) {
-                $view->with('sideMenus', collect());
+            if (str_starts_with($currentRoute, 'settings.')) {
+                $menus = [
+                    ['name' => 'Profile', 'url' => route('settings.profile'), 'icon' => 'icon-user'],
+                    ['name' => 'Account', 'url' => route('settings.account'), 'icon' => 'icon-settings-2'],
+                ];
+            } else {
+                $user = Auth::user();
+                $role = $user?->roles->first();
 
-                return;
+                $isValid =
+                    $user &&
+                    $user->active &&
+                    $role &&
+                    $role->active &&
+                    optional($role->pivot)->active &&
+                    in_array($role->name, [Role::ROLE_SUPERADMIN, Role::ROLE_ADMIN, Role::ROLE_HEADMASTER]);
+
+                if (! $isValid) {
+                    $view->with('menus', collect());
+
+                    return;
+                }
+
+                $menus = DB::table('menus as m')
+                    ->join('role_menu as rm', 'm.id', '=', 'rm.menu_id')
+                    ->where([
+                        ['rm.role_id', $role->id],
+                        ['rm.active', true],
+                        ['m.active', true],
+                        ['m.platform', 0],
+                        ['m.menu_group', 0],
+                    ])
+                    ->select('m.id', 'm.name', 'm.url')
+                    ->orderBy('m.order')
+                    ->get()
+                    ->map(function ($menu, $index) {
+                        $icons = [
+                            'icon-home',
+                            'icon-file-text',
+                            'icon-clipboard-check',
+                            'icon-category',
+                        ];
+
+                        $menu->icon = $icons[$index % count($icons)];
+
+                        return [
+                            'name' => $menu->name,
+                            'url' => $menu->url,
+                            'icon' => $menu->icon,
+                        ];
+                    });
             }
 
-            $sideMenus = Menu::select('id', 'name', 'url')
-                ->where([
-                    ['platform', 0],
-                    ['menu_group', 0],
-                    ['menus.active', 1],
-                ])
-                ->whereHas('roles', function ($query) use ($role) {
-                    $query->where([
-                        ['role_id', $role->id],
-                        ['role_menu.active', 1],
-                    ]);
-                })
-                ->orderBy('order')
-                ->get()
-                ->map(function ($sideMenu, $index) {
-                    $icons = [
-                        'icon-home',
-                        'icon-file-text',
-                        'icon-clipboard-check',
-                        'icon-category',
-                    ];
-
-                    // Assign color based on index, cycling if more items than available
-                    $sideMenu->icon = $icons[$index % count($icons)];
-
-                    return $sideMenu;
-                });
-
-            $view->with('sideMenus', $sideMenus);
+            $view->with('menus', $menus);
         });
     }
 }
