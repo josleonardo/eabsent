@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,32 +25,38 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $remember = $request->has('remember');
+        $remember = $request->filled('remember');
         if ($remember) {
             Auth::setRememberDuration(43200);
         }
 
-        if (Auth::attempt($credentials, $remember)) {
-            $user = Auth::user();
-            $role = $user->roles->first();
-            $allowedRoles = in_array($role->id, [1, 2, 3]);
-
-            // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
-            if (! $user || ! $user->active || ! $role || ! $allowedRoles || ! $role->active || ! $role->pivot->active) {
-                Auth::logout();
-                throw ValidationException::withMessages([
-                    'credentials' => 'Invalid credentials',
-                ]);
-            }
-
-            $request->session()->regenerate();
-
-            return redirect()->route('home.index');
+        if (! Auth::attempt($credentials, $remember)) {
+            throw ValidationException::withMessages([
+                'credentials' => 'Invalid credentials',
+            ]);
         }
 
-        throw ValidationException::withMessages([
-            'credentials' => 'Invalid credentials',
-        ]);
+        $user = Auth::user();
+        $role = $user?->roles->first();
+
+        $isValid =
+            $user &&
+            $user->active &&
+            $role &&
+            $role->active &&
+            optional($role->pivot)->active &&
+            in_array($role->name, [Role::ROLE_SUPERADMIN, Role::ROLE_ADMIN, Role::ROLE_HEADMASTER]);
+
+        if (! $isValid) {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'credentials' => 'Invalid credentials',
+            ]);
+        }
+
+        $request->session()->regenerate();
+
+        return redirect()->route('home.index');
     }
 
     /**

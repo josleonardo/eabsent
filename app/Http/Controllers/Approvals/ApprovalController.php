@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Approvals;
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ApprovalController extends Controller
 {
@@ -14,14 +13,8 @@ class ApprovalController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         $role = $user->roles->first();
-        $allowedRoles = in_array($role->id, [1, 2, 3]);
-
-        // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
-        if (! $user || ! $user->active || ! $role || ! $allowedRoles || ! $role->active || ! $role->pivot->active) {
-            return redirect()->route('home.index')->with('error', 'Unauthorized access');
-        }
 
         $menus = Menu::select('id', 'name', 'url')
             ->where([

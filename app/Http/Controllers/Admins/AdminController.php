@@ -4,23 +4,17 @@ namespace App\Http\Controllers\Admins;
 
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         $role = $user->roles->first();
-        $allowedRoles = in_array($role->id, [1, 2]);
-
-        // If user not exist, inactive, or role not exist, not allowed, or role/role_user inactive
-        if (! $user || ! $user->active || ! $role || ! $allowedRoles || ! $role->active || ! $role->pivot->active) {
-            return redirect()->route('home.index')->with('error', 'Unauthorized access');
-        }
 
         $menus = Menu::select('id', 'name', 'url')
             ->where([
