@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_level', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('level_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->boolean('active')->nullable();
+            $table->boolean('active')->nullable()->index();
             $table->datetimes();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();

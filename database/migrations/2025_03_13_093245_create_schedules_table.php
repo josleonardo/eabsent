@@ -17,7 +17,7 @@ return new class extends Migration
             $table->tinyInteger('day_of_week');
             $table->time('check_in_time');
             $table->time('check_out_time');
-            $table->boolean('active')->nullable();
+            $table->boolean('active')->nullable()->index();
             $table->datetimes();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();

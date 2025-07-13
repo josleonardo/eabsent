@@ -18,14 +18,14 @@ return new class extends Migration
             $table->time('actual_out')->nullable();
             $table->string('reason');
             $table->tinyInteger('status')->nullable();
-            $table->dateTime('approved_at')->nullable();
-            $table->integer('approved_by')->nullable();
+            $table->dateTime('approved_at')->nullable()->index();
+            $table->integer('approved_by')->nullable()->index();
             $table->boolean('active')->nullable();
             $table->datetimes();
-            $table->integer('created_by')->nullable();
+            $table->integer('created_by')->nullable()->index();
             $table->integer('updated_by')->nullable();
 
-            $table->index(['date', 'status', 'approved_at', 'approved_by', 'created_by']);
+            $table->index(['date', 'status']);
         });
     }
 

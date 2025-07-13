@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('role_menu', function (Blueprint $table) {
             $table->foreignId('role_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('menu_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->boolean('active')->nullable();
+            $table->boolean('active')->nullable()->index();
             $table->datetimes();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();

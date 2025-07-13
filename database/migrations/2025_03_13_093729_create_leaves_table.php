@@ -17,15 +17,13 @@ return new class extends Migration
             $table->date('end_date');
             $table->string('reason');
             $table->string('file_path')->nullable();
-            $table->tinyInteger('status')->nullable();
-            $table->dateTime('approved_at')->nullable();
-            $table->integer('approved_by')->nullable();
+            $table->tinyInteger('status')->nullable()->index();
+            $table->dateTime('approved_at')->nullable()->index();
+            $table->integer('approved_by')->nullable()->index();
             $table->boolean('active')->nullable();
             $table->datetimes();
-            $table->integer('created_by')->nullable();
+            $table->integer('created_by')->nullable()->index();
             $table->integer('updated_by')->nullable();
-
-            $table->index(['status', 'approved_at', 'approved_by', 'created_by']);
         });
     }
 

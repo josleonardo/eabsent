@@ -20,7 +20,7 @@ return new class extends Migration
             $table->time('actual_in')->nullable();
             $table->time('actual_out')->nullable();
             $table->smallInteger('status')->default(0);
-            $table->boolean('active')->nullable();
+            $table->boolean('active')->nullable()->index();
             $table->datetimes();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
