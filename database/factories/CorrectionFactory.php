@@ -21,7 +21,7 @@ class CorrectionFactory extends Factory
             'actual_in' => fake()->time(),
             'actual_out' => fake()->time(),
             'reason' => fake()->sentence(3),
-            'status' => fake()->randomElement([null, 0, 1]),
+            'status' => null,
             'approved_at' => fake()->dateTime(),
             'approved_by' => fake()->numberBetween(1, 4),
             'active' => true,

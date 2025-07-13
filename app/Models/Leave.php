@@ -12,6 +12,15 @@ class Leave extends Model
     use HasFactory;
 
     /**
+     * The role constants.
+     */
+    const STATUS_APPROVED = 1;
+
+    const STATUS_REJECTED = 0;
+
+    const STATUS_REVOKED = 2;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
