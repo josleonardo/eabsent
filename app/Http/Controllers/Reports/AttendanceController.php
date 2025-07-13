@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Reports;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Reports\UpdateAttendanceRequest;
 use App\Models\Attendance;
-use App\Models\Leave;
 use App\Services\Reports\AttendanceService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class AttendanceController extends Controller
@@ -16,28 +14,14 @@ class AttendanceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(AttendanceService $attendanceService)
+    public function index(Request $request, AttendanceService $attendanceService)
     {
-        $user = Auth::user();
-        $attendances = $attendanceService->getAttendances($user);
-        $leaves = Leave::select('id', 'start_date', 'end_date', 'reason', 'status', 'created_by')->where('status', 1)->get();
+        $user = $request->user();
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
 
-        $leavesByUser = $leaves->groupBy('created_by');
-
-        // Update attendance status if user is on leave for that date
-        foreach ($attendances as $attendance) {
-            $userLeaves = $leavesByUser->get($attendance->user_id, collect());
-            foreach ($userLeaves as $leave) {
-                if (
-                    $attendance->date >= $leave->start_date &&
-                    $attendance->date <= $leave->end_date
-                ) {
-                    $attendance->status = 3;
-                    break; // No need to check other leaves for this attendance
-                }
-            }
-        }
-
+        $attendances = $attendanceService->getAttendances($role, $level);
+        
         $statusKey = config('constants.attendance_status');
 
         return view('reports.attendances.index', ['pageName' => 'Attendance report'] + compact('attendances', 'statusKey'));
@@ -95,7 +79,7 @@ class AttendanceController extends Controller
 
             return redirect()->route('attendance.index')->with('success', 'Attendance updated successfully.');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Attendance update failed' . $th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the attendance.');
         }

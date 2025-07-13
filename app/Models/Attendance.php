@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Attendance extends Model
 {
@@ -32,6 +33,14 @@ class Attendance extends Model
     public function users(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * Relationship to the attendance past versions.
+     */
+    public function histories(): HasMany
+    {
+        return $this->hasMany(AttendanceHistory::class, 'attendance_id', 'id');
     }
 
     public function getDayNameAttribute()
