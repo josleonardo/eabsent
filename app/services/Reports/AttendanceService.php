@@ -7,6 +7,7 @@ use App\Models\Level;
 use App\Models\Role;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceService
 {
@@ -41,6 +42,9 @@ class AttendanceService
         return $query->collect([])->paginate(0);
     }
 
+    /**
+     * Save attendance history.
+     */
     protected function saveAttendanceHistory(Attendance $attendance, string $source, ?int $sourceId, ?string $changeReason, int $currentUserId): void
     {
         $attendance->histories()->create([
@@ -59,19 +63,78 @@ class AttendanceService
     }
 
     /**
-     * Update attendance record.
+     * Update attendance record and save history.
      */
     public function updateAttendance(Attendance $attendance, array $validatedData, int $currentUserId): Attendance
     {
-        $this->saveAttendanceHistory($attendance, 'manual', null, null, $currentUserId);
+        return DB::transaction(function () use ($attendance, $validatedData, $currentUserId) {
+            $oldData = $attendance->replicate();
+            $oldData->id = $attendance->id;
 
-        $attendance->update([
-            'actual_in' => $validatedData['actual_in'],
-            'actual_out' => $validatedData['actual_out'],
-            'status' => $validatedData['status'],
-            'updated_by' => $currentUserId,
-        ]);
+            $updated = $attendance->update([
+                'actual_in' => $validatedData['actual_in'],
+                'actual_out' => $validatedData['actual_out'],
+                'status' => $validatedData['status'],
+                'updated_by' => $currentUserId,
+            ]);
 
-        return $attendance;
+            if ($updated) {
+                $this->saveAttendanceHistory($oldData, 'manual', null, null, $currentUserId);
+            }
+
+            return $attendance->refresh();
+        });
+    }
+
+    public function markOnLeave(int $userId, string $startDate, string $endDate, int $sourceId, int $currentUserId): void
+    {
+        $attendances = Attendance::where('user_id', $userId)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->get();
+
+        foreach ($attendances as $attendance) {
+            $oldData = $attendance->replicate();
+            $oldData->id = $attendance->id;
+
+            $updated = $attendance->update([
+                'status' => 3,
+                'updated_by' => $currentUserId,
+            ]);
+
+            if ($updated) {
+                $this->saveAttendanceHistory($oldData, 'leave', $sourceId, 'approved', $currentUserId);
+            }
+        }
+    }
+
+    public function revokeOnLeave(int $userId, string $startDate, string $endDate, int $sourceId, int $currentUserId): void
+    {
+        $attendances = Attendance::where('user_id', $userId)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->where('status', 3)
+            ->with('histories')
+            ->get();
+
+        foreach ($attendances as $attendance) {
+            $oldData = $attendance->replicate();
+            $oldData->id = $attendance->id;
+
+            $previousHistories = $attendance->histories()
+                ->where('source', 'leave')
+                ->where('source_id', $sourceId)
+                ->orderByDesc('changed_at')
+                ->first();
+
+            $previousStatus = $previousHistories->status ?? 1;
+
+            $updated = $attendance->update([
+                'status' => $previousStatus,
+                'updated_by' => $currentUserId,
+            ]);
+
+            if ($updated) {
+                $this->saveAttendanceHistory($oldData, 'leave', $sourceId, 'revoked', $currentUserId);
+            }
+        }
     }
 }

@@ -5,8 +5,10 @@ namespace App\Services\Approvals;
 use App\Models\Leave;
 use App\Models\Level;
 use App\Models\Role;
+use App\Services\Reports\AttendanceService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class LeaveService
 {
@@ -88,18 +90,56 @@ class LeaveService
         return $query->whereRaw('1 = 0');
     }
 
+    protected $attendanceService;
+
+    public function __construct(AttendanceService $attendanceService)
+    {
+        $this->attendanceService = $attendanceService;
+    }
+
     /**
-     * Update leave request.
+     * Update leave request status and mark attendance as on leave if approved.
      */
     public function updateLeave(Leave $leave, array $validatedData, int $currentUserId): Leave
     {
-        $leave->update([
-            'status' => $validatedData['status'],
-            'approved_at' => now(),
-            'approved_by' => $currentUserId,
-            'updated_by' => $currentUserId,
-        ]);
+        return DB::transaction(function () use ($leave, $validatedData, $currentUserId) {
+            $leave->update([
+                'status' => $validatedData['status'],
+                'approved_at' => now(),
+                'approved_by' => $currentUserId,
+                'updated_by' => $currentUserId,
+            ]);
 
-        return $leave;
+            if ($validatedData['status'] == Leave::STATUS_APPROVED) {
+                $this->attendanceService->markOnLeave($leave->created_by, $leave->start_date, $leave->end_date, $leave->id, $currentUserId);
+            }
+
+            return $leave->refresh();
+        });
+    }
+
+    /**
+     * Revoke leave request and update attendance accordingly.
+     */
+    public function revokeLeave(Leave $leave, array $validatedData, int $currentUserId): Leave
+    {
+        if ($leave->status == Leave::STATUS_REVOKED) {
+            throw new \Exception('Leave is already revoked.');
+        }
+
+        if ($leave->status != Leave::STATUS_APPROVED) {
+            throw new \Exception('Only approved leaves can be revoked.');
+        }
+        
+        return DB::transaction(function () use ($leave, $validatedData, $currentUserId) {
+            $leave->update([
+                'status' => $validatedData['status'],
+                'updated_by' => $currentUserId,
+            ]);
+
+            $this->attendanceService->revokeOnLeave($leave->created_by, $leave->start_date, $leave->end_date, $leave->id, $currentUserId);
+
+            return $leave->refresh();
+        });
     }
 }

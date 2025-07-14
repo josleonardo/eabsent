@@ -5,10 +5,10 @@ namespace App\Http\Requests\Approvals;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class UpdateLeaveRequest extends FormRequest
+class RevokeLeaveRequest extends FormRequest
 {
     protected string $menuName = 'leave';
-
+    
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -25,7 +25,7 @@ class UpdateLeaveRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'action' => 'required|in:approve,reject',
+            'action' => 'required|in:revoke',
         ];
     }
 }

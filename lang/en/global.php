@@ -27,6 +27,7 @@ return [
     'approve' => [
         'approved' => 'Approved',
         'rejected' => 'Rejected',
+        'revoked' => 'Revoked',
     ],
 
     'day' => [

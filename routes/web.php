@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
             ->name('approval.index');
         Route::resource('/approval/leave', LeaveController::class)
             ->only(['index', 'update']);
+        Route::put('/approval/leave/{leave}/revoke', [LeaveController::class, 'revoke'])
+            ->name('leave.revoke');
         Route::resource('/approval/correction', CorrectionController::class)
             ->only(['index', 'update']);
 

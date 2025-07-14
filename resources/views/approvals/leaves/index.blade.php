@@ -2,7 +2,8 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <x-page-caption>
-        View, approve, or reject employee leave requests. Each request includes detailed information, and history decisions are logged for reference in the request history section.
+        View, approve, or reject employee leave requests. Each request includes detailed information, and history
+        decisions are logged for reference in the request history section.
     </x-page-caption>
 
     {{-- Toast notification --}}
@@ -89,11 +90,11 @@
                                             @csrf
                                             @method('PUT')
 
-                                            <button type="submit" name="status" value="1"
+                                            <button type="submit" name="action" value="approve"
                                                 class="p-0.5 rounded text-blue-500 transition hover:bg-blue-500 hover:text-white focus:text-white focus:bg-blue-500 focus:shadow-sm focus:outline-0">
                                                 <x-icon-check class="size-5" />
                                             </button>
-                                            <button type="submit" name="status" value="0"
+                                            <button type="submit" name="action" value="reject"
                                                 class="p-0.5 rounded text-red-500 transition hover:bg-red-500 hover:text-white focus:text-white focus:bg-red-500 focus:shadow-sm focus:outline-0">
                                                 <x-icon-x class="size-5" />
                                             </button>
@@ -131,6 +132,9 @@
                                 <th scope="col" class="p-4">Status</th>
                                 <th scope="col" class="p-4">Processed At</th>
                                 <th scope="col" class="p-4">Processed By</th>
+                                <th scope="col" class="p-4">
+                                    <span class="sr-only">Revoke</span>
+                                </th>
                             </tr>
                         </thead>
 
@@ -154,6 +158,19 @@
                                     </td>
                                     <td class="px-4 py-3">{{ $history->approved_at }}</td>
                                     <td class="px-4 py-3">{{ $history->approver->full_name }}</td>
+                                    <td class="px-4 py-3">
+                                        @if ($history->status == 1)
+                                            <form action="{{ route('leave.revoke', $history->id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <button type="submit" name="action" value="revoke"
+                                                    class="p-0.5 rounded text-red-500 transition hover:bg-red-500 hover:text-white focus:text-white focus:bg-red-500 focus:shadow-sm focus:outline-0">
+                                                    <x-icon-restore class="size-5" />
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

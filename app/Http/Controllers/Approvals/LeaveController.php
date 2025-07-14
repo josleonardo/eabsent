@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Approvals;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Approvals\RevokeLeaveRequest;
 use App\Http\Requests\Approvals\UpdateLeaveRequest;
 use App\Models\Leave;
 use App\Services\Approvals\LeaveService;
@@ -66,22 +67,31 @@ class LeaveController extends Controller
      */
     public function update(UpdateLeaveRequest $request, Leave $leave, LeaveService $leaveService)
     {
-        if (! $leave) {
-            return redirect()->back()->with('error', 'No leave request found.');
+        $statusMap = [
+            'approve' => Leave::STATUS_APPROVED,
+            'reject'  => Leave::STATUS_REJECTED,
+        ];
+
+        $action = $request->input('action');
+        $status = $statusMap[$action] ?? null;
+
+        if ($status === null) {
+            return back()->with('error', 'Invalid action.');
         }
 
         $validatedData = $request->validated();
+        $validatedData['status'] = $status;
 
         try {
             $currentUserId = $request->user()->id;
 
             $leaveService->updateLeave($leave, $validatedData, $currentUserId);
 
-            return redirect()->back()->with('success', 'Leave request updated successfully.');
+            return back()->with('success', 'Leave request updated successfully.');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error updating leave request: ' . $th->getMessage());
 
-            return redirect()->back()->with('error', 'An error occurred while updating the leave request.');
+            return back()->with('error', 'An error occurred while updating the leave request.');
         }
     }
 
@@ -91,5 +101,45 @@ class LeaveController extends Controller
     public function destroy(Leave $leave)
     {
         //
+    }
+
+    /**
+     * Revoke a leave request.
+     */
+    public function revoke(RevokeLeaveRequest $request, Leave $leave, LeaveService $leaveService)
+    {
+        if ($leave->status == Leave::STATUS_REVOKED) {
+            return back()->with('error', 'Leave is already revoked.');
+        }
+        
+        if ($leave->status != Leave::STATUS_APPROVED) {
+            return back()->with('error', 'Only approved leaves can be revoked.');
+        }
+        
+        $statusMap = [
+            'revoke' => Leave::STATUS_REVOKED,
+        ];
+
+        $action = $request->input('action');
+        $status = $statusMap[$action] ?? null;
+
+        if ($status === null) {
+            return back()->with('error', 'Invalid action.');
+        }
+
+        $validatedData = $request->validated();
+        $validatedData['status'] = $status;
+
+        try {
+            $currentUserId = $request->user()->id;
+
+            $leaveService->revokeLeave($leave, $validatedData, $currentUserId);
+
+            return back()->with('success', 'Leave request revoked successfully.');
+        } catch (\Throwable $th) {
+            Log::error('Error revoking leave request: ' . $th->getMessage());
+
+            return back()->with('error', 'An error occurred while revoking the leave request.');
+        }
     }
 }
