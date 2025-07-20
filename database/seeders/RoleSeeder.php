@@ -13,15 +13,16 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         $roles = [
-            ['name' => 'superadmin'],
-            ['name' => 'admin'],
-            ['name' => 'headmaster'],
-            ['name' => 'teacher'],
+            ['name' => 'superadmin', 'priority' => 100],
+            ['name' => 'admin', 'priority' => 90],
+            ['name' => 'headmaster', 'priority' => 20],
+            ['name' => 'teacher', 'priority' => 10],
         ];
 
         foreach ($roles as $role) {
             Role::factory()->create([
                 'name' => $role['name'],
+                'priority' => $role['priority'],
                 'active' => true,
             ]);
         }

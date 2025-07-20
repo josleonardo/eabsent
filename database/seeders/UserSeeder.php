@@ -10,6 +10,7 @@ use App\Models\UserProfile;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserSeeder extends Seeder
 {
@@ -23,12 +24,23 @@ class UserSeeder extends Seeder
                 'username' => 'super_admin',
                 'email' => 'superadmin@admin.com',
                 'password' => Hash::make('Asdf.123'),
+                'nik' => 1111111111111111,
                 'first_name' => 'Super',
                 'last_name' => 'Admin',
                 'position' => 'Super Admin',
                 'role_id' => 1,
                 'level_id' => 1,
-                'schedule_group' => 1,
+            ],
+            [
+                'username' => 'admin',
+                'email' => 'admin@admin.com',
+                'password' => Hash::make('Asdf.123'),
+                'nik' => 2222222222222222,
+                'first_name' => 'Admin',
+                'last_name' => null,
+                'position' => 'Admin',
+                'role_id' => 2,
+                'level_id' => 1,
             ],
             [
                 'username' => 'kepsek1',
@@ -37,7 +49,7 @@ class UserSeeder extends Seeder
                 'first_name' => 'Kepsek',
                 'last_name' => 'SD',
                 'position' => 'Kepala Sekolah',
-                'role_id' => 2,
+                'role_id' => 3,
                 'level_id' => 3,
                 'schedule_group' => 1,
             ],
@@ -102,7 +114,6 @@ class UserSeeder extends Seeder
 
         try {
             foreach ($userCreds as $userCred) {
-                // Create user
                 $user = User::factory()->make([
                     'username' => $userCred['username'],
                     'email' => $userCred['email'],
@@ -111,8 +122,7 @@ class UserSeeder extends Seeder
                 ]);
                 $user->save();
 
-                // Create user profile
-                UserProfile::factory()->create([
+                $profile = [
                     'user_id' => $user->id,
                     'nuptk' => null,
                     'first_name' => $userCred['first_name'],
@@ -127,9 +137,14 @@ class UserSeeder extends Seeder
                     'updated_at' => $user->updated_at,
                     'created_by' => 1,
                     'updated_by' => 1,
-                ]);
+                ];
 
-                // Attach role
+                if (isset($userCred['nik'])) {
+                    $profile['nik'] = $userCred['nik'];
+                }
+
+                UserProfile::factory()->create($profile);
+
                 $role = Role::where('id', $userCred['role_id'])->first();
                 if ($role) {
                     $user->roles()->attach($role->id, [
@@ -139,7 +154,6 @@ class UserSeeder extends Seeder
                     ]);
                 }
 
-                // Attach level
                 $level = Level::where('id', $userCred['level_id'])->first();
                 if ($level) {
                     $user->levels()->attach($level->id, [
@@ -149,15 +163,17 @@ class UserSeeder extends Seeder
                     ]);
                 }
 
-                // Attach schedules
-                $schedules = Schedule::where('group', $userCred['schedule_group'])->get();
-                if ($schedules) {
-                    foreach ($schedules as $schedule) {
-                        $user->schedules()->attach($schedule->id, [
-                            'active' => true,
-                            'created_by' => 1,
-                            'updated_by' => 1,
-                        ]);
+                if (isset($userCred['schedule_group'])) {
+                    $schedules = Schedule::where('group', $userCred['schedule_group'])->get();
+
+                    if ($schedules) {
+                        foreach ($schedules as $schedule) {
+                            $user->schedules()->attach($schedule->id, [
+                                'active' => true,
+                                'created_by' => 1,
+                                'updated_by' => 1,
+                            ]);
+                        }
                     }
                 }
             }
@@ -166,7 +182,7 @@ class UserSeeder extends Seeder
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            throw $th;
+            Log::error('Error seeding users: '.$th->getMessage());
         }
 
         // User::factory()->count(50)->create();

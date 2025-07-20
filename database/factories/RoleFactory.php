@@ -19,6 +19,7 @@ class RoleFactory extends Factory
         return [
             'name' => fake()->sentence(2),
             'active' => fake()->boolean(90),
+            'priority' => fake()->numberBetween(0, 100),
             'created_at' => now(),
             'updated_at' => now(),
             'created_by' => 1,

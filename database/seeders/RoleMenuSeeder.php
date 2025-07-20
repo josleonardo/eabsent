@@ -13,12 +13,12 @@ class RoleMenuSeeder extends Seeder
      */
     public function run(): void
     {
-        $menus = Menu::select('id')->get(); // Get all menus ids
+        $menus = Menu::select('id')->get();
 
         // Define menu access for each role
         $roleMenus = [
             1 => $menus->toArray(), // Superadmin gets all menus
-            2 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 19, 24, 25],
+            2 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 22, 23, 24, 25],
             3 => [1, 2, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 25],
             4 => [1, 2, 3, 4, 6],
         ];
