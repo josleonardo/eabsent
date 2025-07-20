@@ -2,9 +2,11 @@
 
 namespace App\Services\Admins;
 
+use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Services\Settings\AvatarService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,20 +19,45 @@ class UserService
         $this->avatarService = $avatarService;
     }
 
+    public function getUsers(string $userRole, ?int $perPage = null): LengthAwarePaginator
+    {
+        $superAdmin = Role::ROLE_SUPERADMIN;
+        $admin = Role::ROLE_ADMIN;
+        $perPage = $perPage ?? config('constants.default_per_page');
+
+        if ($userRole == $superAdmin) {
+            return User::paginate($perPage);
+        }
+
+        if ($userRole == $admin) {
+            return User::whereHas('roles', function ($query) use ($superAdmin) {
+                $query->whereNot('name', $superAdmin);
+            })
+                ->with('roles:id,name')
+                ->paginate($perPage);
+        }
+
+        return abort(403, 'Unauthorized');
+    }
+
     /**
      * Create a new user with the provided validated data and default data.
      */
-    public function createUser(array $validatedData, array $defaultData): User
+    public function createUser(array $validatedData, int $currentUserId): User
     {
+        $defaultData = [
+            'active' => $validatedData['active'],
+            'created_by' => $currentUserId,
+            'updated_by' => $currentUserId,
+        ];
+
         return DB::transaction(function () use ($validatedData, $defaultData) {
-            // Create user credentials
             $user = User::create(array_merge([
                 'email' => $validatedData['email'],
                 'username' => $validatedData['username'],
                 'password' => Hash::make($validatedData['password']),
             ], $defaultData));
 
-            // Create user profile
             $user->profile()->create(array_merge([
                 'first_name' => $validatedData['first_name'],
                 'last_name' => $validatedData['last_name'],
@@ -50,17 +77,14 @@ class UserService
                 $user->profile()->update(['avatar' => $path]);
             }
 
-            // Attach the role to the user
             if (! empty($validatedData['role'])) {
                 $user->roles()->attach($validatedData['role'], $defaultData);
             }
 
-            // Attach the level to the user
             if (! empty($validatedData['level'])) {
                 $user->levels()->attach($validatedData['level'], $defaultData);
             }
 
-            // Attach the schedules to the user
             $scheduleIds = [];
             if (! empty($validatedData['schedule'])) {
                 $scheduleIds = explode(',', $validatedData['schedule']);
@@ -81,8 +105,19 @@ class UserService
     /**
      * Update an existing user with the provided validated data and default data.
      */
-    public function updateUser(User $user, array $validatedData, array $defaultData, array $defaultSync): User
+    public function updateUser(User $user, array $validatedData, int $currentUserId): User
     {
+        $defaultData = [
+            'active' => $validatedData['active'],
+            'updated_by' => $currentUserId,
+        ];
+
+        $defaultSync = [
+            'active' => $validatedData['active'],
+            'created_by' => $currentUserId,
+            'updated_by' => $currentUserId,
+        ];
+
         return DB::transaction(function () use ($user, $validatedData, $defaultData, $defaultSync) {
             // If avatar uploaded, update the avatar
             if (isset($validatedData['avatar']) && $validatedData['avatar']->isValid()) {
@@ -91,13 +126,11 @@ class UserService
                 $validatedData['avatar'] = $path;
             }
 
-            // Update user credentials
             $user->update(array_merge([
                 'email' => $validatedData['email'],
                 'username' => $validatedData['username'],
             ], $defaultData));
 
-            // Update user profile
             $user->profile()->update(array_merge([
                 'first_name' => $validatedData['first_name'],
                 'last_name' => $validatedData['last_name'],
@@ -111,21 +144,18 @@ class UserService
                 'avatar' => $validatedData['avatar'] ?? $user->profile->avatar,
             ], $defaultData));
 
-            // Sync the role to the user
             if (! empty($validatedData['role'])) {
                 $user->roles()->syncWithPivotValues([$validatedData['role']], $defaultSync);
             } else {
                 $user->roles()->detach();
             }
 
-            // Sync the level to the user
             if (! empty($validatedData['level'])) {
                 $user->levels()->syncWithPivotValues([$validatedData['level']], $defaultSync);
             } else {
                 $user->levels()->detach();
             }
 
-            // Sync the schedules to the user
             $scheduleIds = [];
             if (! empty($validatedData['schedule'])) {
                 $scheduleIds = explode(',', $validatedData['schedule']);
