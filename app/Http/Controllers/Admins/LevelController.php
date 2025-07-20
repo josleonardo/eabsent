@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admins\StoreLevelRequest;
 use App\Http\Requests\Admins\UpdateLevelRequest;
 use App\Models\Level;
+use App\Services\Admins\LevelService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class LevelController extends Controller
@@ -13,9 +15,10 @@ class LevelController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(LevelService $levelService)
     {
-        $levels = Level::paginate(10);
+        $userLevel = Auth::user()->levels->first()->name ?? '';
+        $levels = $levelService->getLevels($userLevel);
 
         $activeKey = config('constants.actives');
         $yesNoKey = config('constants.yes_no');
@@ -36,25 +39,20 @@ class LevelController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLevelRequest $request)
+    public function store(StoreLevelRequest $request, LevelService $levelService)
     {
         $validatedData = $request->validated();
 
         try {
             $currentUserId = $request->user()->id;
 
-            Level::create([
-                'name' => $validatedData['level_name'],
-                'active' => $validatedData['active'],
-                'created_by' => $currentUserId,
-                'updated_by' => $currentUserId,
-            ]);
+            $levelService->createLevel($validatedData, $currentUserId);
 
             return redirect()->route('level.index')->with('success', 'Level created successfully.');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error creating level: '.$th->getMessage());
 
-            return back()->with('error', 'An error occurred while creating the level.');
+            return back()->with('error', 'An error occurred while creating a level.');
         }
 
     }
@@ -80,22 +78,18 @@ class LevelController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLevelRequest $request, Level $level)
+    public function update(UpdateLevelRequest $request, Level $level, LevelService $levelService)
     {
         $validatedData = $request->validated();
 
         try {
             $currentUserId = $request->user()->id;
 
-            $level->update([
-                'name' => $validatedData['level_name'],
-                'active' => $validatedData['active'],
-                'updated_by' => $currentUserId,
-            ]);
+            $levelService->updateLevel($level, $validatedData, $currentUserId);
 
             return redirect()->route('level.index')->with('success', 'Level updated successfully.');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error updating level: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the level.');
         }

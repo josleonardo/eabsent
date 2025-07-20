@@ -8,7 +8,7 @@ use App\Http\Requests\Admins\UpdateRoleMenuRequest;
 use App\Models\Menu;
 use App\Models\Role;
 use App\Services\Admins\RoleMenuService;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class RoleMenuController extends Controller
@@ -16,25 +16,10 @@ class RoleMenuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(RoleMenuService $roleMenuService)
     {
-        $roleMenus = DB::table('role_menu as rm')
-            ->join('roles as r', 'rm.role_id', '=', 'r.id')
-            ->join('menus as m', 'rm.menu_id', '=', 'm.id')
-            ->select(
-                'r.id as role_id',
-                'r.name as role_name',
-                'm.id as menu_id',
-                'm.name as menu_name',
-                'm.platform',
-                'rm.active',
-                'rm.created_at',
-                'rm.created_by',
-                'rm.updated_at',
-                'rm.updated_by'
-            )
-            ->orderBy('r.id')
-            ->paginate(20);
+        $role = Auth::user()->roles->first()->name ?? '';
+        $roleMenus = $roleMenuService->getRolesMenus($role);
 
         $platforms = config('constants.platforms');
         $activeKey = config('constants.actives');
@@ -86,7 +71,7 @@ class RoleMenuController extends Controller
 
             return redirect()->route('role-menu.index')->with('success', 'Role menu created successfully.');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error creating role menu: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while creating the role menu.');
         }
@@ -120,13 +105,8 @@ class RoleMenuController extends Controller
 
         try {
             $role = Role::findOrFail($roleId);
-            $defaultData = [
-                'active' => $validatedData['active'],
-                'updated_by' => request()->user()->id,
-                'updated_at' => now(),
-            ];
 
-            $result = $roleMenuService->updateRoleMenu($role, $menuId, $validatedData, $defaultData);
+            $result = $roleMenuService->updateRoleMenu($role, $menuId, $validatedData);
 
             if (isset($result['error'])) {
                 return back()->withErrors(['menu' => $result['error']]);
@@ -134,7 +114,7 @@ class RoleMenuController extends Controller
 
             return redirect()->route('role-menu.index')->with('success', 'Role menu updated successfully.');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error updating role menu: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the role menu.');
         }

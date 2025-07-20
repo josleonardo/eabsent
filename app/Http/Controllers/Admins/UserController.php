@@ -11,6 +11,7 @@ use App\Models\Schedule;
 use App\Models\User;
 use App\Services\Admins\UserService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -18,9 +19,10 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(UserService $userService)
     {
-        $users = User::select('id', 'email', 'username', 'active', 'created_at', 'updated_at', 'created_by', 'updated_by')->paginate(10);
+        $userRole = Auth::user()->roles->first()->name ?? '';
+        $users = $userService->getUsers($userRole);
 
         $activeKey = config('constants.actives');
         $yesNoKey = config('constants.yes_no');
@@ -33,10 +35,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::select('id', 'name')->where('active', 1)->get();
-        $levels = Level::select('id', 'name')->where('active', 1)->get();
+        $roles = Role::select('id', 'name')->where('active', true)->get();
+        $levels = Level::select('id', 'name')->where('active', true)->get();
 
-        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', 1)->get();
+        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', true)->get();
         $schedules = $schedules->map(function ($schedule) {
             // Format the schedule data
             $schedule->check_in_time = Carbon::parse($schedule->check_in_time)->format('H:i');
@@ -66,21 +68,16 @@ class UserController extends Controller
 
         try {
             $currentUserId = $request->user()->id;
-            $defaultData = [
-                'active' => $validatedData['active'],
-                'created_by' => $currentUserId,
-                'updated_by' => $currentUserId,
-            ];
 
             if ($request->hasFile('avatar')) {
                 $validatedData['avatar'] = $request->file('avatar');
             }
 
-            $userService->createUser($validatedData, $defaultData);
+            $userService->createUser($validatedData, $currentUserId);
 
             return redirect()->route('user.index')->with('success', 'User created successfully');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error creating user: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while creating the user.');
         }
@@ -92,9 +89,9 @@ class UserController extends Controller
     public function show(string $id)
     {
         $user = User::findOrFail($id);
-        $roles = Role::select('id', 'name')->where('active', 1)->get();
-        $levels = Level::select('id', 'name')->where('active', 1)->get();
-        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', 1)->get();
+        $roles = Role::select('id', 'name')->where('active', true)->get();
+        $levels = Level::select('id', 'name')->where('active', true)->get();
+        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', true)->get();
 
         return view('administrators.users.show', ['pageName' => 'User Profile'] + compact('user', 'roles', 'levels', 'schedules'));
     }
@@ -105,10 +102,10 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::findOrFail($id);
-        $roles = Role::select('id', 'name')->where('active', 1)->get();
-        $levels = Level::select('id', 'name')->where('active', 1)->get();
+        $roles = Role::select('id', 'name')->where('active', true)->get();
+        $levels = Level::select('id', 'name')->where('active', true)->get();
 
-        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', 1)->get();
+        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', true)->get();
         $schedules = $schedules->map(function ($schedule) {
             // Format the schedule data
             $schedule->check_in_time = Carbon::parse($schedule->check_in_time)->format('H:i');
@@ -140,25 +137,15 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $currentUserId = $request->user()->id;
 
-            $defaultData = [
-                'active' => $validatedData['active'],
-                'updated_by' => $currentUserId,
-            ];
-            $defaultSync = [
-                'active' => $validatedData['active'],
-                'created_by' => $currentUserId,
-                'updated_by' => $currentUserId,
-            ];
-
             if ($request->hasFile('avatar')) {
                 $validatedData['avatar'] = $request->file('avatar');
             }
 
-            $userService->updateUser($user, $validatedData, $defaultData, $defaultSync);
+            $userService->updateUser($user, $validatedData, $currentUserId);
 
             return redirect()->route('user.index')->with('success', 'User updated successfully');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error updating user: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the user.');
         }

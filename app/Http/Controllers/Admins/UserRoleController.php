@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admins\UpdateUserRoleRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\Admins\UserRoleService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -14,9 +15,10 @@ class UserRoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, UserRoleService $userRoleService)
     {
-        $users = User::select('id', 'email', 'username')->with('roles:id,name')->paginate(10);
+        $userRole = $request->user()->roles->first()->name ?? '';
+        $users = $userRoleService->getUsersRoles($userRole);
 
         $activeKey = config('constants.actives');
         $yesNoKey = config('constants.yes_no');
@@ -64,28 +66,19 @@ class UserRoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRoleRequest $request, string $id)
+    public function update(UpdateUserRoleRequest $request, string $id, UserRoleService $userRoleService)
     {
         $validatedData = $request->validated();
 
         try {
             $user = User::findOrFail($id);
             $currentUserId = $request->user()->id;
-            $defaultSync = [
-                'active' => $validatedData['active'],
-                'created_by' => $currentUserId,
-                'updated_by' => $currentUserId,
-            ];
 
-            if (! empty($validatedData['role'])) {
-                $user->roles()->syncWithPivotValues([$validatedData['role']], $defaultSync);
-            } else {
-                $user->roles()->detach();
-            }
+            $userRoleService->updateUserRole($validatedData, $user, $currentUserId);
 
             return redirect()->route('user-role.index')->with('success', 'User role updated successfully.');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error updating user role: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the user role.');
         }

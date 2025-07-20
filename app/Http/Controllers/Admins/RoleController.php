@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admins\StoreRoleRequest;
 use App\Http\Requests\Admins\UpdateRoleRequest;
 use App\Models\Role;
+use App\Services\Admins\RoleService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
@@ -13,9 +15,10 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(RoleService $roleService)
     {
-        $roles = Role::paginate(10);
+        $userRole = Auth::user()->roles->first()->name ?? '';
+        $roles = $roleService->getRoles($userRole);
 
         $activeKey = config('constants.actives');
         $yesNoKey = config('constants.yes_no');
@@ -36,23 +39,18 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRoleRequest $request)
+    public function store(StoreRoleRequest $request, RoleService $roleService)
     {
         $validatedData = $request->validated();
 
         try {
             $currentUserId = $request->user()->id;
 
-            Role::create([
-                'name' => $validatedData['role_name'],
-                'active' => $validatedData['active'],
-                'created_by' => $currentUserId,
-                'updated_by' => $currentUserId,
-            ]);
+            $roleService->createRole($validatedData, $currentUserId);
 
             return redirect()->route('role.index')->with('success', 'Role created successfully.');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error creating role: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while creating the role.');
         }
@@ -80,22 +78,18 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRoleRequest $request, Role $role)
+    public function update(UpdateRoleRequest $request, Role $role, RoleService $roleService)
     {
         $validatedData = $request->validated();
 
         try {
             $currentUserId = $request->user()->id;
 
-            $role->update([
-                'name' => $validatedData['role_name'],
-                'active' => $validatedData['active'],
-                'updated_by' => $currentUserId,
-            ]);
+            $roleService->updateRole($role, $validatedData, $currentUserId);
 
             return redirect()->route('role.index')->with('success', 'Role updated successfully.');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error updating role: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the role.');
         }

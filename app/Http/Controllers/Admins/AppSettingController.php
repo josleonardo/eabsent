@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admins\StoreAppSettingRequest;
 use App\Http\Requests\Admins\UpdateAppSettingRequest;
 use App\Models\AppSetting;
+use App\Services\Admins\AppSettingService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class AppSettingController extends Controller
@@ -13,9 +15,10 @@ class AppSettingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(AppSettingService $appSettingService)
     {
-        $appSettings = AppSetting::paginate(10);
+        $userRole = Auth::user()->roles->first()->name ?? '';
+        $appSettings = $appSettingService->getAppSettings($userRole);
 
         $activeKey = config('constants.actives');
         $yesNoKey = config('constants.yes_no');
@@ -36,26 +39,18 @@ class AppSettingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAppSettingRequest $request)
+    public function store(StoreAppSettingRequest $request, AppSettingService $appSettingService)
     {
         $validatedData = $request->validated();
 
         try {
             $currentUserId = $request->user()->id;
 
-            AppSetting::create([
-                'name' => $validatedData['setting_name'],
-                'key' => $validatedData['key'],
-                'value_1' => $validatedData['value_1'],
-                'value_2' => $validatedData['value_2'],
-                'active' => $validatedData['active'],
-                'created_by' => $currentUserId,
-                'updated_by' => $currentUserId,
-            ]);
+            $appSettingService->createAppSetting($validatedData, $currentUserId);
 
             return redirect()->route('app-setting.index')->with('success', 'App setting created successfully.');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error creating app setting: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while creating the app setting.');
         }
@@ -82,25 +77,18 @@ class AppSettingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAppSettingRequest $request, AppSetting $appSetting)
+    public function update(UpdateAppSettingRequest $request, AppSetting $appSetting, AppSettingService $appSettingService)
     {
         $validatedData = $request->validated();
 
         try {
             $currentUserId = $request->user()->id;
 
-            $appSetting->update([
-                'name' => $validatedData['setting_name'],
-                'key' => $validatedData['key'],
-                'value_1' => $validatedData['value_1'],
-                'value_2' => $validatedData['value_2'],
-                'active' => $validatedData['active'],
-                'updated_by' => $currentUserId,
-            ]);
+            $appSettingService->updateAppSetting($appSetting, $validatedData, $currentUserId);
 
             return redirect()->route('app-setting.index')->with('success', 'App setting updated successfully.');
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error('Error updating app setting: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the app setting.');
         }
