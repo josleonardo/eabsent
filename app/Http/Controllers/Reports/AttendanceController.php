@@ -21,7 +21,7 @@ class AttendanceController extends Controller
         $level = $user->levels->first()->name ?? null;
 
         $attendances = $attendanceService->getAttendances($role, $level);
-        
+
         $statusKey = config('constants.attendance_status');
 
         return view('reports.attendances.index', ['pageName' => 'Attendance report'] + compact('attendances', 'statusKey'));
@@ -79,7 +79,7 @@ class AttendanceController extends Controller
 
             return redirect()->route('attendance.index')->with('success', 'Attendance updated successfully.');
         } catch (\Throwable $th) {
-            Log::error('Attendance update failed' . $th->getMessage());
+            Log::error('Attendance update failed'.$th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the attendance.');
         }

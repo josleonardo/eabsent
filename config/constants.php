@@ -1,6 +1,9 @@
 <?php
 
 return [
+    // Default pagination limit
+    'default_per_page' => 10,
+
     // Active Status
     'actives' => [
         0 => ['active' => 'global.active.inactive', 'color' => 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800'],

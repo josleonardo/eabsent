@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Gate;
 class RevokeLeaveRequest extends FormRequest
 {
     protected string $menuName = 'leave';
-    
+
     /**
      * Determine if the user is authorized to make this request.
      */

@@ -130,7 +130,7 @@ class LeaveService
         if ($leave->status != Leave::STATUS_APPROVED) {
             throw new \Exception('Only approved leaves can be revoked.');
         }
-        
+
         return DB::transaction(function () use ($leave, $validatedData, $currentUserId) {
             $leave->update([
                 'status' => $validatedData['status'],

@@ -69,7 +69,7 @@ class LeaveController extends Controller
     {
         $statusMap = [
             'approve' => Leave::STATUS_APPROVED,
-            'reject'  => Leave::STATUS_REJECTED,
+            'reject' => Leave::STATUS_REJECTED,
         ];
 
         $action = $request->input('action');
@@ -89,7 +89,7 @@ class LeaveController extends Controller
 
             return back()->with('success', 'Leave request updated successfully.');
         } catch (\Throwable $th) {
-            Log::error('Error updating leave request: ' . $th->getMessage());
+            Log::error('Error updating leave request: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the leave request.');
         }
@@ -111,11 +111,11 @@ class LeaveController extends Controller
         if ($leave->status == Leave::STATUS_REVOKED) {
             return back()->with('error', 'Leave is already revoked.');
         }
-        
+
         if ($leave->status != Leave::STATUS_APPROVED) {
             return back()->with('error', 'Only approved leaves can be revoked.');
         }
-        
+
         $statusMap = [
             'revoke' => Leave::STATUS_REVOKED,
         ];
@@ -137,7 +137,7 @@ class LeaveController extends Controller
 
             return back()->with('success', 'Leave request revoked successfully.');
         } catch (\Throwable $th) {
-            Log::error('Error revoking leave request: ' . $th->getMessage());
+            Log::error('Error revoking leave request: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while revoking the leave request.');
         }
