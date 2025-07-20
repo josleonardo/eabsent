@@ -6,14 +6,6 @@
         Adjust preferences, permissions, and other key options.
     </x-page-caption>
 
-    {{-- Toast notification --}}
-    @if (session('success'))
-        <x-toast type="success" :message="session('success')" />
-    @endif
-    @if (session('failed'))
-        <x-toast type="failed" :message="session('failed')" />
-    @endif
-
     {{-- Toolbar --}}
     <x-toolbar :search="true" :create="true" :createRoute="'app-setting.create'">
         <x-slot:pageName>{{ $pageName }}</x-slot>

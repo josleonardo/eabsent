@@ -6,14 +6,6 @@
         times, and status updates.
     </x-page-caption>
 
-    {{-- Toast notification --}}
-    @if (session('success'))
-        <x-toast type="success" :message="session('success')" />
-    @endif
-    @if (session('failed'))
-        <x-toast type="failed" :message="session('failed')" />
-    @endif
-
     {{-- Back button --}}
     <x-forms.button as="link" href="{{ route('report.index') }}" icon="icon-chevron-left">
         Back

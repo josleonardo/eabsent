@@ -6,14 +6,6 @@
         Each schedule determines what actions and pages a user can access.
     </x-page-caption>
 
-    {{-- Toast notification --}}
-    @if (session('success'))
-        <x-toast type="success" :message="session('success')" />
-    @endif
-    @if (session('failed'))
-        <x-toast type="failed" :message="session('failed')" />
-    @endif
-
     {{-- Toolbar --}}
     <x-toolbar :search="true" :create="true" :createRoute="'user-schedule.create'">
         <x-slot:pageName>{{ $pageName }}</x-slot>

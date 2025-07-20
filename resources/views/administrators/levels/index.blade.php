@@ -5,14 +5,6 @@
         Store and update school levels for user access as well as deactivate levels as needed.
     </x-page-caption>
 
-    {{-- Toast notification --}}
-    @if (session('success'))
-        <x-toast type="success" :message="session('success')" />
-    @endif
-    @if (session('failed'))
-        <x-toast type="failed" :message="session('failed')" />
-    @endif
-
     {{-- Toolbar --}}
     <x-toolbar :search="true" :create="true" :createRoute="'level.create'">
         <x-slot:pageName>{{ $pageName }}</x-slot>

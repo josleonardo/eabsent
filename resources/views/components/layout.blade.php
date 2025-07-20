@@ -11,6 +11,14 @@
             {{ $pageName }}
         </x-header>
 
+        {{-- Toast notification --}}
+        @if (session('success'))
+            <x-toast type="success" :message="session('success')" />
+        @endif
+        @if (session('error'))
+            <x-toast type="error" :message="session('error')" />
+        @endif
+
         <div class="mx-auto max-w-7xl space-y-4">
             <!-- Main content -->
             {{ $slot }}

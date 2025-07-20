@@ -1,14 +1,6 @@
 <x-layout>
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
-    {{-- Toast notification --}}
-    @if (session('success'))
-        <x-toast type="success" :message="session('success')" />
-    @endif
-    @if (session('failed'))
-        <x-toast type="failed" :message="session('failed')" />
-    @endif
-
     <section class="p-3 space-y-6 border border-gray-200 sm:p-4 dark:bg-gray-800 dark:border-gray-700">
         {{-- Edit form --}}
         <form action="{{ route('settings.profile.update') }}" method="POST" class="space-y-6 max-w-7xl"

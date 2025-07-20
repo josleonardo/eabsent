@@ -6,14 +6,6 @@
         Each role determines what actions and menus a user can access.
     </x-page-caption>
 
-    {{-- Toast notification --}}
-    @if (session('success'))
-        <x-toast type="success" :message="session('success')" />
-    @endif
-    @if (session('failed'))
-        <x-toast type="failed" :message="session('failed')" />
-    @endif
-
     {{-- Toolbar --}}
     <x-toolbar :search="true" :create="true" :createRoute="'role-menu.create'">
         <x-slot:pageName>{{ $pageName }}</x-slot>

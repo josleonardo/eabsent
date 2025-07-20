@@ -1,14 +1,6 @@
 <x-layout>
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
-    {{-- Toast notification --}}
-    @if (session('success'))
-        <x-toast type="success" :message="session('success')" />
-    @endif
-    @if (session('error'))
-        <x-toast type="error" :message="session('error')" />
-    @endif
-
     <section class="p-3 space-y-6 border border-gray-200 sm:p-4 dark:bg-gray-800 dark:border-gray-700">
         {{-- Back button --}}
         <x-forms.button as="link" href="{{ route('attendance.index') }}" icon="icon-chevron-left">
