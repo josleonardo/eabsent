@@ -21,6 +21,7 @@
                     <tr>
                         <th scope="col" class="p-4">#</th>
                         <th scope="col" class="p-4">Role Name</th>
+                        <th scope="col" class="p-4">Priority</th>
                         <th scope="col" class="p-4">Active</th>
                         <th scope="col" class="p-4">Created At</th>
                         <th scope="col" class="p-4">Created By</th>
@@ -41,6 +42,7 @@
                                 {{ $roles->firstItem() + $key }}
                             </th>
                             <td class="px-4 py-3">{{ $role->name }}</td>
+                            <td class="px-4 py-3">{{ $role->priority }}</td>
                             <td class="px-4 py-3">{{ $yesNoKey[$role->active] ? __($yesNoKey[$role->active]) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $role->created_at }}</td>
                             <td class="px-4 py-3 text-center">{{ $role->created_by }}</td>

@@ -30,6 +30,7 @@ class RoleService
     {
         $role = Role::create([
             'name' => $validatedData['role_name'],
+            'priority' => $validatedData['priority'],
             'active' => $validatedData['active'],
             'created_by' => $currentUserId,
             'updated_by' => $currentUserId,
@@ -42,6 +43,7 @@ class RoleService
     {
         $role->update([
             'name' => $validatedData['role_name'],
+            'priority' => $validatedData['priority'],
             'active' => $validatedData['active'],
             'updated_by' => $currentUserId,
         ]);

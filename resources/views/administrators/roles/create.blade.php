@@ -14,6 +14,8 @@
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 <x-forms.input-field label="Role Name" name="role_name" id="role_name" placeholder="Staff"
                     :isRequired="true" />
+                <x-forms.input-field label="Priority" name="priority" id="priority" type="number" placeholder="99"
+                    :isRequired="true" />
             </div>
 
             {{-- Active toggle --}}
