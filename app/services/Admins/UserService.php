@@ -19,10 +19,11 @@ class UserService
         $this->avatarService = $avatarService;
     }
 
-    public function getUsers(string $userRole, ?int $perPage = null): LengthAwarePaginator
+    public function getUsers(User $user, ?int $perPage = null): LengthAwarePaginator
     {
         $superAdmin = Role::ROLE_SUPERADMIN;
         $admin = Role::ROLE_ADMIN;
+        $userRole = $user->roles->first()->name;
         $perPage = $perPage ?? config('constants.default_per_page');
 
         if ($userRole == $superAdmin) {
@@ -37,7 +38,7 @@ class UserService
                 ->paginate($perPage);
         }
 
-        return abort(403, 'Unauthorized');
+        abort(403, 'Unauthorized');
     }
 
     /**

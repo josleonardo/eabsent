@@ -11,7 +11,8 @@ use App\Models\Schedule;
 use App\Models\User;
 use App\Services\Admins\UserService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -19,10 +20,15 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(UserService $userService)
+    public function index(Request $request, UserService $userService)
     {
-        $userRole = Auth::user()->roles->first()->name ?? '';
-        $users = $userService->getUsers($userRole);
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('viewAny', User::class)) {
+            abort(403);
+        }
+
+        $users = $userService->getUsers($currentUser);
 
         $activeKey = config('constants.actives');
         $yesNoKey = config('constants.yes_no');
@@ -62,12 +68,18 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request, UserService $userService)
+    public function store(StoreUserRequest $request, UserService $userService): RedirectResponse
     {
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('create', User::class)) {
+            abort(403);
+        }
+
         $validatedData = $request->validated();
 
         try {
-            $currentUserId = $request->user()->id;
+            $currentUserId = $currentUser->id;
 
             if ($request->hasFile('avatar')) {
                 $validatedData['avatar'] = $request->file('avatar');
@@ -86,9 +98,14 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         $user = User::findOrFail($id);
+
+        if ($request->user()->cannot('view', $user)) {
+            abort(403);
+        }
+
         $roles = Role::select('id', 'name')->where('active', true)->get();
         $levels = Level::select('id', 'name')->where('active', true)->get();
         $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', true)->get();
@@ -129,13 +146,19 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, string $id, UserService $userService)
+    public function update(UpdateUserRequest $request, string $id, UserService $userService): RedirectResponse
     {
+        $user = User::findOrFail($id);
+        $currentUser = $request->user();
+
+        if ($currentUser->cannot('update', $user)) {
+            abort(403);
+        }
+
         $validatedData = $request->validated();
 
         try {
-            $user = User::findOrFail($id);
-            $currentUserId = $request->user()->id;
+            $currentUserId = $currentUser->id;
 
             if ($request->hasFile('avatar')) {
                 $validatedData['avatar'] = $request->file('avatar');

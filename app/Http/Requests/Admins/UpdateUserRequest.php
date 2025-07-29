@@ -28,9 +28,9 @@ class UpdateUserRequest extends FormRequest
 
         return [
             'email' => 'required|email|unique:users,email,'.$id,
+            'username' => 'nullable|string|max:255|unique:users,username,'.$id,
             'first_name' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
-            'username' => 'nullable|string|max:255|unique:users,username,'.$id,
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'nik' => 'required|digits:16|unique:user_profiles,nik,'.$id.',user_id',
             'nuptk' => 'nullable|digits:16|unique:user_profiles,nuptk,'.$id.',user_id',
