@@ -7,7 +7,7 @@ use App\Http\Requests\Admins\StoreLevelRequest;
 use App\Http\Requests\Admins\UpdateLevelRequest;
 use App\Models\Level;
 use App\Services\Admins\LevelService;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class LevelController extends Controller
@@ -15,10 +15,15 @@ class LevelController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(LevelService $levelService)
+    public function index(Request $request, LevelService $levelService)
     {
-        $userLevel = Auth::user()->levels->first()->name ?? '';
-        $levels = $levelService->getLevels($userLevel);
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('viewAny', Level::class)) {
+            abort(403);
+        }
+
+        $levels = $levelService->getLevels($currentUser);
 
         $activeKey = config('constants.actives');
         $yesNoKey = config('constants.yes_no');
@@ -41,6 +46,12 @@ class LevelController extends Controller
      */
     public function store(StoreLevelRequest $request, LevelService $levelService)
     {
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('create', Level::class)) {
+            abort(403);
+        }
+
         $validatedData = $request->validated();
 
         try {
@@ -80,6 +91,12 @@ class LevelController extends Controller
      */
     public function update(UpdateLevelRequest $request, Level $level, LevelService $levelService)
     {
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('update', $level)) {
+            abort(403);
+        }
+
         $validatedData = $request->validated();
 
         try {

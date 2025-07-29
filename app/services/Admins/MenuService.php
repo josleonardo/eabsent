@@ -4,21 +4,23 @@ namespace App\Services\Admins;
 
 use App\Models\Menu;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class MenuService
 {
-    public function getMenus(string $userRole, ?int $perPage = null): LengthAwarePaginator
+    public function getMenus(User $user, ?int $perPage = null): LengthAwarePaginator
     {
         $superAdmin = Role::ROLE_SUPERADMIN;
         $admin = Role::ROLE_ADMIN;
+        $userRole = $user->roles->first()->name;
         $perPage = $perPage ?? config('constants.default_per_page');
 
-        if ($userRole == $superAdmin || $userRole == $admin) {
+        if (in_array($userRole, [$superAdmin, $admin])) {
             return Menu::paginate($perPage);
         }
 
-        return abort(403, 'Unauthorized');
+        abort(403, 'Unauthorized');
     }
 
     public function createMenu(array $validatedData, int $currentUserId): Menu

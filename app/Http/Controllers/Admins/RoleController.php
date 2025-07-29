@@ -7,7 +7,7 @@ use App\Http\Requests\Admins\StoreRoleRequest;
 use App\Http\Requests\Admins\UpdateRoleRequest;
 use App\Models\Role;
 use App\Services\Admins\RoleService;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
@@ -15,10 +15,15 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(RoleService $roleService)
+    public function index(Request $request, RoleService $roleService)
     {
-        $userRole = Auth::user()->roles->first()->name ?? '';
-        $roles = $roleService->getRoles($userRole);
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('viewAny', Role::class)) {
+            abort(403);
+        }
+
+        $roles = $roleService->getRoles($currentUser);
 
         $activeKey = config('constants.actives');
         $yesNoKey = config('constants.yes_no');
@@ -41,6 +46,12 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request, RoleService $roleService)
     {
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('create', Role::class)) {
+            abort(403);
+        }
+
         $validatedData = $request->validated();
 
         try {
@@ -80,6 +91,12 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role, RoleService $roleService)
     {
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('update', $role)) {
+            abort(403);
+        }
+
         $validatedData = $request->validated();
 
         try {

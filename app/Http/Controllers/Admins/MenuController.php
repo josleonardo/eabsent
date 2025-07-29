@@ -7,6 +7,7 @@ use App\Http\Requests\Admins\StoreMenuRequest;
 use App\Http\Requests\Admins\UpdateMenuRequest;
 use App\Models\Menu;
 use App\Services\Admins\MenuService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -15,10 +16,15 @@ class MenuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(MenuService $menuService)
+    public function index(Request $request, MenuService $menuService)
     {
-        $userRole = Auth::user()->roles->first()->name ?? '';
-        $menus = $menuService->getMenus($userRole);
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('viewAny', Menu::class)) {
+            abort(403);
+        }
+
+        $menus = $menuService->getMenus($currentUser);
 
         $platforms = config('constants.platforms');
         $activeKey = config('constants.actives');
@@ -47,6 +53,12 @@ class MenuController extends Controller
      */
     public function store(StoreMenuRequest $request, MenuService $menuService)
     {
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('create', Menu::class)) {
+            abort(403);
+        }
+
         $validatedData = $request->validated();
 
         try {
@@ -91,6 +103,12 @@ class MenuController extends Controller
      */
     public function update(UpdateMenuRequest $request, Menu $menu, MenuService $menuService)
     {
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('update', $menu)) {
+            abort(403);
+        }
+
         $validatedData = $request->validated();
 
         try {

@@ -3,20 +3,24 @@
 namespace App\Services\Admins;
 
 use App\Models\Level;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class LevelService
 {
-    public function getLevels(string $userLevel, ?int $perPage = null): LengthAwarePaginator
+    public function getLevels(User $user, ?int $perPage = null): LengthAwarePaginator
     {
-        $admin = Level::LEVEL_ADMIN;
+        $superAdmin = Role::ROLE_SUPERADMIN;
+        $admin = Role::ROLE_ADMIN;
+        $userRole = $user->roles->first()->name;
         $perPage = $perPage ?? config('constants.default_per_page');
 
-        if ($userLevel == $admin) {
+       if (in_array($userRole, [$superAdmin, $admin])) {
             return Level::paginate($perPage);
         }
 
-        return abort(403, 'Unauthorized');
+        abort(403, 'Unauthorized');
     }
 
     public function createLevel(array $validatedData, int $currentUserId): Level

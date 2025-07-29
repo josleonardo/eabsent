@@ -3,14 +3,16 @@
 namespace App\Services\Admins;
 
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class RoleService
 {
-    public function getRoles(string $userRole, ?int $perPage = null): LengthAwarePaginator
+    public function getRoles(User $user, ?int $perPage = null): LengthAwarePaginator
     {
         $superAdmin = Role::ROLE_SUPERADMIN;
         $admin = Role::ROLE_ADMIN;
+        $userRole = $user->roles->first()->name;
         $perPage = $perPage ?? config('constants.default_per_page');
 
         if ($userRole == $superAdmin) {
@@ -23,7 +25,7 @@ class RoleService
                 ->paginate($perPage);
         }
 
-        return abort(403, 'Unauthorized');
+        abort(403, 'Unauthorized');
     }
 
     public function createRole(array $validatedData, int $currentUserId): Role
