@@ -3,15 +3,17 @@
 namespace App\Services\Admins;
 
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class RoleMenuService
 {
-    public function getRolesMenus(string $userRole, ?int $perPage = null): LengthAwarePaginator
+    public function getRolesMenus(User $user, ?int $perPage = null): LengthAwarePaginator
     {
         $superAdmin = Role::ROLE_SUPERADMIN;
         $admin = Role::ROLE_ADMIN;
+        $userRole = $user->roles->first()->name ?? '';
         $perPage = $perPage ?? config('constants.default_per_page');
 
         $query = DB::table('role_menu as rm')
@@ -39,7 +41,7 @@ class RoleMenuService
             return $query->whereNot('role_name', $superAdmin)->paginate($perPage);
         }
 
-        return abort(403, 'Unauthorized');
+        abort(403, 'Unauthorized');
     }
 
     public function createRoleMenu(Role $role, array $validatedData, int $userId)

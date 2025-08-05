@@ -8,7 +8,7 @@ use App\Http\Requests\Admins\UpdateRoleMenuRequest;
 use App\Models\Menu;
 use App\Models\Role;
 use App\Services\Admins\RoleMenuService;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class RoleMenuController extends Controller
@@ -16,10 +16,15 @@ class RoleMenuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(RoleMenuService $roleMenuService)
+    public function index(Request $request, RoleMenuService $roleMenuService)
     {
-        $role = Auth::user()->roles->first()->name ?? '';
-        $roleMenus = $roleMenuService->getRolesMenus($role);
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('viewAny', Role::class)) {
+            abort(403);
+        }
+        
+        $roleMenus = $roleMenuService->getRolesMenus($currentUser);
 
         $platforms = config('constants.platforms');
         $activeKey = config('constants.actives');
@@ -57,6 +62,12 @@ class RoleMenuController extends Controller
      */
     public function store(StoreRoleMenuRequest $request, RoleMenuService $roleMenuService)
     {
+        $currentUser = $request->user();
+        
+        if ($currentUser->cannot('create', Role::class)) {
+            abort(403);
+        }
+
         $validatedData = $request->validated();
 
         try {
@@ -101,11 +112,16 @@ class RoleMenuController extends Controller
      */
     public function update(UpdateRoleMenuRequest $request, int $roleId, int $menuId, RoleMenuService $roleMenuService)
     {
+        $currentUser = $request->user();
+        $role = Role::findOrFail($roleId);
+        
+        if ($currentUser->cannot('update', $role)) {
+            abort(403);
+        }
+        
         $validatedData = $request->validated();
 
         try {
-            $role = Role::findOrFail($roleId);
-
             $result = $roleMenuService->updateRoleMenu($role, $menuId, $validatedData);
 
             if (isset($result['error'])) {
