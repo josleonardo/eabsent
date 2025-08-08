@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SigninRequest;
 use App\Models\Role;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -18,22 +21,32 @@ class AuthController extends Controller
     /**
      * Handle sign in authentication attempt.
      */
-    public function signin(Request $request): RedirectResponse
+    public function signin(SigninRequest $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required|string',
-        ]);
+        $email = $request->input('email');
+        $key = Str::lower('login|' . $email . '|' . $request->ip());
 
-        $remember = $request->filled('remember');
-        if ($remember) {
-            Auth::setRememberDuration(43200);
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            throw ValidationException::withMessages([
+                'email' => "Too many attempts. Try again in {$seconds} seconds.",
+            ]);
         }
 
+        $credentials = $request->only('email', 'password');
+        $remember = $request->filled('remember');
+        
         if (! Auth::attempt($credentials, $remember)) {
+            RateLimiter::hit($key, 60);
             throw ValidationException::withMessages([
-                'credentials' => 'Invalid credentials',
+                'email' => 'Invalid email or password',
             ]);
+        }
+
+        RateLimiter::clear($key);
+
+        if ($remember) {
+            Auth::setRememberDuration(43200);
         }
 
         $user = Auth::user();
@@ -45,12 +58,16 @@ class AuthController extends Controller
             $role &&
             $role->active &&
             optional($role->pivot)->active &&
-            in_array($role->name, [Role::ROLE_SUPERADMIN, Role::ROLE_ADMIN, Role::ROLE_HEADMASTER]);
+            in_array($role->name, [
+                Role::ROLE_SUPERADMIN,
+                Role::ROLE_ADMIN,
+                Role::ROLE_HEADMASTER
+            ]);
 
         if (! $isValid) {
             Auth::logout();
             throw ValidationException::withMessages([
-                'credentials' => 'Invalid credentials',
+                'email' => 'Invalid email or password',
             ]);
         }
 

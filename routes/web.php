@@ -21,20 +21,32 @@ use App\Http\Controllers\Settings\AccountController;
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->controller(AuthController::class)->group(function () {
-    Route::get('/', 'signinIndex')->name('signin.index');
-    Route::post('/', 'signin')->name('signin');
-});
+Route::get('/', function () {
+    return redirect()->route('signin.index');
+})->name('landing');
+
+Route::prefix('auth')
+    ->middleware('guest')
+    ->controller(AuthController::class)
+    ->group(function () {
+        Route::get('/signin', 'signinIndex')->name('signin.index');
+        Route::post('/signin', 'signin')->name('signin');
+    });
 
 Route::post('/signout', [AuthController::class, 'signout'])->name('signout');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/settings/profile', [ProfileController::class, 'index'])->name('settings.profile');
-    Route::put('/settings/profile', [ProfileController::class, 'update'])->name('settings.profile.update');
+    Route::get('/settings/profile', [ProfileController::class, 'index'])
+        ->name('settings.profile');
+    Route::put('/settings/profile', [ProfileController::class, 'update'])
+        ->name('settings.profile.update');
 
-    Route::get('/settings/account', [AccountController::class, 'index'])->name('settings.account');
-    Route::put('/settings/account/email', [AccountController::class, 'updateEmail'])->name('settings.account.email.update');
-    Route::put('/settings/account/username', [AccountController::class, 'updateUsername'])->name('settings.account.username.update');
+    Route::get('/settings/account', [AccountController::class, 'index'])
+        ->name('settings.account');
+    Route::put('/settings/account/email', [AccountController::class, 'updateEmail'])
+        ->name('settings.account.email.update');
+    Route::put('/settings/account/username', [AccountController::class, 'updateUsername'])
+        ->name('settings.account.username.update');
 
     Route::middleware('menu.access.check')->group(function () {
         // Dashboard
@@ -43,7 +55,8 @@ Route::middleware('auth')->group(function () {
         })->name('home.index');
 
         // Settings change password
-        Route::put('/settings/account/password', [AccountController::class, 'updatePassword'])->name('change-password.update');
+        Route::put('/settings/account/password', [AccountController::class, 'updatePassword'])
+            ->name('change-password.update');
 
         // Approval pages
         Route::get('/approval', [ApprovalController::class, 'index'])
