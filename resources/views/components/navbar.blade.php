@@ -54,7 +54,7 @@
                             </div>
 
                             <div x-show="profileDrop"
-                                @click.away="profileDrop = false"x-transition:enter="transition ease-out duration-100 transform"
+                                @click.away="profileDrop = false" x-transition:enter="transition ease-out duration-100 transform"
                                 x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
                                 x-transition:leave="transition ease-in duration-75 transform"
                                 x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
@@ -82,7 +82,7 @@
                                         <form action="{{ route('signout') }}" method="POST">
                                             @csrf
                                             <button type="submit"
-                                                class="flex items-center justify-start w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                class="flex items-center justify-start w-full px-4 py-2 text-left text-sm text-gray-700 cursor-pointer hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                                                 role="menuitem" tabindex="-1" id="signout-btn">
                                                 <x-icon-logout class="inline-flex mr-2 size-4" />
                                                 Sign out

@@ -1,11 +1,3 @@
-@props([
-    'search' => false,
-    'filter' => false,
-    'create' => false,
-    'delete' => false,
-    'createRoute' => '',
-])
-
 <div class="w-full flex flex-col gap-4 sm:flex-row sm:gap-2">
     @if ($search)
         {{-- Search bar --}}
@@ -15,7 +7,7 @@
                     class="w-full bg-gray-50 placeholder:text-gray-400 text-gray-700 text-sm rounded-md pl-3 pr-28 py-2.5 shadow-sm focus-visible:outline-2 focus-visible:outline-indigo-600 dark:bg-gray-800 dark:text-white">
                 <button
                     class="absolute right-1 top-1 rounded p-1.5 text-gray-500 transition hover:bg-gray-200 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-200 focus:shadow-sm focus:outline-0 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:text-white dark:focus:bg-gray-700"
-                    type="button">
+                    type="submit" aria-label="Search">
                     <x-icon-search class="size-5" />
                 </button>
             </div>
@@ -33,13 +25,23 @@
 
         {{-- Actions --}}
         <div class="flex items-center gap-2">
+            @if ($export && !empty($exportItems))
+                <div x-data="{ exportDrop: false }">
+                    <x-forms.button @click="exportDrop = !exportDrop" btnBg="bg-gray-400 dark:bg-gray-600"
+                        btnHover="hover:bg-gray-500" icon="icon-download" />
+                    <x-elements.flyout-menu :drop="[
+                        'name' => 'exportDrop',
+                        'label' => 'export-menu',
+                    ]" :items="$exportItems" />
+                </div>
+            @endif
+
             @if ($create && !empty($createRoute))
-                {{-- Create button --}}
                 <x-forms.button as="link" btnBg="bg-green-400 dark:bg-green-600" btnHover="hover:bg-green-500"
                     href="{{ route($createRoute) }}" icon="icon-square-plus" />
             @endif
+
             @if ($delete)
-                {{-- Delete button --}}
                 <x-forms.button btnBg="bg-red-400 dark:bg-red-600" btnHover="hover:bg-red-500" icon="icon-trash" />
             @endif
         </div>
