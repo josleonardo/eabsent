@@ -80,6 +80,11 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('/admin/user', UserController::class)
             ->except(['destroy']);
+        Route::get('/admin/user/export/excel', [UserController::class, 'exportExcel'])
+            ->name('user.export.excel');
+        Route::get('/admin/user/export/csv', [UserController::class, 'exportCsv'])
+            ->name('user.export.csv');
+            
         Route::resource('/admin/role', RoleController::class)
             ->except(['show', 'destroy']);
         Route::resource('/admin/level', LevelController::class)

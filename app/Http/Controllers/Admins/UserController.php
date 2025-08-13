@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admins;
 
+use App\Exports\UserExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admins\StoreUserRequest;
 use App\Http\Requests\Admins\UpdateUserRequest;
@@ -180,5 +181,15 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function exportExcel() 
+    {
+        return (new UserExport)->download('users.xlsx');
+    }
+    
+    public function exportCsv() 
+    {
+        return (new UserExport)->download('users.csv');
     }
 }

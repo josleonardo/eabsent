@@ -7,7 +7,14 @@
     </x-page-caption>
 
     {{-- Toolbar --}}
-    <x-toolbar :search="true" :create="true" :createRoute="'user.create'">
+    <x-toolbar :search="true" :create="true" :createRoute="'user.create'" :export="true" :exportRoutes="[
+        [
+            'route' => 'user.export.excel',
+        ],
+        [
+            'route' => 'user.export.csv',
+        ],
+    ]">
         <x-slot:pageName>{{ $pageName }}</x-slot>
     </x-toolbar>
 
