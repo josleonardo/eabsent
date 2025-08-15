@@ -14,9 +14,7 @@
         [
             'route' => 'user.export.csv',
         ],
-    ]">
-        <x-slot:pageName>{{ $pageName }}</x-slot>
-    </x-toolbar>
+    ]" />
 
     {{-- Table --}}
     @if ($users->isEmpty())

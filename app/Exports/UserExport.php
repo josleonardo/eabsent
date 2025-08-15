@@ -3,8 +3,10 @@
 namespace App\Exports;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -20,25 +22,11 @@ class UserExport implements FromCollection, WithMapping, WithHeadings, WithStyle
      */
     public function collection()
     {
-        return User::all();
-    }
+        $user = Auth::user();
+        
+        $userService = new \App\Services\Admins\UserService();
 
-    public function map($user): array
-    {
-        $yesNoKey = config('constants.yes_no');
-        $user->active = $yesNoKey[$user->active] ? __($yesNoKey[$user->active]) : __('Unknown');
-        $user->created_at->format('Y-m-d H:i:s');
-        $user->updated_at->format('Y-m-d H:i:s');
-
-        return [
-            $user->email,
-            $user->username,
-            $user->active,
-            $user->created_at,
-            $user->created_by,
-            $user->updated_at,
-            $user->updated_by,
-        ];
+        return $userService->exportUsers($user);
     }
 
     public function headings(): array
@@ -51,6 +39,22 @@ class UserExport implements FromCollection, WithMapping, WithHeadings, WithStyle
             'Created By',
             'Updated At',
             'Updated By',
+        ];
+    }
+
+    public function map($user): array
+    {
+        $yesNoKey = config('constants.yes_no');
+        $user->active = $yesNoKey[$user->active] ? __($yesNoKey[$user->active]) : __('Unknown');
+
+        return [
+            $user->email,
+            $user->username,
+            $user->active,
+            $user->created_at,
+            $user->created_by,
+            $user->updated_at,
+            $user->updated_by,
         ];
     }
 

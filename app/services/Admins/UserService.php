@@ -5,25 +5,17 @@ namespace App\Services\Admins;
 use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\User;
-use App\Services\Settings\AvatarService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-    protected $avatarService;
-
-    public function __construct(AvatarService $avatarService)
-    {
-        $this->avatarService = $avatarService;
-    }
-
     public function getUsers(User $user, ?int $perPage = null): LengthAwarePaginator
     {
         $superAdmin = Role::ROLE_SUPERADMIN;
         $admin = Role::ROLE_ADMIN;
-        $userRole = $user->roles->first()->name;
+        $userRole = $user->roles->first()->name ?? '';
         $perPage = $perPage ?? config('constants.default_per_page');
 
         if ($userRole == $superAdmin) {
@@ -73,7 +65,8 @@ class UserService
 
             // If avatar uploaded, store the avatar
             if (isset($validatedData['avatar']) && $validatedData['avatar']->isValid()) {
-                $path = $this->avatarService->upload($validatedData['avatar'], $user->id);
+                $avatarService = app(\App\Services\Settings\AvatarService::class);
+                $path = $avatarService->upload($validatedData['avatar'], $user->id);
 
                 $user->profile()->update(['avatar' => $path]);
             }
@@ -122,7 +115,8 @@ class UserService
         return DB::transaction(function () use ($user, $validatedData, $defaultData, $defaultSync) {
             // If avatar uploaded, update the avatar
             if (isset($validatedData['avatar']) && $validatedData['avatar']->isValid()) {
-                $path = $this->avatarService->upload($validatedData['avatar'], $user->id, $user->profile->avatar);
+                $avatarService = app(\App\Services\Settings\AvatarService::class);
+                $path = $avatarService->upload($validatedData['avatar'], $user->id, $user->profile->avatar);
 
                 $validatedData['avatar'] = $path;
             }
@@ -174,5 +168,29 @@ class UserService
 
             return $user;
         });
+    }
+
+    /**
+     * Export users based on the user's role and level.
+     */
+    public function exportUsers(User $user)
+    {
+        $superAdmin = Role::ROLE_SUPERADMIN;
+        $admin = Role::ROLE_ADMIN;
+        $userRole = $user->roles->first()->name ?? '';
+
+        if ($userRole == $superAdmin) {
+            return User::all();
+        }
+
+        if ($userRole == $admin) {
+            return User::whereHas('roles', function ($query) use ($superAdmin) {
+                $query->whereNot('name', $superAdmin);
+            })
+                ->with('roles:id,name')
+                ->get();
+        }
+
+        abort(403, 'Unauthorized to export users.');
     }
 }
