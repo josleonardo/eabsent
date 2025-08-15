@@ -26,7 +26,7 @@
         {{-- Actions --}}
         <div class="flex items-center gap-2">
             @if ($export && !empty($exportItems))
-                <div x-data="{ exportDrop: false }">
+                <div x-data="{ exportDrop: false }" class="relative">
                     <x-forms.button @click="exportDrop = !exportDrop" btnBg="bg-gray-400 dark:bg-gray-600"
                         btnHover="hover:bg-gray-500" icon="icon-download" />
                     <x-elements.flyout-menu :drop="[
