@@ -73,6 +73,10 @@ Route::middleware('auth')->group(function () {
             ->name('report.index');
         Route::resource('/report/attendance', AttendanceController::class)
             ->only(['index', 'edit', 'update']);
+        Route::get('/report/attendance/export/excel', [AttendanceController::class, 'exportExcel'])
+            ->name('attendance.export.excel');
+        Route::get('/report/attendance/export/csv', [AttendanceController::class, 'exportCsv'])
+            ->name('attendance.export.csv');
 
         // Admin pages
         Route::get('/admin', [AdminController::class, 'index'])
@@ -84,7 +88,7 @@ Route::middleware('auth')->group(function () {
             ->name('user.export.excel');
         Route::get('/admin/user/export/csv', [UserController::class, 'exportCsv'])
             ->name('user.export.csv');
-            
+
         Route::resource('/admin/role', RoleController::class)
             ->except(['show', 'destroy']);
         Route::resource('/admin/level', LevelController::class)

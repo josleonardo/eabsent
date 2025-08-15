@@ -6,6 +6,16 @@
         times, and status updates.
     </x-page-caption>
 
+    {{-- Toolbar --}}
+    <x-toolbar :search="true" :export="true" :exportRoutes="[
+        [
+            'route' => 'attendance.export.excel',
+        ],
+        [
+            'route' => 'attendance.export.csv',
+        ],
+    ]" />
+
     {{-- Back button --}}
     <x-forms.button as="link" href="{{ route('report.index') }}" icon="icon-chevron-left">
         Back
@@ -17,11 +27,10 @@
     @else
         <div class="relative overflow-x-auto shadow-md">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead
-                    class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-gray-700 uppercase whitespace-nowrap bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="p-4">#</th>
-                        <th scope="col" class="p-4">Fullname</th>
+                        <th scope="col" class="p-4">Full Name</th>
                         <th scope="col" class="p-4">Day</th>
                         <th scope="col" class="p-4">Date</th>
                         <th scope="col" class="p-4">Scheduled In</th>
@@ -52,7 +61,9 @@
                             <td class="px-4 py-3">{{ $attendance->sched_out }}</td>
                             <td class="px-4 py-3">{{ $attendance->actual_in }}</td>
                             <td class="px-4 py-3">{{ $attendance->actual_out }}</td>
-                            <td class="px-4 py-3">{{ $statusKey[$attendance->status] ? __($statusKey[$attendance->status]['status']) : __('Unknown') }}</td>
+                            <td class="px-4 py-3">
+                                {{ $statusKey[$attendance->status] ? __($statusKey[$attendance->status]['status']) : __('Unknown') }}
+                            </td>
                             <td class="px-4 py-3">{{ $attendance->updated_at }}</td>
                             <td class="px-4 py-3">{{ $attendance->updated_by }}</td>
                             <td class="px-4 py-3">

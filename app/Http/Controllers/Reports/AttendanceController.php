@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Reports;
 
+use App\Exports\AttendanceExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Reports\UpdateAttendanceRequest;
 use App\Models\Attendance;
@@ -17,10 +18,8 @@ class AttendanceController extends Controller
     public function index(Request $request, AttendanceService $attendanceService)
     {
         $user = $request->user();
-        $role = $user->roles->first()->name ?? null;
-        $level = $user->levels->first()->name ?? null;
 
-        $attendances = $attendanceService->getAttendances($role, $level);
+        $attendances = $attendanceService->getAttendances($user);
 
         $statusKey = config('constants.attendance_status');
 
@@ -91,5 +90,15 @@ class AttendanceController extends Controller
     public function destroy(Attendance $attendance)
     {
         //
+    }
+
+    public function exportExcel() 
+    {
+        return (new AttendanceExport)->download('attendance.xlsx');
+    }
+    
+    public function exportCsv() 
+    {
+        return (new AttendanceExport)->download('attendance.csv');
     }
 }
