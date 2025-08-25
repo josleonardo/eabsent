@@ -2,18 +2,16 @@
 
 namespace App\Exports;
 
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class UserExport implements FromCollection, WithMapping, WithHeadings, WithStyles, ShouldAutoSize
+class UserExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles
 {
     use Exportable;
 
@@ -23,8 +21,8 @@ class UserExport implements FromCollection, WithMapping, WithHeadings, WithStyle
     public function collection()
     {
         $user = Auth::user();
-        
-        $userService = new \App\Services\Admins\UserService();
+
+        $userService = new \App\Services\Admins\UserService;
 
         return $userService->exportUsers($user);
     }

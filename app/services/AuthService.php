@@ -13,8 +13,8 @@ class AuthService
 {
     public function signin(string $email, string $password, string $remember, string $ip): void
     {
-        $key = Str::lower('signin|' . $email . '|' . $ip);
-        $cumulativeKey = Str::lower('signin_cumulative|' . $email . '|' . $ip);
+        $key = Str::lower('signin|'.$email.'|'.$ip);
+        $cumulativeKey = Str::lower('signin_cumulative|'.$email.'|'.$ip);
 
         $cumulativeAttempts = Cache::get($cumulativeKey, 0);
 
@@ -36,13 +36,13 @@ class AuthService
             $seconds = RateLimiter::availableIn($key);
 
             if ($lockout >= 86400) {
-                $message = "Too many attempts. Try again in 24 hours.";
+                $message = 'Too many attempts. Try again in 24 hours.';
             } elseif ($lockout >= 3600) {
-                $message = "Too many attempts. Try again in 1 hour.";
+                $message = 'Too many attempts. Try again in 1 hour.';
             } elseif ($lockout >= 600) {
-                $message = "Too many attempts. Try again in 10 minutes.";
+                $message = 'Too many attempts. Try again in 10 minutes.';
             } elseif ($lockout >= 300) {
-                $message = "Too many attempts. Try again in 5 minutes.";
+                $message = 'Too many attempts. Try again in 5 minutes.';
             } else {
                 $message = "Too many attempts. Try again in {$seconds} seconds.";
             }
@@ -83,7 +83,7 @@ class AuthService
             in_array($role->name, [
                 Role::ROLE_SUPERADMIN,
                 Role::ROLE_ADMIN,
-                Role::ROLE_HEADMASTER
+                Role::ROLE_HEADMASTER,
             ]);
 
         if (! $isValid) {

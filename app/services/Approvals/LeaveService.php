@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\DB;
 
 class LeaveService
 {
+    protected $attendanceService;
+
+    public function __construct(AttendanceService $attendanceService)
+    {
+        $this->attendanceService = $attendanceService;
+    }
+
     /**
      * Default pagination limit.
      */
@@ -87,13 +94,6 @@ class LeaveService
 
         // Default: return empty result
         return $query->whereRaw('1 = 0');
-    }
-
-    protected $attendanceService;
-
-    public function __construct(AttendanceService $attendanceService)
-    {
-        $this->attendanceService = $attendanceService;
     }
 
     /**

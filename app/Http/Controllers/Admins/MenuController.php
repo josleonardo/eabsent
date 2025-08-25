@@ -8,7 +8,6 @@ use App\Http\Requests\Admins\UpdateMenuRequest;
 use App\Models\Menu;
 use App\Services\Admins\MenuService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class MenuController extends Controller
@@ -19,7 +18,7 @@ class MenuController extends Controller
     public function index(Request $request, MenuService $menuService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('viewAny', Menu::class)) {
             abort(403);
         }
@@ -54,7 +53,7 @@ class MenuController extends Controller
     public function store(StoreMenuRequest $request, MenuService $menuService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('create', Menu::class)) {
             abort(403);
         }
@@ -104,7 +103,7 @@ class MenuController extends Controller
     public function update(UpdateMenuRequest $request, Menu $menu, MenuService $menuService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('update', $menu)) {
             abort(403);
         }

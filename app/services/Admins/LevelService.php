@@ -16,7 +16,7 @@ class LevelService
         $userRole = $user->roles->first()->name;
         $perPage = $perPage ?? config('constants.default_per_page');
 
-       if (in_array($userRole, [$superAdmin, $admin])) {
+        if (in_array($userRole, [$superAdmin, $admin])) {
             return Level::paginate($perPage);
         }
 

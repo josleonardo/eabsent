@@ -11,18 +11,18 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class AttendanceExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
+class AttendanceExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles
 {
     use Exportable;
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         $user = Auth::user();
-        
-        $attendanceService = new \App\Services\Reports\AttendanceService();
+
+        $attendanceService = new \App\Services\Reports\AttendanceService;
 
         return $attendanceService->exportAttendances($user);
     }
@@ -47,7 +47,7 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Wit
     {
         $statusKey = config('constants.attendance_status');
         $attendance->status = $statusKey[$attendance->status] ? __($statusKey[$attendance->status]['status']) : __('Unknown');
-        
+
         return [
             $attendance->users->full_name,
             $attendance->day_name,

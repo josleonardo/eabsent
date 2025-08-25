@@ -71,7 +71,7 @@ Route::middleware('auth')->group(function () {
             ->name('leave.history');
         Route::put('/approval/leave/{leave}/revoke', [LeaveController::class, 'revoke'])
             ->name('leave.revoke');
-            
+
         // Correction routes
         Route::get('/approval/correction', [CorrectionController::class, 'index'])
             ->name('correction.index');

@@ -66,7 +66,7 @@ class LeaveController extends Controller
 
             return back()->with('success', 'Leave request updated successfully.');
         } catch (\Throwable $th) {
-            Log::error('Error updating leave request: ' . $th->getMessage());
+            Log::error('Error updating leave request: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the leave request.');
         }
@@ -106,7 +106,7 @@ class LeaveController extends Controller
 
             return back()->with('success', 'Leave request revoked successfully.');
         } catch (\Throwable $th) {
-            Log::error('Error revoking leave request: ' . $th->getMessage());
+            Log::error('Error revoking leave request: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while revoking the leave request.');
         }

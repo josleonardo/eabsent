@@ -19,11 +19,11 @@ class RoleMenuController extends Controller
     public function index(Request $request, RoleMenuService $roleMenuService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('viewAny', Role::class)) {
             abort(403);
         }
-        
+
         $roleMenus = $roleMenuService->getRolesMenus($currentUser);
 
         $platforms = config('constants.platforms');
@@ -63,7 +63,7 @@ class RoleMenuController extends Controller
     public function store(StoreRoleMenuRequest $request, RoleMenuService $roleMenuService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('create', Role::class)) {
             abort(403);
         }
@@ -114,11 +114,11 @@ class RoleMenuController extends Controller
     {
         $currentUser = $request->user();
         $role = Role::findOrFail($roleId);
-        
+
         if ($currentUser->cannot('update', $role)) {
             abort(403);
         }
-        
+
         $validatedData = $request->validated();
 
         try {

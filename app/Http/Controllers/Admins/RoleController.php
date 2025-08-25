@@ -18,7 +18,7 @@ class RoleController extends Controller
     public function index(Request $request, RoleService $roleService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('viewAny', Role::class)) {
             abort(403);
         }
@@ -47,7 +47,7 @@ class RoleController extends Controller
     public function store(StoreRoleRequest $request, RoleService $roleService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('create', Role::class)) {
             abort(403);
         }
@@ -92,7 +92,7 @@ class RoleController extends Controller
     public function update(UpdateRoleRequest $request, Role $role, RoleService $roleService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('update', $role)) {
             abort(403);
         }

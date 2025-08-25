@@ -92,12 +92,12 @@ class AttendanceController extends Controller
         //
     }
 
-    public function exportExcel() 
+    public function exportExcel()
     {
         return (new AttendanceExport)->download('attendance.xlsx');
     }
-    
-    public function exportCsv() 
+
+    public function exportCsv()
     {
         return (new AttendanceExport)->download('attendance.csv');
     }

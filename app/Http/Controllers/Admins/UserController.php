@@ -24,7 +24,7 @@ class UserController extends Controller
     public function index(Request $request, UserService $userService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('viewAny', User::class)) {
             abort(403);
         }
@@ -72,7 +72,7 @@ class UserController extends Controller
     public function store(StoreUserRequest $request, UserService $userService): RedirectResponse
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('create', User::class)) {
             abort(403);
         }
@@ -183,12 +183,12 @@ class UserController extends Controller
         //
     }
 
-    public function exportExcel() 
+    public function exportExcel()
     {
         return (new UserExport)->download('users.xlsx');
     }
-    
-    public function exportCsv() 
+
+    public function exportCsv()
     {
         return (new UserExport)->download('users.csv');
     }

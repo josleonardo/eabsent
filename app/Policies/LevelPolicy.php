@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Level;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class LevelPolicy
 {
@@ -20,7 +19,7 @@ class LevelPolicy
 
         return null;
     }
-    
+
     /**
      * Determine whether the user can view any models.
      */

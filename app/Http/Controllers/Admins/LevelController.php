@@ -18,7 +18,7 @@ class LevelController extends Controller
     public function index(Request $request, LevelService $levelService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('viewAny', Level::class)) {
             abort(403);
         }
@@ -47,7 +47,7 @@ class LevelController extends Controller
     public function store(StoreLevelRequest $request, LevelService $levelService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('create', Level::class)) {
             abort(403);
         }
@@ -92,7 +92,7 @@ class LevelController extends Controller
     public function update(UpdateLevelRequest $request, Level $level, LevelService $levelService)
     {
         $currentUser = $request->user();
-        
+
         if ($currentUser->cannot('update', $level)) {
             abort(403);
         }
