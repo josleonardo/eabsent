@@ -62,21 +62,23 @@ Route::middleware('auth')->group(function () {
         Route::get('/approval', [ApprovalController::class, 'index'])
             ->name('approval.index');
 
-        // Route::resource('/approval/leave', LeaveController::class)
-        //     ->only(['index', 'update']);
+        // Leave routes
         Route::get('/approval/leave', [LeaveController::class, 'index'])
             ->name('leave.index');
-        Route::get('/approval/leave/{leave}/edit', [LeaveController::class, 'edit'])
-            ->name('leave.edit');
         Route::put('/approval/leave/{leave}', [LeaveController::class, 'update'])
             ->name('leave.update');
         Route::get('/approval/leave/history', [LeaveController::class, 'history'])
             ->name('leave.history');
         Route::put('/approval/leave/{leave}/revoke', [LeaveController::class, 'revoke'])
             ->name('leave.revoke');
-
-        Route::resource('/approval/correction', CorrectionController::class)
-            ->only(['index', 'update']);
+            
+        // Correction routes
+        Route::get('/approval/correction', [CorrectionController::class, 'index'])
+            ->name('correction.index');
+        Route::put('/approval/correction/{correction}', [CorrectionController::class, 'update'])
+            ->name('correction.update');
+        Route::get('/approval/correction/history', [CorrectionController::class, 'history'])
+            ->name('correction.history');
 
         // Report pages
         Route::get('/report', [ReportController::class, 'index'])

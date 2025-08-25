@@ -17,48 +17,25 @@ class CorrectionController extends Controller
     public function index(Request $request, CorrectionService $correctionService)
     {
         $user = $request->user();
-        $role = $user->roles->first()->name;
-        $level = $user->levels->first()->name;
-
-        $pendings = $correctionService->getPending($role, $level);
-        $histories = $correctionService->getHistory($role, $level);
         $activeTab = $request->query('tab', 'pending'); // default to 'pending'
+
+        $pendings = $activeTab === 'pending'
+            ? $correctionService->getPending($user)
+            : collect();
 
         $statusKey = config('constants.approve_status');
 
-        return view('approvals.corrections.index', ['pageName' => 'Correction Requests'] + compact('pendings', 'histories', 'activeTab', 'statusKey'));
+        return view('approvals.corrections.index', ['pageName' => 'Correction Requests'] + compact('pendings', 'activeTab', 'statusKey'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function history(Request $request, CorrectionService $correctionService)
     {
-        //
-    }
+        $user = $request->user();
+        $histories = $correctionService->getHistory($user);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $statusKey = config('constants.approve_status');
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Correction $correction)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Correction $correction)
-    {
-        //
+        return view('approvals.corrections.history', ['pageName' => 'Correction History'] + compact('histories', 'statusKey'));
     }
 
     /**
@@ -84,13 +61,5 @@ class CorrectionController extends Controller
             return redirect()->back()->with('error', 'An error occurred while updating the correction request.');
         }
 
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Correction $correction)
-    {
-        //
     }
 }

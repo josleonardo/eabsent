@@ -5,6 +5,7 @@ namespace App\Services\Approvals;
 use App\Models\Correction;
 use App\Models\Level;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -18,8 +19,10 @@ class CorrectionService
     /**
      * Get pending correction request based on the user's role and level.
      */
-    public static function getPending(string $role, string $level, ?int $perPage = null): LengthAwarePaginator
+    public static function getPending(User $user, ?int $perPage = null): LengthAwarePaginator
     {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
         $perPage = $perPage ?? self::DEFAULT_PER_PAGE;
 
         $query = self::selectQuery(false);
@@ -32,8 +35,10 @@ class CorrectionService
     /**
      * Get correction request history based on the user's role and level.
      */
-    public static function getHistory(string $role, string $level, ?int $perPage = null): LengthAwarePaginator
+    public static function getHistory(User $user, ?int $perPage = null): LengthAwarePaginator
     {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
         $perPage = $perPage ?? self::DEFAULT_PER_PAGE;
 
         $query = self::selectQuery(true);

@@ -6,12 +6,10 @@
         decisions are logged for reference in the request history section.
     </x-page-caption>
 
-    {{-- Back button --}}
     <x-forms.button as="link" href="{{ route('approval.index') }}" icon="icon-chevron-left">
         Back
     </x-forms.button>
 
-    {{-- Menu Tabs --}}
     <div x-data="{ tab: '{{ $activeTab }}' }" x-init="$watch('tab', value => {
         const url = new URL(window.location.href);
         url.searchParams.set('tab', value);
@@ -48,25 +46,11 @@
             </ul>
         </div>
 
-        {{-- Pending leave requests --}}
         <div x-show="tab === 'pending'">
-            {{-- @if ($pendings->isEmpty())
-                <p class="text-gray-500">No pending leave requests.</p>
-            @else
-                @include('approvals.leaves.pending', ['pendings' => $pendings])
-            @endif --}}
-
             @include('approvals.leaves.pending', ['pendings' => $pendings])
         </div>
 
-        {{-- Leave requests history --}}
         <div x-show="tab === 'history'" x-cloak>
-            {{-- @if ($histories->isEmpty())
-                <p class="text-gray-500">No leave requests history.</p>
-            @else
-                <div id="history-container" class="text-gray-500">Loading...</div>
-            @endif --}}
-
             <div id="history-container" class="text-gray-500">Loading...</div>
         </div>
     </div>
