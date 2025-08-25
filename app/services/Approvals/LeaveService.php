@@ -5,6 +5,7 @@ namespace App\Services\Approvals;
 use App\Models\Leave;
 use App\Models\Level;
 use App\Models\Role;
+use App\Models\User;
 use App\Services\Reports\AttendanceService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,11 +18,10 @@ class LeaveService
      */
     private const DEFAULT_PER_PAGE = 10;
 
-    /**
-     * Get pending leave request based on the user's role and level.
-     */
-    public static function getPending(string $role, string $level, ?int $perPage = null): LengthAwarePaginator
+    public static function getPending(User $user, ?int $perPage = null): LengthAwarePaginator
     {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
         $perPage = $perPage ?? self::DEFAULT_PER_PAGE;
 
         $query = self::selectQuery(false);
@@ -31,11 +31,10 @@ class LeaveService
         return $query->whereNull('status')->latest()->paginate($perPage, ['*'], 'pending_page');
     }
 
-    /**
-     * Get leave request history based on the user's role and level.
-     */
-    public static function getHistory(string $role, string $level, ?int $perPage = null): LengthAwarePaginator
+    public static function getHistory(User $user, ?int $perPage = null): LengthAwarePaginator
     {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
         $perPage = $perPage ?? self::DEFAULT_PER_PAGE;
 
         $query = self::selectQuery(true);

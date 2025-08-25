@@ -61,10 +61,20 @@ Route::middleware('auth')->group(function () {
         // Approval pages
         Route::get('/approval', [ApprovalController::class, 'index'])
             ->name('approval.index');
-        Route::resource('/approval/leave', LeaveController::class)
-            ->only(['index', 'update']);
+
+        // Route::resource('/approval/leave', LeaveController::class)
+        //     ->only(['index', 'update']);
+        Route::get('/approval/leave', [LeaveController::class, 'index'])
+            ->name('leave.index');
+        Route::get('/approval/leave/{leave}/edit', [LeaveController::class, 'edit'])
+            ->name('leave.edit');
+        Route::put('/approval/leave/{leave}', [LeaveController::class, 'update'])
+            ->name('leave.update');
+        Route::get('/approval/leave/history', [LeaveController::class, 'history'])
+            ->name('leave.history');
         Route::put('/approval/leave/{leave}/revoke', [LeaveController::class, 'revoke'])
             ->name('leave.revoke');
+
         Route::resource('/approval/correction', CorrectionController::class)
             ->only(['index', 'update']);
 

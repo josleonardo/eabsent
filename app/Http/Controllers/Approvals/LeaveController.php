@@ -18,48 +18,25 @@ class LeaveController extends Controller
     public function index(Request $request, LeaveService $leaveService)
     {
         $user = $request->user();
-        $role = $user->roles->first()->name ?? null;
-        $level = $user->levels->first()->name ?? null;
-
-        $pendings = $leaveService->getPending($role, $level);
-        $histories = $leaveService->getHistory($role, $level);
         $activeTab = $request->query('tab', 'pending'); // default to 'pending'
+
+        $pendings = $activeTab === 'pending'
+            ? $leaveService->getPending($user)
+            : collect();
 
         $statusKey = config('constants.approve_status');
 
-        return view('approvals.leaves.index', ['pageName' => 'Leave Requests'] + compact('pendings', 'histories', 'activeTab', 'statusKey'));
+        return view('approvals.leaves.index', ['pageName' => 'Leave Requests'] + compact('pendings', 'activeTab', 'statusKey'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function history(Request $request, LeaveService $leaveService)
     {
-        //
-    }
+        $user = $request->user();
+        $histories = $leaveService->getHistory($user);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $statusKey = config('constants.approve_status');
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Leave $leave)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Leave $leave)
-    {
-        //
+        return view('approvals.leaves.history', ['pageName' => 'Leave History'] + compact('histories', 'statusKey'));
     }
 
     /**
@@ -89,18 +66,10 @@ class LeaveController extends Controller
 
             return back()->with('success', 'Leave request updated successfully.');
         } catch (\Throwable $th) {
-            Log::error('Error updating leave request: '.$th->getMessage());
+            Log::error('Error updating leave request: ' . $th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the leave request.');
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Leave $leave)
-    {
-        //
     }
 
     /**
@@ -137,7 +106,7 @@ class LeaveController extends Controller
 
             return back()->with('success', 'Leave request revoked successfully.');
         } catch (\Throwable $th) {
-            Log::error('Error revoking leave request: '.$th->getMessage());
+            Log::error('Error revoking leave request: ' . $th->getMessage());
 
             return back()->with('error', 'An error occurred while revoking the leave request.');
         }
