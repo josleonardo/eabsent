@@ -71,6 +71,10 @@ Route::middleware('auth')->group(function () {
             ->name('leave.history');
         Route::put('/approval/leave/{leave}/revoke', [LeaveController::class, 'revoke'])
             ->name('leave.revoke');
+        Route::get('/approval/leave/export/excel', [LeaveController::class, 'exportExcel'])
+            ->name('leave.export.excel');
+        Route::get('/approval/leave/export/csv', [LeaveController::class, 'exportCsv'])
+            ->name('leave.export.csv');
 
         // Correction routes
         Route::get('/approval/correction', [CorrectionController::class, 'index'])

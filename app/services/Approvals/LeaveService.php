@@ -13,13 +13,6 @@ use Illuminate\Support\Facades\DB;
 
 class LeaveService
 {
-    protected $attendanceService;
-
-    public function __construct(AttendanceService $attendanceService)
-    {
-        $this->attendanceService = $attendanceService;
-    }
-
     /**
      * Default pagination limit.
      */
@@ -52,9 +45,9 @@ class LeaveService
     }
 
     /**
-     * Select query builder for leaves.
+     * Select query for leaves.
      */
-    private static function selectQuery(bool $history): Builder
+    private static function selectQuery(bool $history)
     {
         $select = $history
             ? ['id', 'start_date', 'end_date', 'reason', 'file_path', 'status', 'approved_at', 'approved_by', 'created_at', 'created_by', 'updated_at']
@@ -102,6 +95,8 @@ class LeaveService
     public function updateLeave(Leave $leave, array $validatedData, int $currentUserId): Leave
     {
         return DB::transaction(function () use ($leave, $validatedData, $currentUserId) {
+            $attendanceService = app(AttendanceService::class);
+
             $leave->update([
                 'status' => $validatedData['status'],
                 'approved_at' => now(),
@@ -110,7 +105,7 @@ class LeaveService
             ]);
 
             if ($validatedData['status'] == Leave::STATUS_APPROVED) {
-                $this->attendanceService->markOnLeave($leave->created_by, $leave->start_date, $leave->end_date, $leave->id, $currentUserId);
+                $attendanceService->markOnLeave($leave->created_by, $leave->start_date, $leave->end_date, $leave->id, $currentUserId);
             }
 
             return $leave->refresh();
@@ -125,20 +120,46 @@ class LeaveService
         if ($leave->status == Leave::STATUS_REVOKED) {
             throw new \Exception('Leave is already revoked.');
         }
-
+        
         if ($leave->status != Leave::STATUS_APPROVED) {
             throw new \Exception('Only approved leaves can be revoked.');
         }
-
+        
         return DB::transaction(function () use ($leave, $validatedData, $currentUserId) {
+            $attendanceService = app(AttendanceService::class);
+
             $leave->update([
                 'status' => $validatedData['status'],
                 'updated_by' => $currentUserId,
             ]);
 
-            $this->attendanceService->revokeOnLeave($leave->created_by, $leave->start_date, $leave->end_date, $leave->id, $currentUserId);
+            $attendanceService->revokeOnLeave($leave->created_by, $leave->start_date, $leave->end_date, $leave->id, $currentUserId);
 
             return $leave->refresh();
         });
+    }
+
+    public function exportPending(User $user)
+    {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
+
+        $query = self::selectQuery(false);
+
+        $query = self::roleLevelFilters($query, $role, $level);
+
+        return $query->whereNull('status')->latest()->get();
+    }
+
+    public function exportHistory(User $user)
+    {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
+
+        $query = self::selectQuery(true);
+
+        $query = self::roleLevelFilters($query, $role, $level);
+
+        return $query->whereNotNull('status')->latest('approved_at')->get();
     }
 }
