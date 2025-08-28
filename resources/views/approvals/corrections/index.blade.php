@@ -6,9 +6,32 @@
         or deny, and access a record of all history requests.
     </x-page-caption>
 
-    <x-forms.button as="link" href="{{ route('approval.index') }}" icon="icon-chevron-left">
-        Back
-    </x-forms.button>
+    <div class="flex items-center justify-between">
+        <x-forms.button as="link" href="{{ route('approval.index') }}" icon="icon-chevron-left">
+            Back
+        </x-forms.button>
+
+
+        <div x-data="{ exportDrop: false }" class="relative">
+            <x-forms.button @click="exportDrop = !exportDrop" btnBg="bg-gray-400 dark:bg-gray-600"
+                btnHover="hover:bg-gray-500" icon="icon-download" />
+            <x-elements.flyout-menu :drop="[
+                'name' => 'exportDrop',
+                'label' => 'export-menu',
+            ]" :items="[
+                [
+                    'label' => 'Export Excel',
+                    'icon' => 'icon-file-type-xls',
+                    'route' => 'correction.export.excel',
+                ],
+                [
+                    'label' => 'Export CSV',
+                    'icon' => 'icon-file-type-csv',
+                    'route' => 'correction.export.csv',
+                ],
+            ]" />
+        </div>
+    </div>
 
     <div x-data="{ tab: '{{ $activeTab }}' }" x-init="$watch('tab', value => {
         const url = new URL(window.location.href);

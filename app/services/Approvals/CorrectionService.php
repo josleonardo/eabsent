@@ -107,4 +107,28 @@ class CorrectionService
 
         return $correction;
     }
+
+    public function exportPending(User $user)
+    {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
+
+        $query = self::selectQuery(false);
+
+        $query = self::roleLevelFilters($query, $role, $level);
+
+        return $query->whereNull('status')->latest()->get();
+    }
+
+    public function exportHistory(User $user)
+    {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
+
+        $query = self::selectQuery(true);
+
+        $query = self::roleLevelFilters($query, $role, $level);
+
+        return $query->whereNotNull('status')->latest('approved_at')->get();
+    }
 }

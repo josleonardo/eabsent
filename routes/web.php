@@ -83,6 +83,10 @@ Route::middleware('auth')->group(function () {
             ->name('correction.update');
         Route::get('/approval/correction/history', [CorrectionController::class, 'history'])
             ->name('correction.history');
+        Route::get('/approval/correction/export/excel', [CorrectionController::class, 'exportExcel'])
+            ->name('correction.export.excel');
+        Route::get('/approval/correction/export/csv', [CorrectionController::class, 'exportCsv'])
+            ->name('correction.export.csv');
 
         // Report pages
         Route::get('/report', [ReportController::class, 'index'])
