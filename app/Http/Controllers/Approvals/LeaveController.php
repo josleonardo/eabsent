@@ -122,7 +122,9 @@ class LeaveController extends Controller
 
     public function exportCsv()
     {
-        Storage::makeDirectory('exports');
+        if (!Storage::exists('exports')) {
+            Storage::makeDirectory('exports');
+        }
 
         $pendingPath = 'exports/leave_pending.csv';
         $historyPath = 'exports/leave_history.csv';

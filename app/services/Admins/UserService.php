@@ -5,32 +5,37 @@ namespace App\Services\Admins;
 use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\User;
+use App\Services\Settings\AvatarService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-    public function getUsers(User $user, ?int $perPage = null): LengthAwarePaginator
+    private function userQuery(User $user)
     {
         $superAdmin = Role::ROLE_SUPERADMIN;
         $admin = Role::ROLE_ADMIN;
-        $userRole = $user->roles->first()->name ?? '';
-        $perPage = $perPage ?? config('constants.default_per_page');
+        $userRole = $user->roles->first()->name ?? null;
 
         if ($userRole == $superAdmin) {
-            return User::paginate($perPage);
+            return User::query();
         }
 
         if ($userRole == $admin) {
             return User::whereHas('roles', function ($query) use ($superAdmin) {
                 $query->whereNot('name', $superAdmin);
-            })
-                ->with('roles:id,name')
-                ->paginate($perPage);
+            })->with('roles:id,name');
         }
 
         abort(403, 'Unauthorized');
+    }
+
+    public function getUsers(User $user, ?int $perPage = null): LengthAwarePaginator
+    {
+        $perPage = $perPage ?? config('constants.default_per_page');
+
+        return $this->userQuery($user)->paginate($perPage);
     }
 
     /**
@@ -65,7 +70,7 @@ class UserService
 
             // If avatar uploaded, store the avatar
             if (isset($validatedData['avatar']) && $validatedData['avatar']->isValid()) {
-                $avatarService = app(\App\Services\Settings\AvatarService::class);
+                $avatarService = app(AvatarService::class);
                 $path = $avatarService->upload($validatedData['avatar'], $user->id);
 
                 $user->profile()->update(['avatar' => $path]);
@@ -115,7 +120,7 @@ class UserService
         return DB::transaction(function () use ($user, $validatedData, $defaultData, $defaultSync) {
             // If avatar uploaded, update the avatar
             if (isset($validatedData['avatar']) && $validatedData['avatar']->isValid()) {
-                $avatarService = app(\App\Services\Settings\AvatarService::class);
+                $avatarService = app(AvatarService::class);
                 $path = $avatarService->upload($validatedData['avatar'], $user->id, $user->profile->avatar);
 
                 $validatedData['avatar'] = $path;
@@ -170,27 +175,8 @@ class UserService
         });
     }
 
-    /**
-     * Export users based on the user's role and level.
-     */
     public function exportUsers(User $user)
     {
-        $superAdmin = Role::ROLE_SUPERADMIN;
-        $admin = Role::ROLE_ADMIN;
-        $userRole = $user->roles->first()->name ?? '';
-
-        if ($userRole == $superAdmin) {
-            return User::all();
-        }
-
-        if ($userRole == $admin) {
-            return User::whereHas('roles', function ($query) use ($superAdmin) {
-                $query->whereNot('name', $superAdmin);
-            })
-                ->with('roles:id,name')
-                ->get();
-        }
-
-        abort(403, 'Unauthorized to export users.');
+        return $this->userQuery($user)->get();
     }
 }

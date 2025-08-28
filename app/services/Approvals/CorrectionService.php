@@ -11,47 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CorrectionService
 {
-    /**
-     * Default pagination limit.
-     */
-    private const DEFAULT_PER_PAGE = 10;
-
-    /**
-     * Get pending correction request based on the user's role and level.
-     */
-    public static function getPending(User $user, ?int $perPage = null): LengthAwarePaginator
-    {
-        $role = $user->roles->first()->name ?? null;
-        $level = $user->levels->first()->name ?? null;
-        $perPage = $perPage ?? self::DEFAULT_PER_PAGE;
-
-        $query = self::selectQuery(false);
-
-        $query = self::roleLevelFilters($query, $role, $level);
-
-        return $query->whereNull('status')->latest()->paginate($perPage, ['*'], 'pending_page');
-    }
-
-    /**
-     * Get correction request history based on the user's role and level.
-     */
-    public static function getHistory(User $user, ?int $perPage = null): LengthAwarePaginator
-    {
-        $role = $user->roles->first()->name ?? null;
-        $level = $user->levels->first()->name ?? null;
-        $perPage = $perPage ?? self::DEFAULT_PER_PAGE;
-
-        $query = self::selectQuery(true);
-
-        $query = self::roleLevelFilters($query, $role, $level);
-
-        return $query->whereNotNull('status')->latest('approved_at')->paginate($perPage, ['*'], 'processed_page');
-    }
-
-    /**
-     * Select query builder for corrections.
-     */
-    private static function selectQuery(bool $history): Builder
+    private function selectQuery(bool $history): Builder
     {
         $select = $history
             ? ['id', 'date', 'actual_in', 'actual_out', 'reason', 'status', 'approved_at', 'approved_by', 'created_at', 'created_by', 'updated_at']
@@ -66,10 +26,7 @@ class CorrectionService
             ]);
     }
 
-    /**
-     * Apply role and level filters to the query.
-     */
-    private static function roleLevelFilters(Builder $query, string $role, string $level): Builder
+    private function roleLevelFilters(Builder $query, string $role, string $level): Builder
     {
         if (in_array($role, [Role::ROLE_SUPERADMIN, Role::ROLE_ADMIN])) {
             if ($level == Level::LEVEL_ADMIN) {
@@ -89,13 +46,41 @@ class CorrectionService
             });
         }
 
-        // Default: return empty result
         return $query->whereRaw('1 = 0');
     }
 
     /**
-     * Update correction request.
+     * Get pending correction request based on the user's role and level.
      */
+    public function getPending(User $user, ?int $perPage = null): LengthAwarePaginator
+    {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
+        $perPage = $perPage ?? config('constants.default_per_page');
+
+        $query = $this->selectQuery(false);
+
+        $query = $this->roleLevelFilters($query, $role, $level);
+
+        return $query->whereNull('status')->latest()->paginate($perPage, ['*'], 'pending_page');
+    }
+
+    /**
+     * Get correction request history based on the user's role and level.
+     */
+    public function getHistory(User $user, ?int $perPage = null): LengthAwarePaginator
+    {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
+        $perPage = $perPage ?? config('constants.default_per_page');
+
+        $query = $this->selectQuery(true);
+
+        $query = $this->roleLevelFilters($query, $role, $level);
+
+        return $query->whereNotNull('status')->latest('approved_at')->paginate($perPage, ['*'], 'processed_page');
+    }
+
     public function updateCorrection(Correction $correction, array $validatedData, int $currentUserId): Correction
     {
         $correction->update([
@@ -113,9 +98,9 @@ class CorrectionService
         $role = $user->roles->first()->name ?? null;
         $level = $user->levels->first()->name ?? null;
 
-        $query = self::selectQuery(false);
+        $query = $this->selectQuery(false);
 
-        $query = self::roleLevelFilters($query, $role, $level);
+        $query = $this->roleLevelFilters($query, $role, $level);
 
         return $query->whereNull('status')->latest()->get();
     }
@@ -125,9 +110,9 @@ class CorrectionService
         $role = $user->roles->first()->name ?? null;
         $level = $user->levels->first()->name ?? null;
 
-        $query = self::selectQuery(true);
+        $query = $this->selectQuery(true);
 
-        $query = self::roleLevelFilters($query, $role, $level);
+        $query = $this->roleLevelFilters($query, $role, $level);
 
         return $query->whereNotNull('status')->latest('approved_at')->get();
     }

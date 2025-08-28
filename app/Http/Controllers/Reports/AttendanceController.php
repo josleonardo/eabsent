@@ -19,7 +19,7 @@ class AttendanceController extends Controller
     {
         $user = $request->user();
 
-        $attendances = $attendanceService->getAttendances($user);
+        $attendances = $attendanceService->getAttendances($user, 25);
 
         $statusKey = config('constants.attendance_status');
 

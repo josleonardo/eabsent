@@ -12,43 +12,41 @@ use Illuminate\Support\Facades\DB;
 
 class AttendanceService
 {
-    /**
-     * Get attendances based on the user's role and level.
-     */
-    public function getAttendances(User $user): LengthAwarePaginator
+    private function selectQuery(): Builder
     {
-        $role = $user->roles->first()->name ?? '';
-        $level = $user->levels->first()->name ?? '';
+        $select = ['id', 'user_id', 'date', 'sched_in', 'sched_out', 'actual_in', 'actual_out', 'status', 'updated_at', 'updated_by'];
 
-        $query = Attendance::select(['id', 'user_id', 'date', 'sched_in', 'sched_out', 'actual_in', 'actual_out', 'status', 'updated_at', 'updated_by'])
-            ->with(['users.profile:user_id,first_name,last_name', 'users.levels:id,name', 'users.roles:id,name']);
+        return Attendance::select($select)
+            ->with([
+                'users.profile:user_id,first_name,last_name',
+                'users.levels:id,name',
+                'users.roles:id,name'
+            ]);
+    }
 
+    private function roleLevelFilters(Builder $query, string $role, string $level): Builder
+    {
         if (in_array($role, [Role::ROLE_SUPERADMIN, Role::ROLE_ADMIN])) {
             if ($level == Level::LEVEL_ADMIN) {
-                return $query->latest('date')->paginate(25);
+                return $query;
             } else {
                 return $query->whereHas('users.levels', function (Builder $q) use ($level) {
                     $q->where('name', $level);
-                })->latest('date')->paginate(25);
+                });
             }
         }
 
         if ($role == Role::ROLE_HEADMASTER) {
             return $query->whereHas('users.roles', function (Builder $q) {
                 $q->where('name', Role::ROLE_TEACHER);
-            })
-                ->whereHas('users.levels', function (Builder $q) use ($level) {
-                    $q->where('name', $level);
-                })->latest('date')->paginate(25);
+            })->whereHas('users.levels', function (Builder $q) use ($level) {
+                $q->where('name', $level);
+            });
         }
 
-        // Default case: return an empty result if no conditions are met
-        return $query->collect([])->paginate(0);
+        return $query->whereRaw('1 = 0');
     }
 
-    /**
-     * Save attendance history.
-     */
     protected function saveAttendanceHistory(Attendance $attendance, string $source, ?int $sourceId, ?string $changeReason, int $currentUserId): void
     {
         $attendance->histories()->create([
@@ -64,6 +62,22 @@ class AttendanceService
             'changed_at' => now(),
             'changed_by' => $currentUserId,
         ]);
+    }
+
+    /**
+     * Get attendances based on the user's role and level.
+     */
+    public function getAttendances(User $user, ?int $perPage = null): LengthAwarePaginator
+    {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
+        $perPage = $perPage ?? config('constants.default_per_page');
+
+        $query = $this->selectQuery();
+
+        $query = $this->roleLevelFilters($query, $role, $level);
+
+        return $query->latest('date')->paginate($perPage);
     }
 
     /**
@@ -144,23 +158,13 @@ class AttendanceService
 
     public function exportAttendances(User $user)
     {
-        $role = $user->roles->first()->name ?? '';
-        $level = $user->levels->first()->name ?? '';
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
 
-        $query = Attendance::select(['id', 'user_id', 'date', 'sched_in', 'sched_out', 'actual_in', 'actual_out', 'status', 'updated_at', 'updated_by'])
-            ->with(['users.profile:user_id,first_name,last_name', 'users.levels:id,name', 'users.roles:id,name']);
+        $query = $this->selectQuery();
 
-        // Only allow export for admins/superadmins
-        if (in_array($role, [Role::ROLE_SUPERADMIN, Role::ROLE_ADMIN])) {
-            if ($level == Level::LEVEL_ADMIN) {
-                return $query->latest('date')->get();
-            } else {
-                return $query->whereHas('users.levels', function ($q) use ($level) {
-                    $q->where('name', $level);
-                })->latest('date')->get();
-            }
-        }
+        $query = $this->roleLevelFilters($query, $role, $level);
 
-        abort(403, 'Unauthorized to export attendances.');
+        return $query->latest('date')->get();
     }
 }

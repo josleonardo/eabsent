@@ -13,41 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class LeaveService
 {
-    /**
-     * Default pagination limit.
-     */
-    private const DEFAULT_PER_PAGE = 10;
-
-    public static function getPending(User $user, ?int $perPage = null): LengthAwarePaginator
-    {
-        $role = $user->roles->first()->name ?? null;
-        $level = $user->levels->first()->name ?? null;
-        $perPage = $perPage ?? self::DEFAULT_PER_PAGE;
-
-        $query = self::selectQuery(false);
-
-        $query = self::roleLevelFilters($query, $role, $level);
-
-        return $query->whereNull('status')->latest()->paginate($perPage, ['*'], 'pending_page');
-    }
-
-    public static function getHistory(User $user, ?int $perPage = null): LengthAwarePaginator
-    {
-        $role = $user->roles->first()->name ?? null;
-        $level = $user->levels->first()->name ?? null;
-        $perPage = $perPage ?? self::DEFAULT_PER_PAGE;
-
-        $query = self::selectQuery(true);
-
-        $query = self::roleLevelFilters($query, $role, $level);
-
-        return $query->whereNotNull('status')->latest('approved_at')->paginate($perPage, ['*'], 'processed_page');
-    }
-
-    /**
-     * Select query for leaves.
-     */
-    private static function selectQuery(bool $history)
+    private function selectQuery(bool $history)
     {
         $select = $history
             ? ['id', 'start_date', 'end_date', 'reason', 'file_path', 'status', 'approved_at', 'approved_by', 'created_at', 'created_by', 'updated_at']
@@ -62,10 +28,7 @@ class LeaveService
             ]);
     }
 
-    /**
-     * Apply role and level filters to the query.
-     */
-    private static function roleLevelFilters(Builder $query, string $role, string $level): Builder
+    private function roleLevelFilters(Builder $query, string $role, string $level): Builder
     {
         if (in_array($role, [Role::ROLE_SUPERADMIN, Role::ROLE_ADMIN])) {
             if ($level == Level::LEVEL_ADMIN) {
@@ -85,8 +48,39 @@ class LeaveService
             });
         }
 
-        // Default: return empty result
         return $query->whereRaw('1 = 0');
+    }
+
+    /**
+     * Get pending leave request based on the user's role and level.
+     */
+    public function getPending(User $user, ?int $perPage = null): LengthAwarePaginator
+    {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
+        $perPage = $perPage ?? config('constants.default_per_page');
+
+        $query = $this->selectQuery(false);
+
+        $query = $this->roleLevelFilters($query, $role, $level);
+
+        return $query->whereNull('status')->latest()->paginate($perPage, ['*'], 'pending_page');
+    }
+
+    /**
+     * Get leave request history based on the user's role and level.
+     */
+    public function getHistory(User $user, ?int $perPage = null): LengthAwarePaginator
+    {
+        $role = $user->roles->first()->name ?? null;
+        $level = $user->levels->first()->name ?? null;
+        $perPage = $perPage ?? config('constants.default_per_page');
+
+        $query = $this->selectQuery(true);
+
+        $query = $this->roleLevelFilters($query, $role, $level);
+
+        return $query->whereNotNull('status')->latest('approved_at')->paginate($perPage, ['*'], 'processed_page');
     }
 
     /**
@@ -144,9 +138,9 @@ class LeaveService
         $role = $user->roles->first()->name ?? null;
         $level = $user->levels->first()->name ?? null;
 
-        $query = self::selectQuery(false);
+        $query = $this->selectQuery(false);
 
-        $query = self::roleLevelFilters($query, $role, $level);
+        $query = $this->roleLevelFilters($query, $role, $level);
 
         return $query->whereNull('status')->latest()->get();
     }
@@ -156,9 +150,9 @@ class LeaveService
         $role = $user->roles->first()->name ?? null;
         $level = $user->levels->first()->name ?? null;
 
-        $query = self::selectQuery(true);
+        $query = $this->selectQuery(true);
 
-        $query = self::roleLevelFilters($query, $role, $level);
+        $query = $this->roleLevelFilters($query, $role, $level);
 
         return $query->whereNotNull('status')->latest('approved_at')->get();
     }
