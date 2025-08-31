@@ -69,7 +69,7 @@ class LeaveController extends Controller
 
             return back()->with('success', 'Leave request updated successfully.');
         } catch (\Throwable $th) {
-            Log::error('Error updating leave request: ' . $th->getMessage());
+            Log::error('Error updating leave request: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the leave request.');
         }
@@ -109,7 +109,7 @@ class LeaveController extends Controller
 
             return back()->with('success', 'Leave request revoked successfully.');
         } catch (\Throwable $th) {
-            Log::error('Error revoking leave request: ' . $th->getMessage());
+            Log::error('Error revoking leave request: '.$th->getMessage());
 
             return back()->with('error', 'An error occurred while revoking the leave request.');
         }
@@ -122,7 +122,7 @@ class LeaveController extends Controller
 
     public function exportCsv()
     {
-        if (!Storage::exists('exports')) {
+        if (! Storage::exists('exports')) {
             Storage::makeDirectory('exports');
         }
 
@@ -134,9 +134,9 @@ class LeaveController extends Controller
 
         $zipPath = storage_path('app/private/exports/leaves.zip');
         $zip = new ZipArchive;
-        if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
-            $zip->addFile(storage_path('app/private/' . $pendingPath), 'leave_pending.csv');
-            $zip->addFile(storage_path('app/private/' . $historyPath), 'leave_history.csv');
+        if ($zip->open($zipPath, ZipArchive::CREATE) === true) {
+            $zip->addFile(storage_path('app/private/'.$pendingPath), 'leave_pending.csv');
+            $zip->addFile(storage_path('app/private/'.$historyPath), 'leave_history.csv');
             $zip->close();
         } else {
             return back()->with('error', 'Could not create zip file.');

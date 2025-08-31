@@ -13,10 +13,10 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class LeavePendingExport implements FromCollection, ShouldAutoSize, WithTitle, WithHeadings, WithMapping, WithStyles
+class LeavePendingExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     use Exportable;
-    
+
     /**
      * @return \Illuminate\Support\Collection
      */
@@ -24,7 +24,7 @@ class LeavePendingExport implements FromCollection, ShouldAutoSize, WithTitle, W
     {
         $user = Auth::user();
 
-        $leaveService = new LeaveService();
+        $leaveService = new LeaveService;
 
         return $leaveService->exportPending($user);
     }

@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class CorrectionHistoryExport implements FromCollection, ShouldAutoSize, WithTitle, WithHeadings, WithMapping, WithStyles
+class CorrectionHistoryExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     use Exportable;
 
@@ -24,7 +24,7 @@ class CorrectionHistoryExport implements FromCollection, ShouldAutoSize, WithTit
     {
         $user = Auth::user();
 
-        $correctionService = new CorrectionService();
+        $correctionService = new CorrectionService;
 
         return $correctionService->exportHistory($user);
     }

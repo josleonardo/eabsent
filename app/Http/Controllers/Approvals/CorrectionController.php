@@ -72,7 +72,7 @@ class CorrectionController extends Controller
 
     public function exportCsv()
     {
-        if (!Storage::exists('exports')) {
+        if (! Storage::exists('exports')) {
             Storage::makeDirectory('exports');
         }
 
@@ -84,9 +84,9 @@ class CorrectionController extends Controller
 
         $zipPath = storage_path('app/private/exports/corrections.zip');
         $zip = new ZipArchive;
-        if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
-            $zip->addFile(storage_path('app/private/' . $pendingPath), 'correction_pending.csv');
-            $zip->addFile(storage_path('app/private/' . $historyPath), 'correction_history.csv');
+        if ($zip->open($zipPath, ZipArchive::CREATE) === true) {
+            $zip->addFile(storage_path('app/private/'.$pendingPath), 'correction_pending.csv');
+            $zip->addFile(storage_path('app/private/'.$historyPath), 'correction_history.csv');
             $zip->close();
         } else {
             return back()->with('error', 'Could not create zip file.');

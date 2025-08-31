@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class CorrectionPendingExport implements FromCollection, ShouldAutoSize, WithTitle, WithHeadings, WithMapping, WithStyles
+class CorrectionPendingExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     use Exportable;
 
@@ -24,7 +24,7 @@ class CorrectionPendingExport implements FromCollection, ShouldAutoSize, WithTit
     {
         $user = Auth::user();
 
-        $correctionService = new CorrectionService();
+        $correctionService = new CorrectionService;
 
         return $correctionService->exportPending($user);
     }

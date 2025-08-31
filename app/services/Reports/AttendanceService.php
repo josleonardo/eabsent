@@ -20,7 +20,7 @@ class AttendanceService
             ->with([
                 'users.profile:user_id,first_name,last_name',
                 'users.levels:id,name',
-                'users.roles:id,name'
+                'users.roles:id,name',
             ]);
     }
 
