@@ -35,7 +35,18 @@
                         <td class="px-4 py-3">{{ $history->start_date }}</td>
                         <td class="px-4 py-3">{{ $history->end_date }}</td>
                         <td class="px-4 py-3">{{ $history->reason }}</td>
-                        <td class="px-4 py-3">{{ $history->file_path }}</td>
+                        <td class="px-4 py-3">
+                            @if ($history->files->isEmpty())
+                                <span class="text-gray-500">No files attached.</span>
+                            @else
+                                @foreach ($history->files as $file)
+                                    <a href="{{ asset('storage/private/' . $file->path) }}" target="_blank"
+                                        class="text-blue-600 hover:underline">
+                                        {{ $file->original_name }}
+                                    </a><br>
+                                @endforeach
+                            @endif
+                        </td>
                         <td class="px-4 py-3">{{ $history->created_at }}</td>
                         <td class="px-4 py-3">
                             {{ $statusKey[$history->status] ? __($statusKey[$history->status]['status']) : __('Unknown') }}

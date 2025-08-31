@@ -16,8 +16,8 @@ class LeaveService
     private function selectQuery(bool $history)
     {
         $select = $history
-            ? ['id', 'start_date', 'end_date', 'reason', 'file_path', 'status', 'approved_at', 'approved_by', 'created_at', 'created_by', 'updated_at']
-            : ['id', 'start_date', 'end_date', 'reason', 'file_path', 'created_at', 'created_by'];
+            ? ['id', 'start_date', 'end_date', 'reason', 'status', 'approved_at', 'approved_by', 'created_at', 'created_by', 'updated_at']
+            : ['id', 'start_date', 'end_date', 'reason', 'created_at', 'created_by'];
 
         return Leave::select($select)
             ->with([
@@ -25,6 +25,7 @@ class LeaveService
                 'requester.levels:id,name',
                 'requester.roles:id,name',
                 'approver.profile:user_id,first_name,last_name',
+                'files:user_id,fileable_id,fileable_type,path,filename,original_name,mime_type,size,category',
             ]);
     }
 
@@ -114,11 +115,11 @@ class LeaveService
         if ($leave->status == Leave::STATUS_REVOKED) {
             throw new \Exception('Leave is already revoked.');
         }
-        
+
         if ($leave->status != Leave::STATUS_APPROVED) {
             throw new \Exception('Only approved leaves can be revoked.');
         }
-        
+
         return DB::transaction(function () use ($leave, $validatedData, $currentUserId) {
             $attendanceService = app(AttendanceService::class);
 

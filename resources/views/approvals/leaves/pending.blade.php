@@ -32,7 +32,18 @@
                         <td class="px-4 py-3">{{ $pending->start_date }}</td>
                         <td class="px-4 py-3">{{ $pending->end_date }}</td>
                         <td class="px-4 py-3">{{ $pending->reason }}</td>
-                        <td class="px-4 py-3">{{ $pending->file_path }}</td>
+                        <td class="px-4 py-3">
+                            @if ($pending->files->isEmpty())
+                                <span class="text-gray-500">No files attached.</span>
+                            @else
+                                @foreach ($pending->files as $file)
+                                    <a href="{{ asset('storage/private/' . $file->path) }}" target="_blank"
+                                        class="text-blue-600 hover:underline">
+                                        {{ $file->original_name }}
+                                    </a><br>
+                                @endforeach
+                            @endif
+                        </td>
                         <td class="px-4 py-3">{{ $pending->created_at }}</td>
                         <td class="px-4 py-3">
                             <form action="{{ route('leave.update', $pending->id) }}" method="POST" class="flex gap-4">

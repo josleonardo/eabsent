@@ -16,7 +16,6 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->string('reason');
-            $table->string('file_path')->nullable();
             $table->tinyInteger('status')->nullable()->index();
             $table->dateTime('approved_at')->nullable()->index();
             $table->integer('approved_by')->nullable()->index();

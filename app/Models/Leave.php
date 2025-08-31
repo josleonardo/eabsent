@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Leave extends Model
 {
@@ -47,5 +48,13 @@ class Leave extends Model
     public function approver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by', 'id');
+    }
+
+    /**
+     * Get all of the leave's files.
+     */
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
     }
 }
