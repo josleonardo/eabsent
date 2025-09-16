@@ -78,8 +78,8 @@ class MenuSeeder extends Seeder
             ],
             [
                 'menu_group' => 2,
-                'name' => 'history',
-                'url' => '/report/history',
+                'name' => 'activity logs',
+                'url' => '/report/activity-logs',
                 'order' => 1,
             ],
             [

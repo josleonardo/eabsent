@@ -15,6 +15,7 @@ use App\Http\Controllers\Approvals\ApprovalController;
 use App\Http\Controllers\Approvals\CorrectionController;
 use App\Http\Controllers\Approvals\LeaveController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Reports\ActivityLogController;
 use App\Http\Controllers\Reports\AttendanceController;
 use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Settings\AccountController;
@@ -91,6 +92,10 @@ Route::middleware('auth')->group(function () {
         // Report pages
         Route::get('/report', [ReportController::class, 'index'])
             ->name('report.index');
+
+        Route::get('/report/activity-logs', [ActivityLogController::class, 'index'])
+            ->name('activity-logs.index');
+
         Route::resource('/report/attendance', AttendanceController::class)
             ->only(['index', 'edit', 'update']);
         Route::get('/report/attendance/export/excel', [AttendanceController::class, 'exportExcel'])

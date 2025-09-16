@@ -30,7 +30,7 @@ class ActivityLog extends Model
     /**
      * Relationship to the user who performed the action.
      */
-    public function user(): BelongsTo
+    public function users(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }

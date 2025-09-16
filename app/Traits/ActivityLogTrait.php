@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Services\Utilities\ActivityLogService;
+use App\Services\Reports\ActivityLogService;
 
 trait ActivityLogTrait
 {
