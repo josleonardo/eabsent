@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\ActivityLogTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Notifications\Notifiable;
 
 class UserProfile extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use ActivityLogTrait, HasFactory;
 
     /**
      * The attributes that are mass assignable.

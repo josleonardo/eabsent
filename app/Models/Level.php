@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\ActivityLogTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Level extends Model
 {
-    /** @use HasFactory<\Database\Factories\LevelFactory> */
-    use HasFactory;
+    use ActivityLogTrait, HasFactory;
 
     /**
      * The level constants.

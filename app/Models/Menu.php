@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\ActivityLogTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Menu extends Model
 {
-    /** @use HasFactory<\Database\Factories\MenuFactory> */
-    use HasFactory;
+    use ActivityLogTrait, HasFactory;
 
     /**
      * The attributes that are mass assignable.
