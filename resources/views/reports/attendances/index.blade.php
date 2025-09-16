@@ -6,7 +6,6 @@
         times, and status updates.
     </x-page-caption>
 
-    {{-- Toolbar --}}
     <x-toolbar :search="true" :export="true" :exportRoutes="[
         [
             'route' => 'attendance.export.excel',
@@ -16,12 +15,10 @@
         ],
     ]" />
 
-    {{-- Back button --}}
     <x-forms.button as="link" href="{{ route('report.index') }}" icon="icon-chevron-left">
         Back
     </x-forms.button>
 
-    {{-- Table --}}
     @if ($attendances->isEmpty())
         <p class="text-gray-500">No attendances to display.</p>
     @else

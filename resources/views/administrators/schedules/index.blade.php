@@ -6,12 +6,8 @@
         Assign schedules to ensure proper attendance tracking.
     </x-page-caption>
 
-    {{-- Toolbar --}}
-    <x-toolbar :search="true" :create="true" :createRoute="'schedule.create'">
-        <x-slot:pageName>{{ $pageName }}</x-slot>
-    </x-toolbar>
+    <x-toolbar :search="true" :create="true" :createRoute="'schedule.create'" />
 
-    {{-- Table --}}
     @if ($schedules->isEmpty())
         <p class="text-gray-500">No schedules to display.</p>
     @else
@@ -47,7 +43,9 @@
                             <td class="px-4 py-3 text-center">{{ $schedule->day_name }}</td>
                             <td class="px-4 py-3">{{ $schedule->check_in_time }}</td>
                             <td class="px-4 py-3">{{ $schedule->check_out_time }}</td>
-                            <td class="px-4 py-3">{{ $yesNoKey[$schedule->active] ? __($yesNoKey[$schedule->active]) : __('Unknown') }}</td>
+                            <td class="px-4 py-3">
+                                {{ $yesNoKey[$schedule->active] ? __($yesNoKey[$schedule->active]) : __('Unknown') }}
+                            </td>
                             <td class="px-4 py-3">{{ $schedule->created_at }}</td>
                             <td class="px-4 py-3 text-center">{{ $schedule->created_by }}</td>
                             <td class="px-4 py-3">{{ $schedule->updated_at }}</td>

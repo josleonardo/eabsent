@@ -2,12 +2,10 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <section class="p-3 space-y-6 border border-gray-200 sm:p-4 dark:bg-gray-800 dark:border-gray-700">
-        {{-- Back button --}}
         <x-forms.button as="link" href="{{ route('menu.index') }}" icon="icon-chevron-left">
             Back
         </x-forms.button>
 
-        {{-- Edit form --}}
         <form action="{{ route('menu.update', $menu) }}" method="POST" class="space-y-6 max-w-7xl">
             @csrf
             @method('PUT')
@@ -47,10 +45,8 @@
                     :value="$menu->icon" />
             </div>
 
-            {{-- Active toggle --}}
             <x-forms.toggle name="active" :checked="$menu->active" :trueLabel="__($activeKey[1]['active'])" :falseLabel="__($activeKey[0]['active'])" />
 
-            {{-- Submit button --}}
             <x-forms.button type="submit" icon="icon-edit" btnSize="w-full sm:w-40">
                 Update
             </x-forms.button>

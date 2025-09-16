@@ -6,12 +6,8 @@
         Each role determines what actions and pages a user can access.
     </x-page-caption>
 
-    {{-- Toolbar --}}
-    <x-toolbar :search="true" :create="true" :createRoute="'role.create'">
-        <x-slot:pageName>{{ $pageName }}</x-slot>
-    </x-toolbar>
+    <x-toolbar :search="true" :create="true" :createRoute="'role.create'" />
 
-    {{-- Table --}}
     @if ($roles->isEmpty())
         <p class="text-gray-500">No roles to display.</p>
     @else
@@ -43,7 +39,8 @@
                             </th>
                             <td class="px-4 py-3">{{ $role->name }}</td>
                             <td class="px-4 py-3">{{ $role->priority }}</td>
-                            <td class="px-4 py-3">{{ $yesNoKey[$role->active] ? __($yesNoKey[$role->active]) : __('Unknown') }}</td>
+                            <td class="px-4 py-3">
+                                {{ $yesNoKey[$role->active] ? __($yesNoKey[$role->active]) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $role->created_at }}</td>
                             <td class="px-4 py-3 text-center">{{ $role->created_by }}</td>
                             <td class="px-4 py-3">{{ $role->updated_at }}</td>

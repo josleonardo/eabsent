@@ -6,12 +6,8 @@
         Each schedule determines what actions and pages a user can access.
     </x-page-caption>
 
-    {{-- Toolbar --}}
-    <x-toolbar :search="true" :create="true" :createRoute="'user-schedule.create'">
-        <x-slot:pageName>{{ $pageName }}</x-slot>
-    </x-toolbar>
+    <x-toolbar :search="true" :create="true" :createRoute="'user-schedule.create'" />
 
-    {{-- Table --}}
     @if ($userSchedules->isEmpty())
         <p class="text-gray-500">No user schedule to display.</p>
     @else
@@ -49,7 +45,8 @@
                                 {{ $item->check_in_time }}</td>
                             <td class="px-4 py-3 text-center">
                                 {{ $item->check_out_time }}</td>
-                            <td class="px-4 py-3 text-center">{{ $yesNoKey[$item->active] ? __($yesNoKey[$item->active]) : __('Unknown') }}</td>
+                            <td class="px-4 py-3 text-center">
+                                {{ $yesNoKey[$item->active] ? __($yesNoKey[$item->active]) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $item->created_at }}</td>
                             <td class="px-4 py-3 text-center">{{ $item->created_by }}</td>
                             <td class="px-4 py-3">{{ $item->updated_at }}</td>

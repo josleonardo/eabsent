@@ -6,12 +6,8 @@
         Adjust preferences, permissions, and other key options.
     </x-page-caption>
 
-    {{-- Toolbar --}}
-    <x-toolbar :search="true" :create="true" :createRoute="'app-setting.create'">
-        <x-slot:pageName>{{ $pageName }}</x-slot>
-    </x-toolbar>
+    <x-toolbar :search="true" :create="true" :createRoute="'app-setting.create'" />
 
-    {{-- Table --}}
     @if ($appSettings->isEmpty())
         <p class="text-gray-500">No app settings to display.</p>
     @else

@@ -2,18 +2,16 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <section class="p-3 space-y-6 border border-gray-200 sm:p-4 dark:bg-gray-800 dark:border-gray-700">
-        {{-- Back button --}}
         <x-forms.button as="link" href="{{ route('menu.index') }}" icon="icon-chevron-left">
             Back
         </x-forms.button>
-        
-        {{-- Create form --}}
+
         <form action="{{ route('menu.store') }}" method="POST" class="space-y-6 max-w-7xl">
             @csrf
-            
+
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <x-forms.input-field label="Menu Group" name="menu_group" id="menu_group" type="number"
-                    placeholder="1" :isRequired="true" />
+                <x-forms.input-field label="Menu Group" name="menu_group" id="menu_group" type="number" placeholder="1"
+                    :isRequired="true" />
 
                 <x-forms.input-field label="Menu Name" name="menu_name" id="menu_name" placeholder="Menu Name"
                     :isRequired="true" />
@@ -43,11 +41,10 @@
                 <x-forms.input-field label="Icon" name="icon" id="icon" placeholder="home-rounded" />
             </div>
 
-            {{-- Active toggle --}}
             <x-forms.toggle name="active" :checked="true" :trueLabel="__($activeKey[1]['active'])" :falseLabel="__($activeKey[0]['active'])" />
 
-            {{-- Submit button --}}
-            <x-forms.button type="submit" btnBg="bg-green-400 dark:bg-green-600" btnHover="hover:bg-green-500" icon="icon-square-plus" btnSize="w-full sm:w-40">
+            <x-forms.button type="submit" btnBg="bg-green-400 dark:bg-green-600" btnHover="hover:bg-green-500"
+                icon="icon-square-plus" btnSize="w-full sm:w-40">
                 Create
             </x-forms.button>
         </form>

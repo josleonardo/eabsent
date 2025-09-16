@@ -6,12 +6,8 @@
         Control visibility and structure to improve user experience.
     </x-page-caption>
 
-    {{-- Toolbar --}}
-    <x-toolbar :search="true" :create="true" :createRoute="'menu.create'">
-        <x-slot:pageName>{{ $pageName }}</x-slot>
-    </x-toolbar>
+    <x-toolbar :search="true" :create="true" :createRoute="'menu.create'" />
 
-    {{-- Table --}}
     @if ($menus->isEmpty())
         <p class="text-gray-500">No menus to display.</p>
     @else
@@ -48,10 +44,12 @@
                             <td class="px-4 py-3 text-center">{{ $menu->menu_group }}</td>
                             <td class="px-4 py-3">{{ $menu->name }}</td>
                             <td class="px-4 py-3">{{ $menu->url }}</td>
-                            <td class="px-4 py-3">{{ $platforms[$menu->platform] ? __($platforms[$menu->platform]) : __('Unknown') }}</td>
+                            <td class="px-4 py-3">
+                                {{ $platforms[$menu->platform] ? __($platforms[$menu->platform]) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $menu->order }}</td>
                             <td class="px-4 py-3">{{ $menu->icon }}</td>
-                            <td class="px-4 py-3">{{ $yesNoKey[$menu->active] ? __($yesNoKey[$menu->active]) : __('Unknown') }}</td>
+                            <td class="px-4 py-3">
+                                {{ $yesNoKey[$menu->active] ? __($yesNoKey[$menu->active]) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $menu->created_at }}</td>
                             <td class="px-4 py-3 text-center">{{ $menu->created_by }}</td>
                             <td class="px-4 py-3">{{ $menu->updated_at }}</td>

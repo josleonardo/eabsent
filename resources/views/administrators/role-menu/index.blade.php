@@ -6,12 +6,8 @@
         Each role determines what actions and menus a user can access.
     </x-page-caption>
 
-    {{-- Toolbar --}}
-    <x-toolbar :search="true" :create="true" :createRoute="'role-menu.create'">
-        <x-slot:pageName>{{ $pageName }}</x-slot>
-    </x-toolbar>
+    <x-toolbar :search="true" :create="true" :createRoute="'role-menu.create'" />
 
-    {{-- Table --}}
     @if ($roleMenus->isEmpty())
         <p class="text-gray-500">No role menu to display.</p>
     @else

@@ -5,12 +5,8 @@
         Store and update school levels for user access as well as deactivate levels as needed.
     </x-page-caption>
 
-    {{-- Toolbar --}}
-    <x-toolbar :search="true" :create="true" :createRoute="'level.create'">
-        <x-slot:pageName>{{ $pageName }}</x-slot>
-    </x-toolbar>
+    <x-toolbar :search="true" :create="true" :createRoute="'level.create'" />
 
-    {{-- Table --}}
     @if ($levels->isEmpty())
         <p class="text-gray-500">No levels to display.</p>
     @else
@@ -40,7 +36,8 @@
                                 {{ $levels->firstItem() + $key }}
                             </th>
                             <td class="px-4 py-3">{{ $level->name }}</td>
-                            <td class="px-4 py-3">{{ $yesNoKey[$level->active] ? __($yesNoKey[$level->active]) : __('Unknown') }}</td>
+                            <td class="px-4 py-3">
+                                {{ $yesNoKey[$level->active] ? __($yesNoKey[$level->active]) : __('Unknown') }}</td>
                             <td class="px-4 py-3">{{ $level->created_at }}</td>
                             <td class="px-4 py-3 text-center">{{ $level->created_by }}</td>
                             <td class="px-4 py-3">{{ $level->updated_at }}</td>

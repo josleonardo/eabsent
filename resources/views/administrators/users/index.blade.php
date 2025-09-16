@@ -6,7 +6,6 @@
         You can create, edit, and deactivate user accounts and informations as needed.
     </x-page-caption>
 
-    {{-- Toolbar --}}
     <x-toolbar :search="true" :create="true" :createRoute="'user.create'" :export="true" :exportRoutes="[
         [
             'route' => 'user.export.excel',
@@ -16,7 +15,6 @@
         ],
     ]" />
 
-    {{-- Table --}}
     @if ($users->isEmpty())
         <p class="text-gray-500">No users to display.</p>
     @else

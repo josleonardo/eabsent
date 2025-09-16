@@ -6,12 +6,8 @@
         Each role determines what actions and pages a user can access.
     </x-page-caption>
 
-    {{-- Toolbar --}}
-    <x-toolbar :search="true">
-        <x-slot:pageName>{{ $pageName }}</x-slot>
-    </x-toolbar>
+    <x-toolbar :search="true" />
 
-    {{-- Table --}}
     @if ($users->isEmpty())
         <p class="text-gray-500">No user role to display.</p>
     @else
@@ -46,7 +42,9 @@
                                     {{ $user->full_name }}
                                 </td>
                                 <td class="px-4 py-3">{{ $role->name }}</td>
-                                <td class="px-4 py-3">{{ $yesNoKey[$role->pivot->active] ? __($yesNoKey[$role->pivot->active]) : __('Unknown') }}</td>
+                                <td class="px-4 py-3">
+                                    {{ $yesNoKey[$role->pivot->active] ? __($yesNoKey[$role->pivot->active]) : __('Unknown') }}
+                                </td>
                                 <td class="px-4 py-3">{{ $role->pivot->created_at }}</td>
                                 <td class="px-4 py-3 text-center">{{ $role->pivot->created_by }}</td>
                                 <td class="px-4 py-3">{{ $role->pivot->updated_at }}</td>
