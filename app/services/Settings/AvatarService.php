@@ -14,7 +14,7 @@ class AvatarService
             Storage::disk('public')->delete($oldAvatar);
         }
 
-        $avatarName = 'avatar_'.time().'.'.$file->getClientOriginalExtension();
+        $avatarName = 'avatar-'.time().'-'.mt_rand(0, 1000000000).'.'.$file->getClientOriginalExtension();
 
         $path = $file->storeAs("users/{$userId}/avatars", $avatarName, 'public');
 
