@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     'active' => [
         'active' => 'Active',
         'inactive' => 'Inactive',
@@ -44,4 +45,5 @@ return [
         'yes' => 'Yes',
         'no' => 'No',
     ],
+    
 ];
