@@ -92,4 +92,9 @@ return [
         'day' => 'days',
         'yes_no' => 'yes_no',
     ],
+
+    'languages' => [
+        'en' => 'English',
+        'id' => 'Indonesia',
+    ],
 ];

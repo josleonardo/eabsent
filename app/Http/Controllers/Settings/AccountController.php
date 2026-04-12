@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\UpdateEmailRequest;
+use App\Http\Requests\Settings\UpdateLanguageRequest;
 use App\Http\Requests\Settings\UpdatePasswordRequest;
 use App\Http\Requests\Settings\UpdateUsernameRequest;
 use Illuminate\Http\Request;
@@ -20,8 +21,9 @@ class AccountController extends Controller
         $user = $request->user();
         $role = $user->roles->first();
         $hasChangePassword = $role->menus->where('id', 15)->first();
+        $languages = config('constants.languages');
 
-        return view('settings.account', ['pageName' => 'Account Settings'] + compact('user', 'hasChangePassword'));
+        return view('settings.account', ['pageName' => 'Account Settings'] + compact('user', 'hasChangePassword', 'languages'));
     }
 
     /**
@@ -97,6 +99,26 @@ class AccountController extends Controller
             Log::error($th);
 
             return back()->with('error', 'An error occurred while updating your password. Please try again later.');
+        }
+    }
+
+    /**
+     * Update the current user's language.
+     */
+    public function updateLanguage(UpdateLanguageRequest $request) {
+        $validatedData = $request->validated();
+
+        try {
+            $user = $request->user();
+            $validatedData['updated_by'] = $user->id;
+
+            $user->update($validatedData);
+
+            return back()->with('success', 'Your language updated successfully');
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return back()->with('error', 'An error occurred while updating your language. Please try again later.');
         }
     }
 }

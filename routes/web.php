@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function () {
         ->name('settings.account.email.update');
     Route::put('/settings/account/username', [AccountController::class, 'updateUsername'])
         ->name('settings.account.username.update');
+    Route::put('/settings/account/language', [AccountController::class, 'updateLanguage'])
+        ->name('settings.account.language.update');
 
     Route::middleware('menu.access.check')->group(function () {
         // Dashboard
