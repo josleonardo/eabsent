@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admins\AdminController;
-use App\Http\Controllers\Admins\AppSettingController;
 use App\Http\Controllers\Admins\LevelController;
 use App\Http\Controllers\Admins\MenuController;
 use App\Http\Controllers\Admins\RoleController;
 use App\Http\Controllers\Admins\RoleMenuController;
 use App\Http\Controllers\Admins\ScheduleController;
+use App\Http\Controllers\Admins\SchoolLocationController;
 use App\Http\Controllers\Admins\UserController;
 use App\Http\Controllers\Admins\UserLevelController;
 use App\Http\Controllers\Admins\UserRoleController;
@@ -124,7 +124,7 @@ Route::middleware('auth')->group(function () {
             ->except(['show', 'destroy']);
         Route::resource('/admin/schedule', ScheduleController::class)
             ->except(['show', 'destroy']);
-        Route::resource('/admin/app-setting', AppSettingController::class)
+        Route::resource('/admin/school-location', SchoolLocationController::class)
             ->except(['show', 'destroy']);
 
         Route::resource('/admin/user-role', UserRoleController::class)

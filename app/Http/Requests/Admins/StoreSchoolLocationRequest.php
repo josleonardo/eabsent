@@ -6,13 +6,13 @@ use App\Traits\NormalizeFieldTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class UpdateAppSettingRequest extends FormRequest
+class StoreSchoolLocationRequest extends FormRequest
 {
     use NormalizeFieldTrait;
 
-    protected string $menuName = 'app setting';
+    protected string $menuName = 'school location';
 
-    protected array $fields = ['setting_name', 'key', 'value_1', 'value_2'];
+    protected array $fields = ['school_location_name', 'key'];
 
     /**
      * Determine if the user is authorized to make this request.
@@ -39,14 +39,12 @@ class UpdateAppSettingRequest extends FormRequest
      */
     public function rules(): array
     {
-        $appSetting = $this->route('app_setting');
-        $id = $appSetting ? $appSetting->id : null;
-
         return [
-            'setting_name' => 'required|string|max:255|lowercase|unique:app_settings,name,'.$id,
-            'key' => 'nullable|string|max:255|lowercase|unique:app_settings,key,'.$id,
-            'value_1' => 'nullable|string|max:255|lowercase',
-            'value_2' => 'nullable|string|max:255|lowercase',
+            'school_location_name' => 'required|string|max:255|lowercase|unique:school_locations,name',
+            'key' => 'nullable|string|max:255|lowercase|unique:school_locations,key',
+            'latitude' => 'nullable|decimal:0,8',
+            'longitude' => 'nullable|decimal:0,8',
+            'radius' => 'nullable|integer',
             'active' => 'required|boolean',
         ];
     }

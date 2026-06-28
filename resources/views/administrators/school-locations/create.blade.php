@@ -2,22 +2,24 @@
     <x-slot:pageName>{{ $pageName }}</x-slot>
 
     <section class="p-3 space-y-6 border border-gray-200 sm:p-4 dark:bg-gray-800 dark:border-gray-700">
-        <x-forms.button as="link" href="{{ route('app-setting.index') }}" icon="icon-chevron-left">
+        <x-forms.button as="link" href="{{ route('school-location.index') }}" icon="icon-chevron-left">
             Back
         </x-forms.button>
 
-        <form action="{{ route('app-setting.store') }}" method="POST" class="space-y-6 max-w-7xl">
+        <form action="{{ route('school-location.store') }}" method="POST" class="space-y-6 max-w-7xl">
             @csrf
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <x-forms.input-field label="Setting Name" name="setting_name" id="setting_name" placeholder="settingName"
+                <x-forms.input-field label="School Location Name" name="school_location_name" id="school_location_name" placeholder="School Location Name"
                     :isRequired="true" />
 
                 <x-forms.input-field label="Key" name="key" id="key" />
 
-                <x-forms.input-field label="Value 1" name="value_1" id="value_1" />
+                <x-forms.input-field label="Latitude" name="latitude" id="latitude" />
 
-                <x-forms.input-field label="Value 2" name="value_2" id="value_2" />
+                <x-forms.input-field label="Longitude" name="longitude" id="longitude" />
+
+                <x-forms.input-field label="Radius (Meter)" name="radius" id="radius" type="number" />
             </div>
 
             <x-forms.toggle name="active" :checked="true" :trueLabel="__($activeKey[1]['active'])" :falseLabel="__($activeKey[0]['active'])" />
