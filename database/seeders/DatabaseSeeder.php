@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             LevelSeeder::class,
             ScheduleSeeder::class,
             RoleMenuSeeder::class,
-            AppSettingSeeder::class,
+            SchoolLocationSeeder::class,
             UserSeeder::class,
             AttendanceSeeder::class,
             LeaveSeeder::class,

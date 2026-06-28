@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('nuptk')->unique()->nullable();
             $table->string('first_name');
             $table->string('last_name')->nullable();
+            $table->foreignId('school_id')->nullable()->constrained('school_locations')->nullOnDelete()->cascadeOnUpdate();
             $table->string('position')->nullable();
             $table->string('address')->nullable();
             $table->string('phone_number')->nullable();

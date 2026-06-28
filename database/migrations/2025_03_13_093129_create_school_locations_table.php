@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('app_settings', function (Blueprint $table) {
+        Schema::create('school_locations', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('key')->nullable();
-            $table->string('value_1')->nullable();
-            $table->string('value_2')->nullable();
-            $table->boolean('active')->nullable();
+            $table->string('key')->unique()->nullable();
+            $table->decimal('latitude', 11, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
+            $table->integer('radius')->nullable();
+            $table->boolean('active')->default(true);
             $table->datetimes();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('app_settings');
+        Schema::dropIfExists('school_locations');
     }
 };

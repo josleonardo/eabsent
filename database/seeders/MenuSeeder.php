@@ -138,8 +138,8 @@ class MenuSeeder extends Seeder
             ],
             [
                 'menu_group' => 10,
-                'name' => 'app setting',
-                'url' => '/admin/app-setting',
+                'name' => 'school location',
+                'url' => '/admin/school-location',
                 'order' => 6,
             ],
             [

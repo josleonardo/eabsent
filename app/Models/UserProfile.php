@@ -44,4 +44,9 @@ class UserProfile extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    public function schoolLocation(): BelongsTo
+    {
+        return $this->belongsTo(SchoolLocation::class, 'school_id', 'id');
+    }
 }

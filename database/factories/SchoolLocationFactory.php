@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Setting>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SchoolLocation>
  */
-class AppSettingFactory extends Factory
+class SchoolLocationFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,11 +16,15 @@ class AppSettingFactory extends Factory
      */
     public function definition(): array
     {
+        $lat = -90 + (mt_rand() / mt_getrandmax()) * 180;
+        $lng = -180 + (mt_rand() / mt_getrandmax()) * 360;
+
         return [
             'name' => fake()->unique()->word(),
-            'key' => fake()->word(),
-            'value_1' => fake()->randomElement([fake()->word(), fake()->numberBetween(1, 100)]),
-            'value_2' => fake()->randomElement([fake()->word(), fake()->numberBetween(1, 100)]),
+            'key' => fake()->unique()->word(),
+            'latitude' => round($lat, 6),
+            'longitude' => round($lng, 6),
+            'radius' => fake()->numberBetween(1, 100),
             'active' => fake()->boolean(90),
             'created_at' => now(),
             'updated_at' => now(),

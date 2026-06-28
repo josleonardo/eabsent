@@ -5,8 +5,9 @@ namespace App\Models;
 use App\Traits\ActivityLogTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class AppSetting extends Model
+class SchoolLocation extends Model
 {
     use ActivityLogTrait, HasFactory;
 
@@ -18,12 +19,18 @@ class AppSetting extends Model
     protected $fillable = [
         'name',
         'key',
-        'value_1',
-        'value_2',
+        'latitude',
+        'longitude',
+        'radius',
         'active',
         'created_at',
         'updated_at',
         'created_by',
         'updated_by',
     ];
+
+    public function userProfiles(): HasMany
+    {
+        return $this->hasMany(UserProfile::class, 'school_id', 'id');
+    }
 }
