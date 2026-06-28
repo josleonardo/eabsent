@@ -7,11 +7,13 @@ trait NormalizeFieldTrait
     /**
      * Normalize the given field to lowercase if it exists in the request.
      */
-    protected function normalizeFieldToLowercase(string $field)
+    protected function normalizeFieldToLowercase(string $field): void
     {
-        if ($this->has($field)) {
+        $value = $this->input($field);
+        
+        if (is_string($value) && $value != "") {
             $this->merge([
-                $field => strtolower($this->input($field)),
+                $field => strtolower($value),
             ]);
         }
     }
