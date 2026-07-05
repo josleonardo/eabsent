@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('schedules', function (Blueprint $table) {
-            $table->id();
-            $table->tinyInteger('day_of_week');
-            $table->time('check_in_time');
-            $table->time('check_out_time');
+        Schema::create('group_schedule', function (Blueprint $table) {
+            $table->foreignId('schedule_group_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('schedule_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->boolean('active')->default(true);
             $table->datetimes();
             $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnUpdate();
+
+            $table->primary(['schedule_group_id', 'schedule_id']);
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('schedules');
+        Schema::dropIfExists('group_schedule');
     }
 };

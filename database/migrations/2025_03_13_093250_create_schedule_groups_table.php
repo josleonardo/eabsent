@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('schedules', function (Blueprint $table) {
+        Schema::create('schedule_groups', function (Blueprint $table) {
             $table->id();
-            $table->tinyInteger('day_of_week');
-            $table->time('check_in_time');
-            $table->time('check_out_time');
+            $table->string('name')->unique();
             $table->boolean('active')->default(true);
             $table->datetimes();
             $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnUpdate();
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('schedules');
+        Schema::dropIfExists('schedule_groups');
     }
 };
