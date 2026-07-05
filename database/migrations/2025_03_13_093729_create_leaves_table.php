@@ -15,14 +15,13 @@ return new class extends Migration
             $table->id();
             $table->date('start_date');
             $table->date('end_date');
-            $table->string('reason');
-            $table->tinyInteger('status')->nullable()->index();
-            $table->dateTime('approved_at')->nullable()->index();
-            $table->integer('approved_by')->nullable()->index();
-            $table->boolean('active')->nullable();
+            $table->text('reason');
+            $table->smallInteger('status')->default(0)->index();
+            $table->dateTime('processed_at')->nullable();
+            $table->foreignId('processed_by')->nullable()->constrained('users')->cascadeOnUpdate();
             $table->datetimes();
-            $table->integer('created_by')->nullable()->index();
-            $table->integer('updated_by')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnUpdate();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnUpdate();
         });
     }
 

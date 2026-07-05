@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('user_level', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('level_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->boolean('active')->nullable()->index();
+            $table->boolean('active')->default(true);
             $table->datetimes();
-            $table->integer('created_by')->nullable();
-            $table->integer('updated_by')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnUpdate();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnUpdate();
 
             $table->primary(['user_id', 'level_id']);
         });

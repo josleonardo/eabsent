@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('user_tokens', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->text('access_token')->nullable();
             $table->text('refresh_token')->nullable();
             $table->ipAddress('ip')->nullable();

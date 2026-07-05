@@ -19,10 +19,10 @@ return new class extends Migration
             $table->smallInteger('platform')->index();
             $table->smallInteger('order')->nullable();
             $table->string('icon')->nullable();
-            $table->boolean('active')->nullable()->index();
+            $table->boolean('active')->default(true);
             $table->datetimes();
-            $table->integer('created_by')->nullable();
-            $table->integer('updated_by')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnUpdate();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnUpdate();
         });
     }
 

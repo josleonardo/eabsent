@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('role_menu', function (Blueprint $table) {
             $table->foreignId('role_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('menu_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->boolean('active')->nullable()->index();
+            $table->boolean('active')->default(true);
             $table->datetimes();
-            $table->integer('created_by')->nullable();
-            $table->integer('updated_by')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnUpdate();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnUpdate();
 
             $table->primary(['role_id', 'menu_id']);
         });

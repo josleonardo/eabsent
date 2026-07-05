@@ -13,20 +13,19 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->foreignId('user_id')->constrained()->cascadeOnUpdate();
             $table->date('date');
             $table->time('sched_in')->nullable();
             $table->time('sched_out')->nullable();
             $table->time('actual_in')->nullable();
             $table->time('actual_out')->nullable();
-            $table->smallInteger('status')->default(0);
-            $table->boolean('active')->nullable()->index();
+            $table->smallInteger('status')->default(0)->index();
+            $table->boolean('active')->default(true);
             $table->datetimes();
-            $table->integer('created_by')->nullable();
-            $table->integer('updated_by')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnUpdate();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnUpdate();
 
             $table->unique(['user_id', 'date']); // ensure only one attendance per day per user
-            $table->index(['user_id', 'date', 'status']); // index for faster queries on user_id, date, and status
         });
     }
 
