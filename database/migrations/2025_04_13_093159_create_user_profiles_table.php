@@ -17,17 +17,16 @@ return new class extends Migration
             $table->unsignedBigInteger('nuptk')->unique()->nullable();
             $table->string('first_name');
             $table->string('last_name')->nullable();
-            $table->foreignId('school_id')->nullable()->constrained('school_locations')->nullOnDelete()->cascadeOnUpdate();
             $table->string('position')->nullable();
             $table->string('address')->nullable();
             $table->string('phone_number')->nullable();
             $table->date('employment_start')->nullable();
             $table->date('employment_end')->nullable();
             $table->string('avatar')->nullable();
-            $table->boolean('active')->nullable();
+            $table->boolean('active')->default(true);
             $table->datetimes();
-            $table->integer('created_by')->nullable();
-            $table->integer('updated_by')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnUpdate();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnUpdate();
         });
     }
 

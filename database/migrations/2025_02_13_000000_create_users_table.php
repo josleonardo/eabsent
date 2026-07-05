@@ -16,12 +16,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('username')->unique()->nullable();
             $table->string('password');
+            $table->foreignId('school_location_id')->nullable();
+            $table->foreignId('schedule_group_id')->nullable();
             $table->string('language')->default('en');
             $table->rememberToken();
-            $table->boolean('active')->nullable();
+            $table->boolean('active')->default(true);
             $table->datetimes();
-            $table->integer('created_by')->nullable();
-            $table->integer('updated_by')->nullable();
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('updated_by')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
