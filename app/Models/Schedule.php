@@ -18,7 +18,6 @@ class Schedule extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'group',
         'day_of_week',
         'check_in_time',
         'check_out_time',
@@ -29,9 +28,9 @@ class Schedule extends Model
         'updated_by',
     ];
 
-    public function users(): BelongsToMany
+    public function scheduleGroups(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'user_schedule', 'schedule_id', 'user_id')
+        return $this->belongsToMany(ScheduleGroup::class, 'group_schedule', 'schedule_id', 'schedule_group_id')
             ->withTimestamps()
             ->withPivot('active', 'created_by', 'updated_by');
     }

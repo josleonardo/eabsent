@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\ActivityLogTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -21,6 +22,8 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'school_location_id',
+        'schedule_group_id',
         'language',
         'active',
         'created_at',
@@ -72,12 +75,15 @@ class User extends Authenticatable
             ->withTimestamps()
             ->withPivot('active', 'created_by', 'updated_by');
     }
-
-    public function schedules(): BelongsToMany
+    
+    public function schoolLocation(): BelongsTo
     {
-        return $this->belongsToMany(Schedule::class, 'user_schedule', 'user_id', 'schedule_id')
-            ->withTimestamps()
-            ->withPivot('active', 'created_by', 'updated_by');
+        return $this->belongsTo(SchoolLocation::class, 'school_location_id', 'id');
+    }
+
+    public function scheduleGroup(): BelongsTo
+    {
+        return $this->belongsTo(ScheduleGroup::class, 'schedule_group_id', 'id');
     }
 
     public function getFullNameAttribute()
