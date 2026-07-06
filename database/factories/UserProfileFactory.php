@@ -22,7 +22,6 @@ class UserProfileFactory extends Factory
             'nuptk' => fake()->boolean(50) ? fake()->unique()->numerify('################') : null,
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
-            'school_id' => null,
             'position' => fake()->jobTitle(),
             'address' => fake()->address(),
             'phone_number' => fake()->phoneNumber(),

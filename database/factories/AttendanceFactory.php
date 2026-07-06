@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\ScheduleGroup;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,18 +18,24 @@ class AttendanceFactory extends Factory
      */
     public function definition(): array
     {
-        $user = User::inRandomOrder()->first();
         $date = fake()->dateTimeBetween('-10 days', 'now')->format('Y-m-d');
+        $dayOfWeek = (int) date('w', strtotime($date));
 
-        $dayOfWeek = date('w', strtotime($date));  // 0 = Sunday, 6 = Saturday
-
-        // Find the user's schedule for this day
-        $schedule = $user->schedules
-            ->where('day_of_week', $dayOfWeek)
+        $user = User::query()
+            ->whereNotNull('schedule_group_id')
+            ->inRandomOrder()
             ->first();
 
-        if (! $schedule) {
-            // If no schedule, skip by returning null times and marking as holiday
+        if (! $user) {
+            $scheduleGroup = ScheduleGroup::factory()->create();
+            $user = User::factory()->create([
+                'schedule_group_id' => $scheduleGroup->id,
+            ]);
+        }
+
+        $scheduleGroup = $user->scheduleGroup;
+
+        if (! $scheduleGroup) {
             return [
                 'user_id' => $user->id,
                 'date' => $date,
@@ -36,7 +43,27 @@ class AttendanceFactory extends Factory
                 'sched_out' => null,
                 'actual_in' => null,
                 'actual_out' => null,
-                'status' => 5, // 5 = holiday
+                'status' => 5,
+                'active' => true,
+                'created_by' => 1,
+                'updated_by' => 1,
+            ];
+        }
+
+        $schedule = $scheduleGroup->schedules()
+            ->where('day_of_week', $dayOfWeek)
+            ->wherePivot('active', true)
+            ->first();
+
+        if (! $schedule) {
+            return [
+                'user_id' => $user->id,
+                'date' => $date,
+                'sched_in' => null,
+                'sched_out' => null,
+                'actual_in' => null,
+                'actual_out' => null,
+                'status' => 5,
                 'active' => true,
                 'created_by' => 1,
                 'updated_by' => 1,
@@ -56,7 +83,7 @@ class AttendanceFactory extends Factory
 
         $status = $actualIn
             ? ($actualIn->format('H:i:s') > $schedIn ? 2 : 1)
-            : 0; // 0 = absent, 1 = present, 2 = late
+            : 0;
 
         return [
             'user_id' => $user->id,

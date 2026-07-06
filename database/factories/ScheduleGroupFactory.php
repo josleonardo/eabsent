@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Schedule>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ScheduleGroup>
  */
-class ScheduleFactory extends Factory
+class ScheduleGroupFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,9 +17,7 @@ class ScheduleFactory extends Factory
     public function definition(): array
     {
         return [
-            'day_of_week' => fake()->numberBetween(0, 6),
-            'check_in_time' => fake()->time('H:i:s', '08:00:00'),
-            'check_out_time' => fake()->time('H:i:s', '23:59:59'),
+            'name' => fake()->unique()->word(),
             'active' => fake()->boolean(90),
             'created_at' => now(),
             'updated_at' => now(),

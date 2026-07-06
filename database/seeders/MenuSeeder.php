@@ -156,8 +156,8 @@ class MenuSeeder extends Seeder
             ],
             [
                 'menu_group' => 10,
-                'name' => 'user schedule',
-                'url' => '/admin/user-schedule',
+                'name' => 'schedule group',
+                'url' => '/admin/schedule-group',
                 'order' => 9,
             ],
             [

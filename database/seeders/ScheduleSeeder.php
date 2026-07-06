@@ -12,9 +12,9 @@ class ScheduleSeeder extends Seeder
      */
     public function run(): void
     {
-        $groups = [
-            '1' => '15:00:00',
-            '2' => '16:00:00',
+        $checkOuts = [
+            '15:00:00',
+            '16:00:00',
         ];
 
         $schedules = [
@@ -25,13 +25,12 @@ class ScheduleSeeder extends Seeder
             ['day_of_week' => 5],
         ];
 
-        foreach ($groups as $group => $checkOutTime) {
+        foreach ($checkOuts as $checkOut) {
             foreach ($schedules as $schedule) {
                 Schedule::factory()->create([
-                    'group' => $group,
                     'day_of_week' => $schedule['day_of_week'],
                     'check_in_time' => '06:45:00',
-                    'check_out_time' => $checkOutTime,
+                    'check_out_time' => $checkOut,
                     'active' => true,
                 ]);
             }

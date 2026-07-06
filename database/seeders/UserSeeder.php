@@ -27,7 +27,8 @@ class UserSeeder extends Seeder
                 'nik' => 1111111111111111,
                 'first_name' => 'Super',
                 'last_name' => 'Admin',
-                'school_id' => 1,
+                'school_location_id' => 1,
+                'schedule_group_id' => 2,
                 'position' => 'Super Admin',
                 'role_id' => 1,
                 'level_id' => 1,
@@ -39,7 +40,8 @@ class UserSeeder extends Seeder
                 'nik' => 2222222222222222,
                 'first_name' => 'Admin',
                 'last_name' => null,
-                'school_id' => 2,
+                'school_location_id' => 2,
+                'schedule_group_id' => 2,
                 'position' => 'Admin',
                 'role_id' => 2,
                 'level_id' => 1,
@@ -50,11 +52,11 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'first_name' => 'Kepsek',
                 'last_name' => 'SD',
-                'school_id' => 1,
+                'school_location_id' => 1,
+                'schedule_group_id' => 1,
                 'position' => 'Kepala Sekolah',
                 'role_id' => 3,
                 'level_id' => 3,
-                'schedule_group' => 1,
             ],
             [
                 'username' => 'kepsek2',
@@ -62,11 +64,11 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'first_name' => 'Kepsek',
                 'last_name' => 'SMP',
-                'school_id' => 1,
+                'school_location_id' => 1,
+                'schedule_group_id' => 1,
                 'position' => 'Kepala Sekolah',
                 'role_id' => 3,
                 'level_id' => 4,
-                'schedule_group' => 1,
             ],
             [
                 'username' => 'kepsek3',
@@ -74,11 +76,11 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'first_name' => 'Kepsek',
                 'last_name' => 'SMA',
-                'school_id' => 2,
+                'school_location_id' => 2,
+                'schedule_group_id' => 2,
                 'position' => 'Kepala Sekolah',
                 'role_id' => 3,
                 'level_id' => 5,
-                'schedule_group' => 2,
             ],
             [
                 'username' => 'guru1',
@@ -86,11 +88,11 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'first_name' => 'Guru',
                 'last_name' => 'SD',
-                'school_id' => 1,
+                'school_location_id' => 1,
+                'schedule_group_id' => 1,
                 'position' => 'Guru',
                 'role_id' => 4,
                 'level_id' => 3,
-                'schedule_group' => 1,
             ],
             [
                 'username' => 'guru2',
@@ -98,11 +100,11 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'first_name' => 'Guru',
                 'last_name' => 'SMP',
-                'school_id' => 1,
+                'school_location_id' => 1,
+                'schedule_group_id' => 1,
                 'position' => 'Guru',
                 'role_id' => 4,
                 'level_id' => 4,
-                'schedule_group' => 1,
             ],
             [
                 'username' => 'guru3',
@@ -110,11 +112,11 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'first_name' => 'Guru 3',
                 'last_name' => 'SMA',
-                'school_id' => 2,
+                'school_location_id' => 2,
+                'schedule_group_id' => 2,
                 'position' => 'Guru',
                 'role_id' => 4,
                 'level_id' => 5,
-                'schedule_group' => 2,
             ],
         ];
 
@@ -126,6 +128,7 @@ class UserSeeder extends Seeder
                     'username' => $userCred['username'],
                     'email' => $userCred['email'],
                     'password' => $userCred['password'],
+                    'school_location_id' => $userCred['school_location_id'],
                     'active' => true,
                 ]);
                 $user->save();
@@ -135,7 +138,6 @@ class UserSeeder extends Seeder
                     'nuptk' => null,
                     'first_name' => $userCred['first_name'],
                     'last_name' => $userCred['last_name'],
-                    'school_id' => $userCred['school_id'],
                     'position' => $userCred['position'],
                     'address' => null,
                     'phone_number' => null,
@@ -170,20 +172,6 @@ class UserSeeder extends Seeder
                         'created_by' => 1,
                         'updated_by' => 1,
                     ]);
-                }
-
-                if (isset($userCred['schedule_group'])) {
-                    $schedules = Schedule::where('group', $userCred['schedule_group'])->get();
-
-                    if ($schedules) {
-                        foreach ($schedules as $schedule) {
-                            $user->schedules()->attach($schedule->id, [
-                                'active' => true,
-                                'created_by' => 1,
-                                'updated_by' => 1,
-                            ]);
-                        }
-                    }
                 }
             }
 
