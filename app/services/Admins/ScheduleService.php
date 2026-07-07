@@ -24,7 +24,6 @@ class ScheduleService
     public function createSchedule(array $validatedData, int $currentUserId): Schedule
     {
         $schedule = Schedule::create([
-            'group' => $validatedData['group'],
             'day_of_week' => $validatedData['day_of_week'],
             'check_in_time' => $validatedData['check_in_time'],
             'check_out_time' => $validatedData['check_out_time'],
@@ -39,7 +38,6 @@ class ScheduleService
     public function updateSchedule(Schedule $schedule, array $validatedData, int $currentUserId): Schedule
     {
         $schedule->update([
-            'group' => $validatedData['group'],
             'day_of_week' => $validatedData['day_of_week'],
             'check_in_time' => $validatedData['check_in_time'],
             'check_out_time' => $validatedData['check_out_time'],

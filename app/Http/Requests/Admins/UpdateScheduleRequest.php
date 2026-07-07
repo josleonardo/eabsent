@@ -25,7 +25,6 @@ class UpdateScheduleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'group' => 'required|integer|max:20',
             'day_of_week' => 'required|integer|max:7',
             'check_in_time' => 'required|date_format:H:i',
             'check_out_time' => 'required|date_format:H:i',

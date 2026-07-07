@@ -10,9 +10,6 @@
             @csrf
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <x-forms.input-field label="Group" name="group" id="group" type="number" placeholder="1"
-                    :isRequired="true" />
-
                 <div class="w-full">
                     <label for="day_of_week" class="block mb-2 text-sm/6 font-medium text-gray-900 dark:text-white">
                         Day of Week
