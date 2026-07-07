@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Schedule;
-use Database\Factories\ScheduleGroupFactory;
+use App\Models\ScheduleGroup;
 use Illuminate\Database\Seeder;
 
 class ScheduleGroupSeeder extends Seeder
@@ -18,16 +18,19 @@ class ScheduleGroupSeeder extends Seeder
             ['name' => 'Standard 16:00',],
         ];
 
-        $schedules = Schedule::query()->where('active', true)->get();
+        $schedules = Schedule::query()->where('active', true)->orderBy('id')->get();
+        $chunks = $schedules->chunk(5);
 
-        foreach ($scheduleGroups as $groupData) {
-            $group = ScheduleGroupFactory::factory()->create([
+        foreach ($scheduleGroups as $index => $groupData) {
+            $group = ScheduleGroup::factory()->create([
                 'name' => $groupData['name'],
                 'active' => true,
             ]);
 
+            $groupSchedules = $chunks[$index];
+
             $group->schedules()->syncWithoutDetaching(
-                $schedules->pluck('id')->mapWithKeys(fn ($id) => [
+                $groupSchedules->pluck('id')->mapWithKeys(fn ($id) => [
                     $id => [
                         'active' => true,
                         'created_by' => 1,

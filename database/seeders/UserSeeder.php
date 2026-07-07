@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Level;
 use App\Models\Role;
-use App\Models\Schedule;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Database\Seeder;
@@ -20,19 +19,6 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $userCreds = [
-            [
-                'username' => 'super_admin',
-                'email' => 'superadmin@admin.com',
-                'password' => Hash::make('Asdf.123'),
-                'nik' => 1111111111111111,
-                'first_name' => 'Super',
-                'last_name' => 'Admin',
-                'school_location_id' => 1,
-                'schedule_group_id' => 2,
-                'position' => 'Super Admin',
-                'role_id' => 1,
-                'level_id' => 1,
-            ],
             [
                 'username' => 'admin',
                 'email' => 'admin@admin.com',
@@ -129,6 +115,7 @@ class UserSeeder extends Seeder
                     'email' => $userCred['email'],
                     'password' => $userCred['password'],
                     'school_location_id' => $userCred['school_location_id'],
+                    'schedule_group_id' => $userCred['schedule_group_id'],
                     'active' => true,
                 ]);
                 $user->save();

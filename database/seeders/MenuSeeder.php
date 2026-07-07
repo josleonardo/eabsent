@@ -17,37 +17,31 @@ class MenuSeeder extends Seeder
                 'name' => 'attendance',
                 'url' => 'attendance',
                 'order' => 1,
-                'icon' => 'fingerprint_rounded',
             ],
             [
                 'name' => 'history',
                 'url' => 'history',
                 'order' => 2,
-                'icon' => 'list_rounded',
             ],
             [
                 'name' => 'leave',
                 'url' => 'leave',
                 'order' => 3,
-                'icon' => 'flight_takeoff_rounded',
             ],
             [
                 'name' => 'correction',
                 'url' => 'correction',
                 'order' => 4,
-                'icon' => 'edit_note_rounded',
             ],
             [
                 'name' => 'manage approval',
                 'url' => 'manage-approval',
                 'order' => 5,
-                'icon' => 'task_rounded',
             ],
             [
                 'name' => 'change password',
                 'url' => 'change-password',
                 'order' => 6,
-                'icon' => 'lock_reset_rounded',
             ],
         ];
 
@@ -175,7 +169,7 @@ class MenuSeeder extends Seeder
                 'url' => $androidMenu['url'],
                 'platform' => 1,
                 'order' => $androidMenu['order'],
-                'icon' => $androidMenu['icon'],
+                'icon' => null,
                 'active' => true,
             ]);
         }

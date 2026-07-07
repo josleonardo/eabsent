@@ -28,6 +28,8 @@ class UserFactory extends Factory
             'username' => fake()->userName(),
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
+            'school_location_id' => fake()->numberBetween(1, 2),
+            'schedule_group_id' => fake()->numberBetween(1, 2),
             'active' => fake()->boolean(90),
             'created_at' => now(),
             'updated_at' => now(),
@@ -41,6 +43,8 @@ class UserFactory extends Factory
         return $this->afterCreating(function (User $user) {
             UserProfile::factory()->create([
                 'user_id' => $user->id,
+                'school_location_id' => $user->school_location_id,
+                'schedule_group_id' => $user->schedule_group_id,
                 'active' => $user->active,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
