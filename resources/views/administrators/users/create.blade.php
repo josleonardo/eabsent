@@ -56,7 +56,11 @@
 
                     <x-forms.select label="Level" name="level" id="level" :options="$levels" display="name" />
 
-                    <x-forms.select label="Schedule" name="schedule" id="schedule" :options="$schedules" />
+                    <x-forms.select label="School Location" name="school_location_id" id="school_location_id"
+                        :options="$schoolLocations" display="name" />
+
+                    <x-forms.select label="Schedule" name="schedule_group_id" id="schedule_group_id" :options="$scheduleGroups"
+                        display="name" />
 
                     <x-forms.input-field label="Employment Start" name="employment_start" id="employment_start"
                         type="date" :isRequired="true" />

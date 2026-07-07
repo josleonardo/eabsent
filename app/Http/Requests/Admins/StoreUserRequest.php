@@ -45,10 +45,8 @@ class StoreUserRequest extends FormRequest
             'phone_number' => 'nullable|string|max:20',
             'role' => 'nullable|integer|exists:roles,id',
             'level' => 'nullable|integer|exists:levels,id',
-            'schedule' => [
-                'nullable',
-                'regex:/^(\d+(,\d+)*)?$/', // Comma-separated list of integers
-            ],
+            'school_location_id' => 'nullable|integer|exists:school_locations,id',
+            'schedule_group_id' => 'nullable|integer|exists:schedule_groups,id',
             'employment_start' => 'required|date',
             'employment_end' => 'nullable|date',
             'active' => 'required|boolean',

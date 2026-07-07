@@ -9,6 +9,8 @@ use App\Http\Requests\Admins\UpdateUserRequest;
 use App\Models\Level;
 use App\Models\Role;
 use App\Models\Schedule;
+use App\Models\ScheduleGroup;
+use App\Models\SchoolLocation;
 use App\Models\User;
 use App\Services\Admins\UserService;
 use Carbon\Carbon;
@@ -44,26 +46,12 @@ class UserController extends Controller
     {
         $roles = Role::select('id', 'name')->where('active', true)->get();
         $levels = Level::select('id', 'name')->where('active', true)->get();
-
-        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', true)->get();
-        $schedules = $schedules->map(function ($schedule) {
-            // Format the schedule data
-            $schedule->check_in_time = Carbon::parse($schedule->check_in_time)->format('H:i');
-            $schedule->check_out_time = Carbon::parse($schedule->check_out_time)->format('H:i');
-
-            return $schedule;
-        })->groupBy('group')->map(function ($group) {
-            $first = $group->first();
-
-            return [
-                'ids' => $group->pluck('id')->toArray(),
-                'display' => "{$first->check_in_time} - {$first->check_out_time}",
-            ];
-        })->values();
+        $schoolLocations = SchoolLocation::select('id', 'name')->where('active', true)->get();
+        $scheduleGroups = ScheduleGroup::select('id', 'name')->where('active', true)->get();
 
         $activeKey = config('constants.actives');
 
-        return view('administrators.users.create', ['pageName' => 'Add user'] + compact('roles', 'levels', 'schedules', 'activeKey'));
+        return view('administrators.users.create', ['pageName' => 'Add user'] + compact('roles', 'levels', 'schoolLocations', 'scheduleGroups', 'activeKey'));
     }
 
     /**
@@ -90,7 +78,7 @@ class UserController extends Controller
 
             return redirect()->route('user.index')->with('success', 'User created successfully');
         } catch (\Throwable $th) {
-            Log::error('Error creating user: '.$th->getMessage());
+            Log::error('Error creating user: ' . $th->getMessage());
 
             return back()->with('error', 'An error occurred while creating the user.');
         }
@@ -109,9 +97,10 @@ class UserController extends Controller
 
         $roles = Role::select('id', 'name')->where('active', true)->get();
         $levels = Level::select('id', 'name')->where('active', true)->get();
-        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', true)->get();
+        $schoolLocations = SchoolLocation::select('id', 'name')->where('active', true)->get();
+        $scheduleGroups = ScheduleGroup::select('id', 'name')->where('active', true)->get();
 
-        return view('administrators.users.show', ['pageName' => 'User Profile'] + compact('user', 'roles', 'levels', 'schedules'));
+        return view('administrators.users.show', ['pageName' => 'User Profile'] + compact('user', 'roles', 'levels', 'schoolLocations', 'scheduleGroups'));
     }
 
     /**
@@ -122,26 +111,12 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $roles = Role::select('id', 'name')->where('active', true)->get();
         $levels = Level::select('id', 'name')->where('active', true)->get();
-
-        $schedules = Schedule::select('id', 'group', 'check_in_time', 'check_out_time')->where('active', true)->get();
-        $schedules = $schedules->map(function ($schedule) {
-            // Format the schedule data
-            $schedule->check_in_time = Carbon::parse($schedule->check_in_time)->format('H:i');
-            $schedule->check_out_time = Carbon::parse($schedule->check_out_time)->format('H:i');
-
-            return $schedule;
-        })->groupBy('group')->map(function ($group) {
-            $first = $group->first();
-
-            return [
-                'ids' => $group->pluck('id')->toArray(),
-                'display' => "{$first->check_in_time} - {$first->check_out_time}",
-            ];
-        })->values();
+        $schoolLocations = SchoolLocation::select('id', 'name')->where('active', true)->get();
+        $scheduleGroups = ScheduleGroup::select('id', 'name')->where('active', true)->get();
 
         $activeKey = config('constants.actives');
 
-        return view('administrators.users.edit', ['pageName' => 'Edit user'] + compact('user', 'roles', 'levels', 'schedules', 'activeKey'));
+        return view('administrators.users.edit', ['pageName' => 'Edit user'] + compact('user', 'roles', 'levels', 'schoolLocations', 'scheduleGroups', 'activeKey'));
     }
 
     /**
@@ -169,7 +144,7 @@ class UserController extends Controller
 
             return redirect()->route('user.index')->with('success', 'User updated successfully');
         } catch (\Throwable $th) {
-            Log::error('Error updating user: '.$th->getMessage());
+            Log::error('Error updating user: ' . $th->getMessage());
 
             return back()->with('error', 'An error occurred while updating the user.');
         }

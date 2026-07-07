@@ -54,6 +54,8 @@ class UserService
                 'email' => $validatedData['email'],
                 'username' => $validatedData['username'],
                 'password' => Hash::make($validatedData['password']),
+                'school_location_id' => $validatedData['school_location_id'],
+                'schedule_group_id' => $validatedData['schedule_group_id'],
             ], $defaultData));
 
             $user->profile()->create(array_merge([
@@ -82,19 +84,6 @@ class UserService
 
             if (! empty($validatedData['level'])) {
                 $user->levels()->attach($validatedData['level'], $defaultData);
-            }
-
-            $scheduleIds = [];
-            if (! empty($validatedData['schedule'])) {
-                $scheduleIds = explode(',', $validatedData['schedule']);
-
-                // Validate all IDs exist in DB
-                $validIds = Schedule::whereIn('id', $scheduleIds)->pluck('id')->toArray();
-                if (count($validIds) !== count($scheduleIds)) {
-                    throw new \Exception('One or more selected schedules are invalid.');
-                }
-
-                $user->schedules()->attach($scheduleIds, $defaultData);
             }
 
             return $user;
@@ -129,6 +118,8 @@ class UserService
             $user->update(array_merge([
                 'email' => $validatedData['email'],
                 'username' => $validatedData['username'],
+                'school_location_id' => $validatedData['school_location_id'],
+                'schedule_group_id' => $validatedData['schedule_group_id'],
             ], $defaultData));
 
             $user->profile()->update(array_merge([
@@ -154,21 +145,6 @@ class UserService
                 $user->levels()->syncWithPivotValues([$validatedData['level']], $defaultSync);
             } else {
                 $user->levels()->detach();
-            }
-
-            $scheduleIds = [];
-            if (! empty($validatedData['schedule'])) {
-                $scheduleIds = explode(',', $validatedData['schedule']);
-
-                // Validate all IDs exist in DB
-                $validIds = Schedule::whereIn('id', $scheduleIds)->pluck('id')->toArray();
-                if (count($validIds) !== count($scheduleIds)) {
-                    return back()->withErrors(['schedule' => 'One or more selected schedules are invalid.']);
-                }
-
-                $user->schedules()->syncWithPivotValues($scheduleIds, $defaultSync);
-            } else {
-                $user->schedules()->detach();
             }
 
             return $user;
