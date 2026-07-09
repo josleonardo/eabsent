@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ScheduleGroup extends Model
 {
     use ActivityLogTrait, HasFactory;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -36,5 +36,10 @@ class ScheduleGroup extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'schedule_group_id', 'id');
+    }
+
+    public function getScheduleIdsAttribute(): array
+    {
+        return $this->schedules->pluck('id')->toArray();
     }
 }

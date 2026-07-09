@@ -6,11 +6,11 @@ use App\Http\Controllers\Admins\MenuController;
 use App\Http\Controllers\Admins\RoleController;
 use App\Http\Controllers\Admins\RoleMenuController;
 use App\Http\Controllers\Admins\ScheduleController;
+use App\Http\Controllers\Admins\ScheduleGroupController;
 use App\Http\Controllers\Admins\SchoolLocationController;
 use App\Http\Controllers\Admins\UserController;
 use App\Http\Controllers\Admins\UserLevelController;
 use App\Http\Controllers\Admins\UserRoleController;
-use App\Http\Controllers\Admins\UserScheduleController;
 use App\Http\Controllers\Approvals\ApprovalController;
 use App\Http\Controllers\Approvals\CorrectionController;
 use App\Http\Controllers\Approvals\LeaveController;
@@ -126,22 +126,13 @@ Route::middleware('auth')->group(function () {
             ->except(['show', 'destroy']);
         Route::resource('/admin/school-location', SchoolLocationController::class)
             ->except(['show', 'destroy']);
+        Route::resource('/admin/schedule-group', ScheduleGroupController::class)
+            ->except(['show', 'destroy']);
 
         Route::resource('/admin/user-role', UserRoleController::class)
             ->only(['index', 'edit', 'update']);
         Route::resource('/admin/user-level', UserLevelController::class)
             ->only(['index', 'edit', 'update']);
-
-        Route::get('/admin/user-schedule', [UserScheduleController::class, 'index'])
-            ->name('user-schedule.index');
-        Route::post('/admin/user-schedule', [UserScheduleController::class, 'store'])
-            ->name('user-schedule.store');
-        Route::get('/admin/user-schedule/create', [UserScheduleController::class, 'create'])
-            ->name('user-schedule.create');
-        Route::get('/admin/user-schedule/{user}/{schedule}/edit', [UserScheduleController::class, 'edit'])
-            ->name('user-schedule.edit');
-        Route::put('/admin/user-schedule/{user}/{schedule}', [UserScheduleController::class, 'update'])
-            ->name('user-schedule.update');
 
         Route::get('/admin/role-menu', [RoleMenuController::class, 'index'])
             ->name('role-menu.index');
