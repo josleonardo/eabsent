@@ -32,6 +32,8 @@ class UserExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMa
         return [
             'Email',
             'Username',
+            'School Location',
+            'Schedule Group',
             'Active',
             'Created At',
             'Created By',
@@ -44,10 +46,16 @@ class UserExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMa
     {
         $yesNoKey = config('constants.yes_no');
         $user->active = $yesNoKey[$user->active] ? __($yesNoKey[$user->active]) : __('Unknown');
+        $user->school_location_name = $user->schoolLocation->name ?? __('Unknown');
+        $user->schedule_group_name = $user->scheduleGroup->name ?? __('Unknown');
+        $user->created_by = $user->full_name ?? __('Unknown');
+        $user->updated_by = $user->full_name ?? __('Unknown');
 
         return [
             $user->email,
             $user->username,
+            $user->school_location_name,
+            $user->schedule_group_name,
             $user->active,
             $user->created_at,
             $user->created_by,

@@ -47,6 +47,7 @@ class AttendanceExport implements FromCollection, ShouldAutoSize, WithHeadings, 
     {
         $statusKey = config('constants.attendance_status');
         $attendance->status = $statusKey[$attendance->status] ? __($statusKey[$attendance->status]['status']) : __('Unknown');
+        $attendance->updated_by = $attendance->users->full_name ?? __('Unknown');
 
         return [
             $attendance->users->full_name,

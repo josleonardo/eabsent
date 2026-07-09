@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
         $userCreds = [
             [
                 'username' => 'admin',
-                'email' => 'admin@admin.com',
+                'email' => 'admin@school.com',
                 'password' => Hash::make('Asdf.123'),
                 'nik' => 2222222222222222,
                 'first_name' => 'Admin',
@@ -34,7 +34,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'username' => 'kepsek1',
-                'email' => 'kepsek1@sekolah.com',
+                'email' => 'kepsek1@school.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'Kepsek',
                 'last_name' => 'SD',
@@ -46,7 +46,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'username' => 'kepsek2',
-                'email' => 'kepsek2@sekolah.com',
+                'email' => 'kepsek2@school.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'Kepsek',
                 'last_name' => 'SMP',
@@ -58,7 +58,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'username' => 'kepsek3',
-                'email' => 'kepsek3@sekolah.com',
+                'email' => 'kepsek3@school.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'Kepsek',
                 'last_name' => 'SMA',
@@ -70,7 +70,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'username' => 'guru1',
-                'email' => 'guru1@sekolah.com',
+                'email' => 'guru1@school.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'Guru',
                 'last_name' => 'SD',
@@ -82,7 +82,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'username' => 'guru2',
-                'email' => 'guru2@sekolah.com',
+                'email' => 'guru2@school.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'Guru',
                 'last_name' => 'SMP',
@@ -94,7 +94,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'username' => 'guru3',
-                'email' => 'guru3@sekolah.com',
+                'email' => 'guru3@school.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'Guru 3',
                 'last_name' => 'SMA',
