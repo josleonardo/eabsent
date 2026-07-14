@@ -160,6 +160,12 @@ class MenuSeeder extends Seeder
                 'url' => '/admin/role-menu',
                 'order' => 10,
             ],
+            [
+                'menu_group' => 10,
+                'name' => 'leave type',
+                'url' => '/admin/leave-type',
+                'order' => 11,
+            ],
         ];
 
         foreach ($androidMenus as $androidMenu) {

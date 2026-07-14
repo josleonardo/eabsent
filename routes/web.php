@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admins\AdminController;
+use App\Http\Controllers\Admins\LeaveTypeController;
 use App\Http\Controllers\Admins\LevelController;
 use App\Http\Controllers\Admins\MenuController;
 use App\Http\Controllers\Admins\RoleController;
@@ -127,6 +128,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('/admin/school-location', SchoolLocationController::class)
             ->except(['show', 'destroy']);
         Route::resource('/admin/schedule-group', ScheduleGroupController::class)
+            ->except(['show', 'destroy']);
+        Route::resource('/admin/leave-type', LeaveTypeController::class)
             ->except(['show', 'destroy']);
 
         Route::resource('/admin/user-role', UserRoleController::class)
