@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            SuperAdminSeeder::class,
             MenuSeeder::class,
             RoleSeeder::class,
             LevelSeeder::class,
@@ -19,8 +20,10 @@ class DatabaseSeeder extends Seeder
             SchoolLocationSeeder::class,
             ScheduleSeeder::class,
             ScheduleGroupSeeder::class,
+            UpdateSuperAdminSeeder::class,
             UserSeeder::class,
             AttendanceSeeder::class,
+            LeaveTypeSeeder::class,
             LeaveSeeder::class,
             CorrectionSeeder::class,
         ]);

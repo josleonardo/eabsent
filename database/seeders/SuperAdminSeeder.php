@@ -36,7 +36,7 @@ class SuperAdminSeeder extends Seeder
                 'user_id' => $user->id,
                 'first_name' => 'Super',
                 'last_name' => 'Admin',
-                'nik' => 1111111111111111,
+                'nik' => null,
                 'nuptk' => null,
                 'address' => null,
                 'phone_number' => null,

@@ -56,16 +56,28 @@ return [
 
     'approve_status' => [
         0 => [
-            'status' => 'global.approve.rejected',
-            'color' => 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800',
+            'status' => 'global.approve.pending',
+            'color' => 'bg-yellow-300 hover:bg-yellow-400 dark:bg-yellow-900 dark:hover:bg-yellow-800',
         ],
         1 => [
             'status' => 'global.approve.approved',
             'color' => null,
         ],
         2 => [
+            'status' => 'global.approve.rejected',
+            'color' => 'bg-red-300 hover:bg-red-400 dark:bg-red-900 dark:hover:bg-red-800',
+        ],
+        3 => [
+            'status' => 'global.approve.canceled',
+            'color' => 'bg-gray-300 hover:bg-gray-400 dark:bg-gray-900 dark:hover:bg-gray-800',
+        ],
+        4 => [
             'status' => 'global.approve.revoked',
             'color' => 'bg-white hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800',
+        ],
+        5 => [
+            'status' => 'Unknown',
+            'color' => null,
         ],
     ],
 

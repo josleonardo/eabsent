@@ -26,8 +26,10 @@ return [
     ],
 
     'approve' => [
+        'pending' => 'Pending',
         'approved' => 'Approved',
         'rejected' => 'Rejected',
+        'canceled' => 'Canceled',
         'revoked' => 'Revoked',
     ],
 

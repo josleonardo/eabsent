@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
                 'username' => 'admin',
                 'email' => 'admin@school.com',
                 'password' => Hash::make('Asdf.123'),
-                'nik' => 2222222222222222,
+                'nik' => null,
                 'first_name' => 'Admin',
                 'last_name' => null,
                 'school_location_id' => 2,
