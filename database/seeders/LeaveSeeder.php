@@ -33,9 +33,9 @@ class LeaveSeeder extends Seeder
                 $leaveDates[] = [$start, $end];
 
                 Leave::factory()->create([
+                    'user_id' => $user->id,
                     'start_date' => $start->format('Y-m-d'),
                     'end_date' => $end->format('Y-m-d'),
-                    'created_at' => $start,
                     'created_by' => $user->id,
                 ]);
             }

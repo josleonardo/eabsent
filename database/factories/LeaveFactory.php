@@ -17,13 +17,14 @@ class LeaveFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => fake()->numberBetween(3, 7),
+            'leave_type_id' => fake()->numberBetween(1, 4),
             'start_date' => fake()->dateTimeBetween('-10 days', 'now')->format('Y-m-d'),
             'end_date' => fake()->dateTimeBetween('now', '+2 days')->format('Y-m-d'),
-            'reason' => fake()->sentence(3),
-            'status' => null,
+            'description' => fake()->boolean() ? fake()->sentence(3) : null,
+            'status' => fake()->numberBetween(0, 5),
             'processed_at' => null,
             'processed_by' => null,
-            'active' => true,
             'created_at' => now(),
             'updated_at' => now(),
             'created_by' => fake()->numberBetween(2, 7),

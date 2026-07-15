@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnUpdate();
+            $table->foreignId('leave_type_id')->constrained()->cascadeOnUpdate();
             $table->date('start_date');
             $table->date('end_date');
-            $table->text('reason');
+            $table->text('description')->nullable();
             $table->smallInteger('status')->default(0)->index();
             $table->dateTime('processed_at')->nullable();
             $table->foreignId('processed_by')->nullable()->constrained('users')->cascadeOnUpdate();
