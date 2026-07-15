@@ -5,7 +5,7 @@ namespace App\Http\Requests\Approvals;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class RevokeLeaveRequest extends FormRequest
+class UpdateLeaveStatusRequest extends FormRequest
 {
     protected string $menuName = 'leave';
 
@@ -25,7 +25,7 @@ class RevokeLeaveRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'action' => 'required|in:revoke',
+            'action' => 'required|in:approve,reject',
         ];
     }
 }
