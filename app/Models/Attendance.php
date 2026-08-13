@@ -43,6 +43,14 @@ class Attendance extends Model
         return $this->hasMany(AttendanceHistory::class, 'attendance_id', 'id');
     }
 
+    /**
+     * Relationship to the attendance corrections.
+     */
+    public function corrections(): HasMany
+    {
+        return $this->hasMany(Correction::class, 'attendance_id', 'id');
+    }
+
     public function getDayNameAttribute()
     {
         return isset($this->date) ? Carbon::parse($this->date)->format('l') : null;

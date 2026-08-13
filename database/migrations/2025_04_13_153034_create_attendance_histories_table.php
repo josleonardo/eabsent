@@ -14,13 +14,11 @@ return new class extends Migration
         Schema::create('attendance_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('attendance_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('user_id')->constrained()->cascadeOnUpdate();
-            $table->date('date');
             $table->time('actual_in')->nullable();
             $table->time('actual_out')->nullable();
             $table->smallInteger('status')->default(0)->index();
-            $table->string('source');
-            $table->integer('source_id')->nullable();
+            $table->string('change_source');
+            $table->integer('reference_id')->nullable();
             $table->text('change_reason')->nullable();
             $table->dateTime('changed_at')->nullable();
             $table->foreignId('changed_by')->constrained('users')->cascadeOnUpdate();

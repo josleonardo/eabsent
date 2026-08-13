@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('corrections', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->time('actual_in')->nullable();
-            $table->time('actual_out')->nullable();
-            $table->text('reason');
+            $table->foreignId('attendance_id')->constrained()->cascadeOnUpdate();
+            $table->time('correct_in')->nullable();
+            $table->time('correct_out')->nullable();
+            $table->smallInteger('correct_status')->nullable();
+            $table->text('description');
             $table->smallInteger('status')->default(0)->index();
             $table->dateTime('processed_at')->nullable();
             $table->foreignId('processed_by')->nullable()->constrained('users')->cascadeOnUpdate();
@@ -24,7 +25,7 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnUpdate();
 
-            $table->index(['date', 'status']);
+            $table->index(['attendance_id', 'status']);
         });
     }
 
