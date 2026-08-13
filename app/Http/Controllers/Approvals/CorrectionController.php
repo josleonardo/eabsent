@@ -19,49 +19,82 @@ class CorrectionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, CorrectionService $correctionService)
-    {
-        $user = $request->user();
-        $activeTab = $request->query('tab', 'pending'); // default to 'pending'
+    public function index(
+        Request $request,
+        CorrectionService $correctionService
+    ) {
+        $pendings = $correctionService->getPending($request->user());
 
-        $pendings = $activeTab === 'pending'
-            ? $correctionService->getPending($user)
-            : collect();
-
-        return view('approvals.corrections.index', ['pageName' => 'Correction Requests'] + compact('pendings', 'activeTab'));
+        return view('approvals.corrections.index', ['pageName' => 'Pending Correction Requests'] + compact('pendings'));
     }
 
-    public function history(Request $request, CorrectionService $correctionService)
-    {
-        $user = $request->user();
-        $histories = $correctionService->getHistory($user);
+    public function history(
+        Request $request,
+        CorrectionService $correctionService
+    ) {
+        $histories = $correctionService->getHistory($request->user());
 
-        $statusKey = config('constants.approve_status');
-
-        return view('approvals.corrections.history', ['pageName' => 'Correction History'] + compact('histories', 'statusKey'));
+        return view('approvals.corrections.history', ['pageName' => 'Correction History'] + compact('histories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCorrectionRequest $request, Correction $correction, CorrectionService $correctionService)
-    {
-        if (! $correction) {
-            return redirect()->back()->with('error', 'No correction request found.');
-        }
-
-        $validatedData = $request->validated();
-
+    public function update(
+        UpdateCorrectionRequest $request,
+        Correction $correction,
+        CorrectionService $correctionService
+    ) {
         try {
-            $currentUserId = $request->user()->id;
+            $correctionService->updateCorrection(
+                $correction,
+                $request->validated()['action'],
+                $request->user()->id
+            );
 
-            $correctionService->updateCorrection($correction, $validatedData, $currentUserId);
-
-            return redirect()->back()->with('success', 'Correction request updated successfully.');
+            return back()->with('success', 'Correction request updated successfully.');
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
         } catch (\Throwable $th) {
-            Log::error($th);
+            Log::error(
+                'Error updating correction request: ' . $th->getMessage(),
+                ['exception' => $th]
+            );
 
-            return redirect()->back()->with('error', 'An error occurred while updating the correction request.');
+            return back()->with(
+                'error',
+                'An unexpected error occurred while updating the correction request.'
+            );
+        }
+    }
+
+    /**
+     * Revoke a correction request.
+     */
+    public function revoke(
+        Request $request,
+        Correction $correction,
+        CorrectionService $correctionService
+    ) {
+        try {
+            $correctionService->revokeCorrection(
+                $correction,
+                $request->user()->id
+            );
+
+            return back()->with('success', 'Correction request revoked successfully.');
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        } catch (\Throwable $th) {
+            Log::error(
+                'Error revoking correction request: ' . $th->getMessage(),
+                ['exception' => $th]
+            );
+
+            return back()->with(
+                'error',
+                'An unexpected error occurred while revoking the correction request.'
+            );
         }
     }
 
@@ -85,8 +118,8 @@ class CorrectionController extends Controller
         $zipPath = storage_path('app/private/exports/corrections.zip');
         $zip = new ZipArchive;
         if ($zip->open($zipPath, ZipArchive::CREATE) === true) {
-            $zip->addFile(storage_path('app/private/'.$pendingPath), 'correction_pending.csv');
-            $zip->addFile(storage_path('app/private/'.$historyPath), 'correction_history.csv');
+            $zip->addFile(storage_path('app/private/' . $pendingPath), 'correction_pending.csv');
+            $zip->addFile(storage_path('app/private/' . $historyPath), 'correction_history.csv');
             $zip->close();
         } else {
             return back()->with('error', 'Could not create zip file.');
