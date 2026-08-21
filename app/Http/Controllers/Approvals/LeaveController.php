@@ -54,13 +54,13 @@ class LeaveController extends Controller
             return back()->with('error', $e->getMessage());
         } catch (\Throwable $th) {
             Log::error(
-                'Error revoking leave request: ' . $th->getMessage(),
+                'Error updating leave request: ' . $th->getMessage(),
                 ['exception' => $th]
             );
 
             return back()->with(
                 'error',
-                'An unexpected error occurred while revoking the leave request.'
+                'An unexpected error occurred while updating the leave request.'
             );
         }
     }

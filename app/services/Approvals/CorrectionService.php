@@ -52,6 +52,7 @@ class CorrectionService
             ->with([
                 'attendance:id,user_id,date,actual_in,actual_out,status',
                 'attendance.users.profile:user_id,first_name,last_name',
+                'attendance.users.levels:id,name',
                 'requester.profile:user_id,first_name,last_name',
             ]);
 
@@ -82,6 +83,7 @@ class CorrectionService
         $query = Correction::with([
             'attendance:id,user_id,date',
             'attendance.users.profile:user_id,first_name,last_name',
+            'attendance.users.levels:id,name',
             'processer.profile:user_id,first_name,last_name',
             'requester.profile:user_id,first_name,last_name',
             'updater.profile:user_id,first_name,last_name',

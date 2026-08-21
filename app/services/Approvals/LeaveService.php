@@ -13,8 +13,15 @@ use Illuminate\Support\Facades\DB;
 
 class LeaveService
 {
-    private function roleLevelFilters(Builder $query, string $role, string $level): Builder
-    {
+    public function __construct(
+        private AttendanceService $attendanceService
+    ) {}
+
+    private function roleLevelFilters(
+        Builder $query,
+        string $role,
+        string $level
+    ): Builder {
         if (in_array($role, [Role::ROLE_SUPERADMIN, Role::ROLE_ADMIN])) {
             if ($level == Level::LEVEL_ADMIN) {
                 return $query;
@@ -45,7 +52,6 @@ class LeaveService
             ->with([
                 'user.profile:user_id,first_name,last_name',
                 'user.levels:id,name',
-                'user.roles:id,name',
                 'files:user_id,fileable_id,fileable_type,path,filename,original_name,mime_type,size,category',
                 'requester.profile:user_id,first_name,last_name',
             ]);
@@ -53,8 +59,10 @@ class LeaveService
         return $this->roleLevelFilters($query, $role, $level)->where('status', 0);
     }
 
-    public function getPending(User $user, ?int $perPage = null): LengthAwarePaginator
-    {
+    public function getPending(
+        User $user,
+        ?int $perPage = null
+    ): LengthAwarePaginator {
         return $this->queryPending($user)
             ->latest()
             ->paginate($perPage ?? config('constants.default_per_page'));
@@ -75,9 +83,8 @@ class LeaveService
         $query = Leave::with([
             'user.profile:user_id,first_name,last_name',
             'user.levels:id,name',
-            'user.roles:id,name',
-            'processer.profile:user_id,first_name,last_name',
             'files:user_id,fileable_id,fileable_type,path,filename,original_name,mime_type,size,category',
+            'processer.profile:user_id,first_name,last_name',
             'requester.profile:user_id,first_name,last_name',
             'updater.profile:user_id,first_name,last_name',
         ]);
@@ -85,8 +92,10 @@ class LeaveService
         return $this->roleLevelFilters($query, $role, $level)->whereNot('status', 0);
     }
 
-    public function getHistory(User $user, ?int $perPage = null): LengthAwarePaginator
-    {
+    public function getHistory(
+        User $user,
+        ?int $perPage = null
+    ): LengthAwarePaginator {
         return $this->queryHistory($user)
             ->latest('processed_at')
             ->paginate($perPage ?? config('constants.default_per_page'));
@@ -102,13 +111,24 @@ class LeaveService
     /**
      * Update leave request status and mark attendance as on leave if approved.
      */
-    public function updateLeave(Leave $leave, string $action, int $currentUserId): Leave
-    {
+    public function updateLeave(
+        Leave $leave,
+        string $action,
+        int $currentUserId
+    ): Leave {
         $status = Leave::ACTION_STATUS_MAP[$action]
             ?? throw new \InvalidArgumentException('Invalid action.');
 
         return DB::transaction(function () use ($leave, $status, $currentUserId) {
-            $attendanceService = app(AttendanceService::class);
+            if ($status == Leave::STATUS_APPROVED) {
+                $this->attendanceService->markOnLeave(
+                    $leave->user_id,
+                    $leave->start_date,
+                    $leave->end_date,
+                    $leave->id,
+                    $currentUserId
+                );
+            }
 
             $updated = Leave::whereKey($leave->id)
                 ->where('status', Leave::STATUS_PENDING)
@@ -123,10 +143,6 @@ class LeaveService
                 throw new \RuntimeException('Leave request has already been processed.');
             }
 
-            if ($status == Leave::STATUS_APPROVED) {
-                $attendanceService->markOnLeave($leave->user_id, $leave->start_date, $leave->end_date, $leave->id, $currentUserId);
-            }
-
             return $leave->refresh();
         });
     }
@@ -134,31 +150,35 @@ class LeaveService
     /**
      * Revoke leave request and update attendance accordingly.
      */
-    public function revokeLeave(Leave $leave, int $currentUserId): Leave
-    {
-        if ($leave->status !== Leave::STATUS_APPROVED) {
-            throw new \RuntimeException('Only approved leaves can be revoked.');
-        }
-
-        if (! $leave->canBeRevoked()) {
-            throw new \RuntimeException('The revocation period has expired.');
-        }
-
+    public function revokeLeave(
+        Leave $leave,
+        int $currentUserId
+    ): Leave {
         return DB::transaction(function () use ($leave, $currentUserId) {
-            $attendanceService = app(AttendanceService::class);
+            $leave = Leave::whereKey($leave->id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-            $revoked = Leave::whereKey($leave->id)
-                ->where('status', Leave::STATUS_APPROVED)
-                ->update([
-                    'status' => Leave::STATUS_REVOKED,
-                    'updated_by' => $currentUserId,
-                ]);
-
-            if (! $revoked) {
-                throw new \RuntimeException('Leave request has already been processed.');
+            if ($leave->status !== Leave::STATUS_APPROVED) {
+                throw new \RuntimeException('Only approved leaves can be revoked.');
             }
 
-            $attendanceService->revokeOnLeave($leave->user_id, $leave->start_date, $leave->end_date, $leave->id, $currentUserId);
+            if (! $leave->canBeRevoked()) {
+                throw new \RuntimeException('The revocation period has expired.');
+            }
+
+            $this->attendanceService->revokeOnLeave(
+                $leave->user_id,
+                $leave->start_date,
+                $leave->end_date,
+                $leave->id,
+                $currentUserId
+            );
+
+            $leave->update([
+                'status' => Leave::STATUS_REVOKED,
+                'updated_by' => $currentUserId,
+            ]);
 
             return $leave->refresh();
         });

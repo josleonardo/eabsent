@@ -114,23 +114,23 @@ class AttendanceService
             ->get();
 
         foreach ($attendances as $attendance) {
-            $oldData = $attendance->replicate();
+            if ($attendance->status === 3) {
+                continue;
+            }
 
-            $updated = $attendance->update([
+            $this->saveAttendanceHistory(
+                $attendance->id,
+                $attendance,
+                AttendanceHistory::SOURCE_LEAVE,
+                $referenceId,
+                AttendanceHistory::REASON_APPROVED,
+                $currentUserId
+            );
+
+            $attendance->update([
                 'status' => 3,
                 'updated_by' => $currentUserId,
             ]);
-
-            if ($updated) {
-                $this->saveAttendanceHistory(
-                    $attendance->id,
-                    $oldData,
-                    AttendanceHistory::SOURCE_LEAVE,
-                    $referenceId,
-                    AttendanceHistory::REASON_APPROVED,
-                    $currentUserId
-                );
-            }
         }
     }
 
@@ -141,39 +141,41 @@ class AttendanceService
         int $referenceId,
         int $currentUserId
     ): void {
-        $attendances = Attendance::where('user_id', $userId)
+        $leaveHistories = AttendanceHistory::where('user_id', $userId)
             ->whereBetween('date', [$startDate, $endDate])
-            ->where('status', 3)
-            ->with('histories')
+            ->where('change_source', AttendanceHistory::SOURCE_LEAVE)
+            ->where('reference_id', $referenceId)
+            ->where('change_reason', AttendanceHistory::REASON_APPROVED)
             ->get();
 
-        foreach ($attendances as $attendance) {
-            $oldData = $attendance->replicate();
+        foreach ($leaveHistories as $leaveHistory) {
+            $attendance = Attendance::find($leaveHistory->attendance_id);
 
-            $previousHistories = $attendance->histories()
-                ->where('change_source', AttendanceHistory::SOURCE_LEAVE)
-                ->where('reference_id', $referenceId)
-                ->where('change_reason', AttendanceHistory::REASON_APPROVED)
-                ->orderByDesc('changed_at')
-                ->firstOrFail();
+            if (!$attendance) {
+                continue;
+            }
 
-            $previousStatus = $previousHistories->status ?? 1;
+            $hasLaterChange = AttendanceHistory::where('attendance_id', $attendance->id)
+                ->where('changed_at', '>', $leaveHistory->changed_at)
+                ->exists();
 
-            $updated = $attendance->update([
-                'status' => $previousStatus,
+            if ($hasLaterChange) {
+                continue;
+            }
+
+            $this->saveAttendanceHistory(
+                $attendance->id,
+                $attendance,
+                AttendanceHistory::SOURCE_LEAVE,
+                $referenceId,
+                AttendanceHistory::REASON_REVOKED,
+                $currentUserId
+            );
+
+            $attendance->update([
+                'status' => $leaveHistory->status,
                 'updated_by' => $currentUserId,
             ]);
-
-            if ($updated) {
-                $this->saveAttendanceHistory(
-                    $attendance->id,
-                    $oldData,
-                    AttendanceHistory::SOURCE_LEAVE,
-                    $referenceId,
-                    AttendanceHistory::REASON_REVOKED,
-                    $currentUserId
-                );
-            }
         }
     }
 
