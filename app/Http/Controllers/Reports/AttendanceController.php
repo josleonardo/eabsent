@@ -15,8 +15,10 @@ class AttendanceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, AttendanceService $attendanceService)
-    {
+    public function index(
+        Request $request,
+        AttendanceService $attendanceService
+    ) {
         $user = $request->user();
 
         $attendances = $attendanceService->getAttendances($user, 25);
@@ -67,20 +69,31 @@ class AttendanceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAttendanceRequest $request, Attendance $attendance, AttendanceService $attendanceService)
-    {
-        $validatedData = $request->validated();
-
+    public function update(
+        UpdateAttendanceRequest $request,
+        Attendance $attendance,
+        AttendanceService $attendanceService
+    ) {
         try {
-            $currentUserId = $request->user()->id;
-
-            $attendanceService->updateAttendance($attendance, $validatedData, $currentUserId);
+            $attendanceService->updateAttendance(
+                $attendance,
+                $request->validated(),
+                $request->user()->id
+            );
 
             return redirect()->route('attendance.index')->with('success', 'Attendance updated successfully.');
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
         } catch (\Throwable $th) {
-            Log::error('Attendance update failed'.$th->getMessage());
+            Log::error(
+                'Error updating attendance data: ' . $th->getMessage(),
+                ['exception' => $th]
+            );
 
-            return back()->with('error', 'An error occurred while updating the attendance.');
+            return back()->with(
+                'error',
+                'An unexpected error occurred while updating the attendance.'
+            );
         }
     }
 

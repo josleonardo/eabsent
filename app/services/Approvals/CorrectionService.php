@@ -155,31 +155,29 @@ class CorrectionService
         Correction $correction,
         int $currentUserId
     ): Correction {
-        if ($correction->status !== Correction::STATUS_APPROVED) {
-            throw new \RuntimeException('Only approved correction can be revoked.');
-        }
-
-        if (! $correction->canBeRevoked()) {
-            throw new \RuntimeException('The revocation period has expired.');
-        }
-
         return DB::transaction(function () use ($correction, $currentUserId) {
+            $correction = Correction::whereKey($correction->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($correction->status !== Correction::STATUS_APPROVED) {
+                throw new \RuntimeException('Only approved correction can be revoked.');
+            }
+
+            if (! $correction->canBeRevoked()) {
+                throw new \RuntimeException('The revocation period has expired.');
+            }
+
             $this->attendanceService->revokeCorrectedAttendance(
                 $correction->attendance_id,
                 $correction->id,
                 $currentUserId
             );
 
-            $revoked = Correction::whereKey($correction->id)
-                ->where('status', Correction::STATUS_APPROVED)
-                ->update([
-                    'status' => Correction::STATUS_REVOKED,
-                    'updated_by' => $currentUserId,
-                ]);
-
-            if (! $revoked) {
-                throw new \RuntimeException('Correction request has already been processed.');
-            }
+            $correction->update([
+                'status' => Correction::STATUS_REVOKED,
+                'updated_by' => $currentUserId,
+            ]);
 
             return $correction->refresh();
         });

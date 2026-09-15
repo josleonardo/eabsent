@@ -78,25 +78,21 @@ class AttendanceService
         int $currentUserId
     ): Attendance {
         return DB::transaction(function () use ($attendance, $validatedData, $currentUserId) {
-            $oldData = $attendance->replicate();
+            $this->saveAttendanceHistory(
+                $attendance->id,
+                $attendance,
+                AttendanceHistory::SOURCE_MANUAL,
+                null,
+                null,
+                $currentUserId
+            );
 
-            $updated = $attendance->update([
+            $attendance->update([
                 'actual_in' => $validatedData['actual_in'],
                 'actual_out' => $validatedData['actual_out'],
                 'status' => $validatedData['status'],
                 'updated_by' => $currentUserId,
             ]);
-
-            if ($updated) {
-                $this->saveAttendanceHistory(
-                    $attendance->id,
-                    $oldData,
-                    AttendanceHistory::SOURCE_MANUAL,
-                    null,
-                    null,
-                    $currentUserId
-                );
-            }
 
             return $attendance->refresh();
         });
@@ -212,12 +208,21 @@ class AttendanceService
         int $currentUserId
     ): void {
         $attendance = Attendance::findOrFail($attendanceId);
+
         $previousHistory = $attendance->histories()
             ->where('change_source', AttendanceHistory::SOURCE_CORRECTION)
             ->where('reference_id', $referenceId)
             ->where('change_reason', AttendanceHistory::REASON_APPROVED)
             ->orderByDesc('changed_at')
             ->firstOrFail();
+
+        $hasLaterChange = AttendanceHistory::where('attendance_id', $attendanceId)
+            ->where('changed_at', '>', $previousHistory->changed_at)
+            ->exists();
+
+        if ($hasLaterChange) {
+            return;
+        }
 
         $this->saveAttendanceHistory(
             $attendanceId,
@@ -229,9 +234,9 @@ class AttendanceService
         );
 
         $attendance->update([
-            'actual_in' => $previousHistory->actual_in ?? $attendance->actual_in,
-            'actual_out' => $previousHistory->actual_out ?? $attendance->actual_out,
-            'status' => $previousHistory->status ?? $attendance->status,
+            'actual_in' => $previousHistory->actual_in,
+            'actual_out' => $previousHistory->actual_out,
+            'status' => $previousHistory->status,
             'updated_by' => $currentUserId,
         ]);
     }
